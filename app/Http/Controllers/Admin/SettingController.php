@@ -1,0 +1,98 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Setting;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
+class SettingController extends Controller
+{
+    public function index()
+    {
+        $settings = Setting::latest()->paginate(15);
+        return view('admin.settings.index', compact('settings'));
+    }
+
+    public function create()
+    {
+        return view('admin.settings.create');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'key' => 'required|string|unique:settings,key|max:255',
+            'type' => 'required|in:text,image,video,file',
+            'value_text' => 'nullable|string',
+            'value_file' => 'nullable|file|max:10240', // 10MB Max
+        ]);
+
+        $key = Str::slug($validated['key'], '_');
+        $type = $validated['type'];
+        $value = null;
+
+        if ($type === 'text') {
+            $value = $validated['value_text'];
+        } elseif ($request->hasFile('value_file')) {
+            $value = $request->file('value_file')->store('settings', 'public');
+        }
+
+        Setting::create([
+            'key' => $key,
+            'type' => $type,
+            'value' => $value,
+        ]);
+
+        return redirect()->route('admin.settings.index')->with('success', 'Setting created successfully.');
+    }
+
+    public function show(Setting $setting)
+    {
+        return view('admin.settings.show', compact('setting'));
+    }
+
+    public function edit(Setting $setting)
+    {
+        return view('admin.settings.edit', compact('setting'));
+    }
+
+    public function update(Request $request, Setting $setting)
+    {
+        $validated = $request->validate([
+            'key' => 'required|string|max:255|unique:settings,key,' . $setting->id,
+            'type' => 'required|in:text,image,video,file',
+            'value_text' => 'nullable|string',
+            'value_file' => 'nullable|file|max:10240',
+        ]);
+
+        $setting->key = Str::slug($validated['key'], '_');
+        $setting->type = $validated['type'];
+
+        if ($setting->type === 'text') {
+            $setting->value = $validated['value_text'];
+        } elseif ($request->hasFile('value_file')) {
+            // Delete old file
+            if ($setting->value) {
+                Storage::disk('public')->delete($setting->value);
+            }
+            $setting->value = $request->file('value_file')->store('settings', 'public');
+        }
+
+        $setting->save();
+
+        return redirect()->route('admin.settings.index')->with('success', 'Setting updated successfully.');
+    }
+
+    public function destroy(Setting $setting)
+    {
+        if ($setting->type !== 'text' && $setting->value) {
+            Storage::disk('public')->delete($setting->value);
+        }
+        $setting->delete();
+
+        return redirect()->route('admin.settings.index')->with('success', 'Setting deleted successfully.');
+    }
+}
