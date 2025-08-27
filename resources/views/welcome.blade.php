@@ -175,7 +175,7 @@
             </div>
             <div>
                 <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3963.376418397637!2d3.379205914771038!3d6.59972399522699!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103b9228fa2a1e7f%3A0x8b39757a3e6c2f84!2sLagos!5e0!3m2!1sen!2sng!4v1672533094944!5m2!1sen!2sng" 
+                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d986.1622694438759!2d7.4798507567178305!3d9.083578854700187!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x104e0af63a4024c7%3A0x5c173dd7f1e8dde4!2sBrickspoint!5e0!3m2!1sen!2sng!4v1756256795904!5m2!1sen!2sng" 
                     width="100%" 
                     height="450" 
                     style="border:0;" 
