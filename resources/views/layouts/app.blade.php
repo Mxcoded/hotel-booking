@@ -60,9 +60,9 @@
                 <a href="{{ route('rooms') }}" class="hover:text-green-400 transition-colors">Rooms</a>
                 <a href="{{ route('gallery') }}" class="hover:text-green-400 transition-colors">Gallery</a>
                 <a href="{{ route('home') }}#contact" class="hover:text-green-400 transition-colors">Contact</a>
-                  @guest
+                  {{-- @guest
                     <a href="{{ route('login') }}" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-md">Login</a>
-                @endguest
+                @endguest --}}
             </nav>
              <!-- Mobile Menu Button (optional) -->
             <div class="md:hidden">

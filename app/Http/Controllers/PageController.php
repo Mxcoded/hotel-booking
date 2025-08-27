@@ -22,8 +22,8 @@ class PageController extends Controller
         $heroSetting = Setting::where('key', 'hero_media')->first();
 
         $contactDetails = [
-            'address' => '123 Luxury Lane, Aso, Nigeria',
-            'email' => 'reservations@brickspoint.com',
+            'address' => '11 Adzope Crescent, off Kumasi Crescent, Wuse, Abuja 900288, Federal Capital Territory',
+            'email' => 'reservations@brickspoint.ng',
             'phone' => '+234 809 999 9620'
         ];
 
