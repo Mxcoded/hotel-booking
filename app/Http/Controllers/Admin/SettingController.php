@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache; // Add this line
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -25,9 +26,10 @@ class SettingController extends Controller
     {
         $validated = $request->validate([
             'key' => 'required|string|unique:settings,key|max:255',
-            'type' => 'required|in:text,image,video,file',
+            'type' => 'required|in:text,image,video,file,number',
             'value_text' => 'nullable|string',
-            'value_file' => 'nullable|file|max:10240', // 10MB Max
+            'value_number' => 'nullable|numeric',
+            'value_file' => 'nullable|file|max:10240',
         ]);
 
         $key = Str::slug($validated['key'], '_');
@@ -36,6 +38,8 @@ class SettingController extends Controller
 
         if ($type === 'text') {
             $value = $validated['value_text'];
+        } elseif ($type === 'number') {
+            $value = $validated['value_number'];
         } elseif ($request->hasFile('value_file')) {
             $value = $request->file('value_file')->store('settings', 'public');
         }
@@ -45,6 +49,8 @@ class SettingController extends Controller
             'type' => $type,
             'value' => $value,
         ]);
+
+        Cache::forget('settings'); // Clear the cache
 
         return redirect()->route('admin.settings.index')->with('success', 'Setting created successfully.');
     }
@@ -63,8 +69,9 @@ class SettingController extends Controller
     {
         $validated = $request->validate([
             'key' => 'required|string|max:255|unique:settings,key,' . $setting->id,
-            'type' => 'required|in:text,image,video,file',
+            'type' => 'required|in:text,image,video,file,number',
             'value_text' => 'nullable|string',
+            'value_number' => 'nullable|numeric',
             'value_file' => 'nullable|file|max:10240',
         ]);
 
@@ -73,8 +80,9 @@ class SettingController extends Controller
 
         if ($setting->type === 'text') {
             $setting->value = $validated['value_text'];
+        } elseif ($setting->type === 'number') {
+            $setting->value = $validated['value_number'];
         } elseif ($request->hasFile('value_file')) {
-            // Delete old file
             if ($setting->value) {
                 Storage::disk('public')->delete($setting->value);
             }
@@ -83,15 +91,19 @@ class SettingController extends Controller
 
         $setting->save();
 
+        Cache::forget('settings'); // Clear the cache
+
         return redirect()->route('admin.settings.index')->with('success', 'Setting updated successfully.');
     }
 
     public function destroy(Setting $setting)
     {
-        if ($setting->type !== 'text' && $setting->value) {
+        if (!in_array($setting->type, ['text', 'number']) && $setting->value) {
             Storage::disk('public')->delete($setting->value);
         }
         $setting->delete();
+
+        Cache::forget('settings'); // Clear the cache
 
         return redirect()->route('admin.settings.index')->with('success', 'Setting deleted successfully.');
     }

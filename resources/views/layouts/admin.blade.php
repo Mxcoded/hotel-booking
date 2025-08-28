@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
+
 <body class="bg-gray-100">
 
     <div class="flex min-h-screen">
@@ -17,6 +19,17 @@
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center p-2 rounded hover:bg-gray-700">
                     <i class="fas fa-tachometer-alt mr-3"></i> Dashboard
                 </a>
+                <a href="{{ route('admin.contacts.index') }}" class="flex items-center p-2 rounded hover:bg-gray-700">
+                    <i class="fas fa-envelope mr-3"></i> Contact Messages
+                    @php
+                        $unreadCount = App\Models\Contact::where('is_read', false)->count();
+                    @endphp
+                    @if ($unreadCount > 0)
+                        <span
+                            class="ml-auto bg-red-500 text-white text-xs font-semibold rounded-full px-2 py-0.5">{{ $unreadCount }}</span>
+                    @endif
+                </a>
+
                 <a href="{{ route('admin.rooms.index') }}" class="flex items-center p-2 rounded hover:bg-gray-700">
                     <i class="fas fa-bed mr-3"></i> Manage Rooms
                 </a>
@@ -27,7 +40,7 @@
                     <i class="fas fa-cog mr-3"></i> Site Settings
                 </a>
                 <a href="{{ route('home') }}" target="_blank" class="flex items-center p-2 rounded hover:bg-gray-700">
-                     <i class="fas fa-globe mr-3"></i> View Website
+                    <i class="fas fa-globe mr-3"></i> View Website
                 </a>
             </nav>
         </aside>
@@ -39,8 +52,8 @@
                 <h2 class="text-xl font-bold">@yield('title', 'Dashboard')</h2>
                 <div>
                     <a href="{{ route('logout') }}"
-                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                       class="text-gray-600 hover:text-red-500">
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                        class="text-gray-600 hover:text-red-500">
                         <i class="fas fa-sign-out-alt mr-1"></i> Logout
                     </a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
@@ -57,4 +70,5 @@
     </div>
 
 </body>
+
 </html>

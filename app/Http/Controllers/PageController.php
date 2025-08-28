@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Gallery;
 use App\Models\Room;
 use App\Models\Setting;
+use App\Models\Contact;
 
 class PageController extends Controller
 {
@@ -68,8 +69,8 @@ class PageController extends Controller
             'message' => 'required|string',
         ]);
 
-        // For this example, we'll just log the data.
-        Log::info('New contact form submission:', $validatedData);
+        // Store the message in the database
+        Contact::create($validatedData);
 
         // Redirect back to the contact section with a success message
         return redirect('/#contact')->with('success', 'Thank you for your message! We will get back to you shortly.');

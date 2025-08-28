@@ -12,7 +12,7 @@
                 </div>
                 <div class="ml-4">
                     <h3 class="text-lg font-semibold text-gray-700">Total Rooms</h3>
-                    <p class="text-3xl font-bold">12</p> {{-- Replace with dynamic data later --}}
+                    <p class="text-3xl font-bold">{{ $roomCount }}</p>
                 </div>
             </div>
         </div>
@@ -25,20 +25,20 @@
                 </div>
                 <div class="ml-4">
                     <h3 class="text-lg font-semibold text-gray-700">Gallery Images</h3>
-                    <p class="text-3xl font-bold">34</p> {{-- Replace with dynamic data later --}}
+                    <p class="text-3xl font-bold">{{ $galleryCount }}</p>
                 </div>
             </div>
         </div>
 
-        <!-- Placeholder Card -->
+        <!-- Unread Messages Card -->
         <div class="bg-white p-6 rounded-lg shadow-md">
             <div class="flex items-center">
                 <div class="bg-yellow-500 text-white p-3 rounded-full">
                     <i class="fas fa-envelope text-2xl"></i>
                 </div>
                 <div class="ml-4">
-                    <h3 class="text-lg font-semibold text-gray-700">Contact Messages</h3>
-                    <p class="text-3xl font-bold">5</p> {{-- Replace with dynamic data later --}}
+                    <h3 class="text-lg font-semibold text-gray-700">Unread Messages</h3>
+                    <p class="text-3xl font-bold">{{ $unreadMessagesCount }}</p>
                 </div>
             </div>
         </div>
@@ -46,6 +46,6 @@
 
     <div class="mt-8 bg-white p-6 rounded-lg shadow-md">
         <h3 class="text-xl font-semibold mb-4">Welcome to your Dashboard!</h3>
-        <p class="text-gray-600">From here, you will be able to manage all aspects of your hotel website. Use the navigation on the left to manage rooms, update the gallery, and change site settings.</p>
+        <p class="text-gray-600">From here, you can manage all aspects of your hotel website. Use the navigation on the left to manage rooms, update the gallery, and change site settings.</p>
     </div>
 @endsection

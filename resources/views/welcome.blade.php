@@ -4,14 +4,16 @@
 
     {{-- Dynamic Hero Section --}}
     <section class="hero-section h-screen flex items-center justify-center text-white relative -mt-20">
-        {{-- Video or Image Background --}}
-        @if($heroSetting && str_contains($heroSetting->value, '.mp4'))
+        @php
+            $heroMedia = setting('hero_media');
+        @endphp
+        @if($heroMedia && Str::endsWith($heroMedia, '.mp4'))
             <video autoplay loop muted playsinline class="absolute z-0 w-full h-full object-cover">
-                <source src="{{ asset('storage/' . $heroSetting->value) }}" type="video/mp4">
+                <source src="{{ asset('storage/' . $heroMedia) }}" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
-        @elseif($heroSetting)
-            <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ asset('storage/' . $heroSetting->value) }}');"></div>
+        @elseif($heroMedia)
+            <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ asset('storage/' . $heroMedia) }}');"></div>
         @else
             {{-- Fallback if no setting is found --}}
             <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://placehold.co/1920x1080/000000/FFFFFF?text=Stunning+Hotel+View');"></div>
@@ -19,49 +21,53 @@
 
         <div class="absolute inset-0 bg-black opacity-50"></div>
         <div class="text-center z-10 p-4">
-            <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-4">Your Escape Awaits in Brickspoint</h1>
-            <p class="text-lg md:text-2xl mb-8 font-light">No forms. No hassle. Just message us on WhatsApp to reserve your stay.</p>
-            <a href="https://wa.me/+2348099999620?text=Hi,%20I'd%20like%20to%20book%20a%20room%20at%20Brickspoint%20Wuse." target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-full text-lg transition duration-300 ease-in-out transform hover:scale-105 inline-flex items-center">
+            <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-4">{{ setting('hero_title', 'Your Escape Awaits in Brickspoint') }}</h1>
+            <p class="text-lg md:text-2xl mb-8 font-light">{{ setting('hero_subtitle', 'No forms. No hassle. Just message us on WhatsApp to reserve your stay.') }}</p>
+            <a href="https://wa.me/{{ setting('whatsapp_number', '+2348099999620') }}?text=Hi,%20I'd%20like%20to%20book%20a%20room%20at%20Brickspoint." target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-full text-lg transition duration-300 ease-in-out transform hover:scale-105 inline-flex items-center">
                 <i class="fab fa-whatsapp mr-3 text-2xl"></i> Book Now on WhatsApp
             </a>
         </div>
     </section>
 
- <!-- Featured Rooms Section -->
-<section id="rooms" class="py-20 bg-white">
-    <div class="container mx-auto px-6">
-        <h2 class="text-4xl font-bold text-center mb-4">Featured Rooms & Suites</h2>
-        <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">Discover our curated selection of rooms, each designed for ultimate comfort and relaxation.</p>
-        
-        @if($featuredRooms->count() > 0)
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                @php
-                    $usd_rate = (float) setting('usd_exchange_rate', 0); // Get the rate from settings
-                @endphp
-                @foreach($featuredRooms as $room)
-                    <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden">
-                        <img src="{{ asset('storage/' . $room->image) }}" alt="{{ $room->name }}" class="w-full h-64 object-cover">
-                        <div class="p-6">
-                            <h3 class="text-2xl font-bold mb-2">{{ $room->name }}</h3>
-                            <div class="text-gray-600 mb-4">
-                                <p class="font-bold text-xl text-gray-900">From ₦{{ number_format($room->price, 2) }} / night</p>
-                                @if($usd_rate > 0)
-                                    <p class="text-sm">Approx. ${{ number_format($room->price / $usd_rate, 2) }}</p>
-                                @endif
+    <!-- Featured Rooms Section -->
+    <section id="rooms" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center mb-4">Featured Rooms & Suites</h2>
+            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">Discover our curated selection of rooms, each designed for ultimate comfort and relaxation.</p>
+            
+            @if($featuredRooms->count() > 0)
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    @php
+                        $usd_rate = (float) setting('usd_exchange_rate', 0); // Get the rate from settings
+                    @endphp
+                    
+                    @foreach($featuredRooms as $room)
+                        <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden">
+                            <img src="{{ asset('storage/' . $room->image) }}" alt="{{ $room->name }}" class="w-full h-64 object-cover">
+                            <div class="p-6">
+                                <h3 class="text-2xl font-bold mb-2">{{ $room->name }}</h3>
+                                <div class="text-gray-600 mb-4">
+                                    <p class="font-bold text-xl text-gray-900">From ₦{{ number_format($room->price, 2) }} / night</p>
+                                    @if($usd_rate > 0)
+                                        <p class="text-sm">Approx. ${{ number_format($room->price / $usd_rate, 2) }}</p>
+                                    @endif
+                                </div>
+                                <a href="https://wa.me/{{ setting('whatsapp_number', '+2348099999620') }}?text=Hi,%20I'm%20interested%20in%20the%20{{ urlencode($room->name) }}." target="_blank" class="bg-gray-800 hover:bg-black text-white font-semibold py-2 px-4 rounded-lg w-full flex items-center justify-center">
+                                    <i class="fab fa-whatsapp mr-2"></i> Reserve via WhatsApp
+                                </a>
                             </div>
-                            <a href="https://wa.me/{{ setting('whatsapp_number', '+2348099999620') }}?text=Hi,%20I'm%20interested%20in%20the%20{{ urlencode($room->name) }}." target="_blank" class="bg-gray-800 hover:bg-black text-white font-semibold py-2 px-4 rounded-lg w-full flex items-center justify-center">
-                                <i class="fab fa-whatsapp mr-2"></i> Reserve via WhatsApp
-                            </a>
                         </div>
-                    </div>
-                @endforeach
-            </div>
-            {{-- ... view all rooms button ... --}}
-        @else
-             <p class="text-center text-gray-600">Our rooms are currently being prepared. Please check back soon!</p>
-        @endif
-    </div>
-</section>
+                    @endforeach
+                </div>
+                <div class="text-center mt-12">
+                    <a href="{{ route('rooms') }}" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-lg transition duration-300">View All Rooms</a>
+                </div>
+            @else
+                 <p class="text-center text-gray-600">Our rooms are currently being prepared. Please check back soon!</p>
+            @endif
+        </div>
+    </section>
+
 
 
    <!-- Why Choose Us Section -->
@@ -88,7 +94,7 @@
                         <i class="fas fa-utensils text-3xl"></i>
                     </div>
                     <h3 class="text-xl font-bold">Free Breakfast</h3>
-                    <p class="text-gray-600">Start your day right.</p>
+                    <p class="text-gray-600">Start your day right.<small>T&c apply</small></p>
                 </div>
                 <div class="flex flex-col items-center">
                     <div class="bg-green-500 text-white rounded-full p-4 mb-4">
