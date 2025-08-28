@@ -42,24 +42,28 @@
     </style>
 
     <!-- JSON-LD Structured Data for Google -->
+      <!-- JSON-LD Structured Data for Google -->
+    @php
+        $structuredData = [
+            '@context' => 'https://schema.org',
+            '@type' => 'Hotel',
+            'name' => 'Brickspoint Boutique Aparthotel',
+            'address' => [
+                '@type' => 'PostalAddress',
+                'streetAddress' => '11 Adzope Crescent',
+                'addressLocality' => 'Wuse II',
+                'addressRegion' => 'Abuja',
+                'postalCode' => '900288',
+                'addressCountry' => 'NG',
+            ],
+            'image' => asset('storage/' . setting('logo')),
+            'telephone' => setting('phone_number', '+2348099999620'),
+            'url' => route('home'),
+            'priceRange' => '₦173,250.00'
+        ];
+    @endphp
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Hotel",
-      "name": "Brickspoint Boutique Aparthotel",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "11 Adzope Crescent",
-        "addressLocality": "Wuse II",
-        "addressRegion": "Abuja",
-        "postalCode": "900288",
-        "addressCountry": "NG"
-      },
-      "image": "{{ asset('storage/' . setting('logo')) }}",
-      "telephone": "{{ setting('phone_number', '+2348099999620') }}",
-      "url": "{{ route('home') }}",
-      "priceRange": "₦173,250.00"
-    }
+        @json($structuredData)
     </script>
 </head>
 
