@@ -122,7 +122,7 @@
 
     <!-- Sticky WhatsApp Button -->
     <a href="https://wa.me/+2348099999620?text=Hi,%20I'd%20like%20to%20book%20a%20room%20at%20Brickspoint." target="_blank"
-        class="sticky-whatsapp bg-green-500 hover:bg-green-600 text-white rounded-full p-4 shadow-lg transition duration-300 ease-in-out transform hover:scale-110">
+        class="fixed bottom-8 right-8 bg-green-500 hover:bg-green-600 text-white rounded-full p-4 shadow-lg transition duration-300 ease-in-out transform hover:scale-110 z-50">
         <i class="fab fa-whatsapp text-4xl"></i>
     </a>
 
