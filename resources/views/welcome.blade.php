@@ -1,5 +1,21 @@
 @extends('layouts.app')
 
+{{-- Add custom font imports in a new stack for this page --}}
+@push('styles')
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+{{-- 'Ms Madi' is a great alternative for the script font 'BrownSugar' --}}
+{{-- 'Montserrat' is a great alternative for the geometric font 'Gotham' --}}
+<link href="https://fonts.googleapis.com/css2?family=Ms+Madi&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+<style>
+    .font-brownsugar {
+        font-family: 'BrownSugar', cursive;
+    }
+    .font-gotham {
+        font-family: 'GothamLight', sans-serif;
+    }
+</style>
+@endpush
 @section('content')
 
     {{-- Dynamic Hero Section --}}
@@ -19,10 +35,19 @@
             <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://placehold.co/1920x1080/000000/FFFFFF?text=Stunning+Hotel+View');"></div>
         @endif
 
-        <div class="absolute inset-0 bg-black opacity-50"></div>
+       <div class="absolute inset-0 bg-black opacity-50"></div>
         <div class="text-center z-10 p-4">
-            <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-4">{{ setting('hero_title', 'Your Escape Awaits in Brickspoint') }}</h1>
-            <p class="text-lg md:text-2xl mb-8 font-light">{{ setting('hero_subtitle', 'No forms. No hassle. Just message us on WhatsApp to reserve your stay.') }}</p>
+            <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-4 font-brownsugar">{{ setting('hero_title', 'Welcome To') }}</h1>
+            
+        <!-- Updated Hero Content with Branded Fonts -->
+        <div class="text-center z-10 p-4 flex flex-col items-center">
+            <h1 class="font-brownsugar text-8xl md:text-9xl text-gray-500 -mb-4">B</h1>
+            <h2 class="font-brownsugar text-6xl md:text-7xl">Brickspoint</h2>
+            <p class="font-gotham text-base md:text-lg tracking-widest uppercase mt-2">Boutique Aparthotel</p>
+            <p class="font-gotham text-base md:text-lg tracking-widest uppercase">Wuse II</p>
+        </div>
+        <p class="text-lg md:text-2xl mb-8 font-gotham">{{ setting('slogan', 'Your Home Away From Home...') }}</p>
+        <p class="text-lg md:text-2xl mb-8 font-light">{{ setting('hero_subtitle', 'No forms. No hassle. Just message us on WhatsApp to reserve your stay.') }}</p>
             <a href="https://wa.me/{{ setting('whatsapp_number', '+2348099999620') }}?text=Hi,%20I'd%20like%20to%20book%20a%20room%20at%20Brickspoint." target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-full text-lg transition duration-300 ease-in-out transform hover:scale-105 inline-flex items-center">
                 <i class="fab fa-whatsapp mr-3 text-2xl"></i> Book Now on WhatsApp
             </a>

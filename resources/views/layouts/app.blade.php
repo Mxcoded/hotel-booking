@@ -35,11 +35,31 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
+      <style>
+       /* Define Custom Local Fonts */
+        @font-face {
+            font-family: 'BrownSugar';
+            /* NOTE: Update this src path to match your actual font file name */
+            src: url("{{ asset('fonts/Brown Sugar .otf') }}") format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'GothamLight';
+             /* NOTE: Update this src path to match your actual font file name */
+            src: url("{{ asset('fonts/Gotham-Light.otf') }}") format('opentype');
+            font-weight: 300; /* Assuming 'Light' variant */
+            font-style: normal;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
         }
     </style>
+    
+    {{-- Stack for page-specific styles --}}
+    @stack('styles')
 
 
     <!-- JSON-LD Structured Data for Google -->
@@ -71,12 +91,12 @@
 
     <header class="bg-gray-900/80 backdrop-blur text-white sticky top-0 z-40">
         <div class="container mx-auto flex justify-between items-center p-4">
-            <a href="{{ route('home') }}" class="text-3xl font-bold">
+            <a href="{{ route('home') }}" class="text-4xl font-bold font-brownsugar">
                 @if (setting('logo'))
                     <img src="{{ asset('storage/' . setting('logo')) }}" alt="Brickspoint Hotel Logo"
-                        class="h-12 w-auto">
+                        class="h-16 w-auto">
                 @else
-                    Brickspoint
+                    Brickspoint <small class="font-gotham -mt-2 text-xs">Wuse II</small>
                 @endif
             </a>
             <!-- Desktop Menu -->
