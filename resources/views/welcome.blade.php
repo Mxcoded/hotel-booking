@@ -43,7 +43,9 @@
                     
                     @foreach($featuredRooms as $room)
                         <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden">
-                            <img src="{{ asset('storage/' . $room->image) }}" alt="{{ $room->name }}" class="w-full h-64 object-cover">
+                            <a href="{{ route('rooms.show', $room) }}">
+                                <img src="{{ asset('storage/' . $room->image) }}" alt="{{ $room->name }}" class="w-full h-64 object-cover">
+                            </a>
                             <div class="p-6">
                                 <h3 class="text-2xl font-bold mb-2">{{ $room->name }}</h3>
                                 <div class="text-gray-600 mb-4">
