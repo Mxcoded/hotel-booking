@@ -136,7 +136,8 @@
 
     <footer class="bg-gray-800 text-white py-8">
         <div class="container mx-auto text-center">
-            <p>&copy; {{ date('Y') }} Brickspoint Hotel. All Rights Reserved.</p>
+            <p>&copy; {{ date('Y') }} Brickspoint Hospitality. All Rights Reserved.</p>
+            <p>&trade; Developed with ❤️ by IT Team</p>
         </div>
     </footer>
 

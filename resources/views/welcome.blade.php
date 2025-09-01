@@ -41,7 +41,7 @@
             
         <!-- Updated Hero Content with Branded Fonts -->
         <div class="text-center z-10 p-4 flex flex-col items-center">
-            <h1 class="font-brownsugar text-8xl md:text-9xl text-gray-500 -mb-4">B</h1>
+            <h1 class="font-brownsugar text-8xl md:text-9xl text-gray-380 -mb-4">B</h1>
             <h2 class="font-brownsugar text-6xl md:text-7xl">Brickspoint</h2>
             <p class="font-gotham text-base md:text-lg tracking-widest uppercase mt-2">Boutique Aparthotel</p>
             <p class="font-gotham text-base md:text-lg tracking-widest uppercase">Wuse II</p>
