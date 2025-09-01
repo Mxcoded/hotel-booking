@@ -27,7 +27,9 @@
                 @foreach($rooms as $room)
                     <div class="group relative rounded-lg border border-gray-200 p-4 sm:p-6 flex flex-col">
                         <div class="aspect-w-3 aspect-h-2 overflow-hidden rounded-lg bg-gray-200 group-hover:opacity-75">
-                            <img src="{{ asset('storage/' . $room->image) }}" alt="{{ $room->name }}" class="h-full w-full object-cover object-center">
+                            <a href="{{ route('rooms.show', $room) }}">
+                                <img src="{{ asset('storage/' . $room->image) }}" alt="{{ $room->name }}" class="h-full w-full object-cover object-center">
+                            </a>
                         </div>
                         <div class="pt-6 pb-4 text-center flex-grow">
                             <h3 class="text-2xl font-bold text-gray-900">

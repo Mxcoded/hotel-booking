@@ -46,7 +46,12 @@ class PageController extends Controller
         $rooms = Room::all();
         return view('rooms', compact('rooms'));
     }
-
+    public function showRoom(Room $room)
+    {
+        // Eager load the media files for the room
+        $room->load('media');
+        return view('room-details', compact('room'));
+    }
     /**
      * Display the gallery page.
      */

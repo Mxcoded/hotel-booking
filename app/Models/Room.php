@@ -22,6 +22,10 @@ class Room extends Model
         'features',
         'guests',
     ];
+    public function media()
+    {
+        return $this->hasMany(RoomMedia::class);
+    }
 
     /**
      * The attributes that should be cast.
