@@ -52,7 +52,7 @@
                                     <p class="text-sm">Approx. ${{ number_format($room->price / $usd_rate, 2) }}</p>
                                 @endif
                             </div>
-                            <a href="https://wa.me/{{ setting('whatsapp_number', '+2348099999620') }}?text=Hi,%20I'm%20interested%20in%20booking%20the%20{{ urlencode($room->name) }}." target="_blank" class="mt-4 w-full max-w-xs bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 inline-flex items-center justify-center">
+                            <a href="https://wa.me/{{ setting('whatsapp_number', '+2348099999620') }}?text=Hi,%20I'm%20interested%20in%20booking%20the%20{{ urlencode($room->name) }}." target="_blank" class="whatsapp-link mt-4 w-full max-w-xs bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 inline-flex items-center justify-center">
                                 <i class="fab fa-whatsapp mr-2"></i> Reserve via WhatsApp
                             </a>
                         </div>

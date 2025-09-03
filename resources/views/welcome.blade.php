@@ -48,7 +48,7 @@
         </div>
         <p class="text-lg md:text-2xl mb-8 font-gotham">{{ setting('slogan', 'Your Home Away From Home...') }}</p>
         <p class="text-lg md:text-2xl mb-8 font-light">{{ setting('hero_subtitle', 'No forms. No hassle. Just message us on WhatsApp to reserve your stay.') }}</p>
-            <a href="https://wa.me/{{ setting('whatsapp_number', '+2348099999620') }}?text=Hi,%20I'd%20like%20to%20book%20a%20room%20at%20Brickspoint." target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-full text-lg transition duration-300 ease-in-out transform hover:scale-105 inline-flex items-center">
+            <a href="https://wa.me/{{ setting('whatsapp_number', '+2348099999620') }}?text=Hi,%20I'd%20like%20to%20book%20a%20room." target="_blank" class="whatsapp-link bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-full text-lg transition duration-300 ease-in-out transform hover:scale-105 inline-flex items-center">
                 <i class="fab fa-whatsapp mr-3 text-2xl"></i> Book Now on WhatsApp
             </a>
         </div>
@@ -79,7 +79,7 @@
                                         <p class="text-sm">Approx. ${{ number_format($room->price / $usd_rate, 2) }}</p>
                                     @endif
                                 </div>
-                                <a href="https://wa.me/{{ setting('whatsapp_number', '+2348099999620') }}?text=Hi,%20I'm%20interested%20in%20the%20{{ urlencode($room->name) }}." target="_blank" class="bg-gray-800 hover:bg-black text-white font-semibold py-2 px-4 rounded-lg w-full flex items-center justify-center">
+                                <a href="https://wa.me/{{ setting('whatsapp_number', '+2348099999620') }}?text=Hi,%20I'm%20interested%20in%20the%20{{ urlencode($room->name) }}." target="_blank" class="whatsapp-link bg-gray-800 hover:bg-black text-white font-semibold py-2 px-4 rounded-lg w-full flex items-center justify-center">
                                     <i class="fab fa-whatsapp mr-2"></i> Reserve via WhatsApp
                                 </a>
                             </div>
