@@ -27,6 +27,10 @@
                 @foreach($rooms as $room)
                     <div class="group relative rounded-lg border border-gray-200 p-4 sm:p-6 flex flex-col">
                         <div class="aspect-w-3 aspect-h-2 overflow-hidden rounded-lg bg-gray-200 group-hover:opacity-75">
+                             <!-- Favorite Button -->
+                            <button onclick="toggleFavorite({{ $room->id }})" class="favorite-btn absolute top-4 right-4 bg-white/80 rounded-full p-2 z-10 transition-transform duration-200 hover:scale-110" data-room-id="{{ $room->id }}">
+                                <i class="far fa-heart text-gray-700 text-xl"></i>
+                            </button>
                             <a href="{{ route('rooms.show', $room) }}">
                                 <img src="{{ asset('storage/' . $room->image) }}" alt="{{ $room->name }}" class="h-full w-full object-cover object-center">
                             </a>
