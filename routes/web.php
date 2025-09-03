@@ -32,6 +32,9 @@ Route::get('/rooms', [PageController::class, 'rooms'])->name('rooms');
 Route::get('/gallery', [PageController::class, 'gallery'])->name('gallery');
 Route::get('/rooms/{room}', [PageController::class, 'showRoom'])->name('rooms.show');
 Route::post('/contact', [PageController::class, 'storeContact'])->name('contact.store');
+// New Routes for Favorites
+Route::get('/favorites', [PageController::class, 'favorites'])->name('favorites');
+Route::post('/api/get-favorite-rooms', [PageController::class, 'getFavoriteRooms'])->name('api.favorites');
 
 // WhatsApp Lead Capture Route
 Route::post('/log-whatsapp-lead', [LeadController::class, 'store'])->name('whatsapp.lead.store');

@@ -166,7 +166,8 @@
         <i class="fab fa-whatsapp text-4xl"></i>
     </a>
 
-    <script>
+    
+   <script>
         document.getElementById('mobile-menu-button').addEventListener('click', function() {
             document.getElementById('mobile-menu').classList.toggle('hidden');
         });
@@ -174,67 +175,173 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Smart Modal Logic
             const modal = document.getElementById('whatsapp-modal');
             const closeModalBtn = document.getElementById('close-modal-btn');
             const leadForm = document.getElementById('whatsapp-lead-form');
             const whatsappLinks = document.querySelectorAll('.whatsapp-link');
-            
             let targetUrl = '';
-
             whatsappLinks.forEach(link => {
                 link.addEventListener('click', function(event) {
                     event.preventDefault();
                     targetUrl = this.href;
-                    
-                    // Check if user details are already in local storage
-                    const leadDetails = localStorage.getItem('whatsappLead');
-                    if (leadDetails) {
-                        window.open(targetUrl, '_blank'); // Redirect directly
-                    } else {
-                        modal.classList.remove('hidden'); // Show the form
-                    }
-                });
-            });
-
-            closeModalBtn.addEventListener('click', () => {
-                modal.classList.add('hidden');
-            });
-
-            leadForm.addEventListener('submit', function(event) {
-                event.preventDefault();
-                const formData = new FormData(this);
-                const leadData = {
-                    name: formData.get('name'),
-                    phone: formData.get('phone')
-                };
-
-                fetch("{{ route('whatsapp.lead.store') }}", {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(leadData)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if(data.success) {
-                        // Save details to local storage to remember the user
-                        localStorage.setItem('whatsappLead', JSON.stringify(leadData));
-                        
+                    if (localStorage.getItem('whatsappLead')) {
                         window.open(targetUrl, '_blank');
-                        modal.classList.add('hidden');
-                        this.reset();
                     } else {
-                        alert('Something went wrong. Please try again.');
+                        modal.classList.remove('hidden');
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred. Please check the console.');
                 });
             });
+            if(closeModalBtn) {
+                closeModalBtn.addEventListener('click', () => modal.classList.add('hidden'));
+            }
+            if(leadForm) {
+                leadForm.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    const formData = new FormData(this);
+                    const leadData = { name: formData.get('name'), phone: formData.get('phone') };
+                    fetch("{{ route('whatsapp.lead.store') }}", {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(leadData)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if(data.success) {
+                            localStorage.setItem('whatsappLead', JSON.stringify(leadData));
+                            window.open(targetUrl, '_blank');
+                            modal.classList.add('hidden');
+                            this.reset();
+                        } else { alert('Something went wrong.'); }
+                    })
+                    .catch(error => console.error('Error:', error));
+                });
+            }
+
+            // Favorites Logic
+            const favorites = {
+                get() {
+                    return JSON.parse(localStorage.getItem('favoriteRooms') || '[]');
+                },
+                set(ids) {
+                    localStorage.setItem('favoriteRooms', JSON.stringify(ids));
+                    this.updateCount();
+                },
+                add(id) {
+                    let ids = this.get();
+                    if (!ids.includes(id)) {
+                        ids.push(id);
+                        this.set(ids);
+                    }
+                },
+                remove(id) {
+                    let ids = this.get().filter(i => i !== id);
+                    this.set(ids);
+                },
+                toggle(id) {
+                    let ids = this.get();
+                    if (ids.includes(id)) {
+                        this.remove(id);
+                    } else {
+                        this.add(id);
+                    }
+                    this.updateHeart(id);
+                },
+                updateCount() {
+                    const count = this.get().length;
+                    const countEl = document.getElementById('favorites-count');
+                    if(countEl) {
+                        countEl.textContent = count;
+                        countEl.classList.toggle('hidden', count === 0);
+                    }
+                },
+                updateHeart(roomId) {
+                    const heart = document.querySelector(`.favorite-btn[data-room-id="${roomId}"] i`);
+                    if(heart) {
+                        const isFavorited = this.get().includes(roomId);
+                        heart.classList.toggle('fas', isFavorited); // Solid icon
+                        heart.classList.toggle('far', !isFavorited); // Outline icon
+                        heart.classList.toggle('text-red-500', isFavorited);
+                    }
+                },
+                initHearts() {
+                    document.querySelectorAll('.favorite-btn').forEach(btn => {
+                        const roomId = parseInt(btn.dataset.roomId);
+                        this.updateHeart(roomId);
+                    });
+                }
+            };
+
+            favorites.updateCount();
+            favorites.initHearts();
+
+            window.toggleFavorite = (roomId) => {
+                favorites.toggle(roomId);
+            };
+
+            // Logic for the favorites page
+            if(document.getElementById('favorite-rooms-container')) {
+                const container = document.getElementById('favorite-rooms-container');
+                const noFavsMsg = document.getElementById('no-favorites-message');
+                const spinner = document.getElementById('loading-spinner');
+                const favoriteIds = favorites.get();
+
+                if(favoriteIds.length > 0) {
+                    fetch("{{ route('api.favorites') }}", {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ ids: favoriteIds })
+                    })
+                    .then(response => response.json())
+                    .then(rooms => {
+                        spinner.classList.add('hidden');
+                        if(rooms.length > 0) {
+                            container.innerHTML = rooms.map(room => {
+                                const usd_rate = {{ (float) setting('usd_exchange_rate', 0) }};
+                                const priceNaira = new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(room.price).replace('NGN', '₦');
+                                let priceUsd = '';
+                                if(usd_rate > 0) {
+                                    priceUsd = `<p class="text-sm">Approx. $${(room.price / usd_rate).toFixed(2)}</p>`;
+                                }
+
+                                return `
+                                    <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden relative">
+                                        <button onclick="toggleFavorite(${room.id})" class="favorite-btn absolute top-4 right-4 bg-white/80 rounded-full p-2 z-10" data-room-id="${room.id}">
+                                            <i class="fas fa-heart text-red-500 text-xl"></i>
+                                        </button>
+                                        <a href="/rooms/${room.id}">
+                                            <img src="/storage/${room.image}" alt="${room.name}" class="w-full h-64 object-cover">
+                                        </a>
+                                        <div class="p-6">
+                                            <h3 class="text-2xl font-bold mb-2">${room.name}</h3>
+                                            <div class="text-gray-600 mb-4">
+                                                <p class="font-bold text-xl text-gray-900">From ${priceNaira} / night</p>
+                                                ${priceUsd}
+                                            </div>
+                                            <a href="https://wa.me/{{ setting('whatsapp_number', '+2348099999620') }}?text=Hi,%20I'm%20interested%20in%20the%20${encodeURIComponent(room.name)}." target="_blank" class="whatsapp-link bg-gray-800 hover:bg-black text-white font-semibold py-2 px-4 rounded-lg w-full flex items-center justify-center">
+                                                <i class="fab fa-whatsapp mr-2"></i> Reserve via WhatsApp
+                                            </a>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('');
+                        } else {
+                            noFavsMsg.classList.remove('hidden');
+                        }
+                    });
+                } else {
+                    spinner.classList.add('hidden');
+                    noFavsMsg.classList.remove('hidden');
+                }
+            }
         });
     </script>
 

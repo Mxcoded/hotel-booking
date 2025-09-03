@@ -80,4 +80,23 @@ class PageController extends Controller
         // Redirect back to the contact section with a success message
         return redirect('/#contact')->with('success', 'Thank you for your message! We will get back to you shortly.');
     }
+    // New method for the favorites page view
+    public function favorites()
+    {
+        return view('favorites');
+    }
+
+    // New method to fetch room data for the favorites page via AJAX
+    public function getFavoriteRooms(Request $request)
+    {
+        $roomIds = $request->input('ids', []);
+
+        if (empty($roomIds)) {
+            return response()->json([]);
+        }
+
+        $rooms = Room::whereIn('id', $roomIds)->get();
+
+        return response()->json($rooms);
+    }
 }
