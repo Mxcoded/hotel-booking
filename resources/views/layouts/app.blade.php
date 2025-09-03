@@ -26,7 +26,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
+    <link rel="icon" type="image/x-icon" href="{{ asset('storage/' . setting('favicon')) }}">
     <!-- SEO Meta Tags -->
     <title>@yield('title', 'Brickspoint Boutique Aparthotel - Wuse II, Abuja')</title>
     <meta name="description"
@@ -41,7 +41,7 @@
     <meta property="og:title" content="Brickspoint Boutique Aparthotel - Wuse II, Abuja">
     <meta property="og:description"
         content="Luxury and comfort at 11 Adzope Crescent, Wuse II, Abuja. Book your stay directly via WhatsApp for the best experience.">
-    <meta property="og:image" content="{{ asset('storage/' . setting('logo')) }}">
+    <meta property="og:image" content="{{ asset('storage/' . setting('favicon')) }}">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
@@ -49,7 +49,7 @@
     <meta property="twitter:title" content="Brickspoint Boutique Aparthotel - Wuse II, Abuja">
     <meta property="twitter:description"
         content="Luxury and comfort at 11 Adzope Crescent, Wuse II, Abuja. Book your stay directly via WhatsApp for the best experience.">
-    <meta property="twitter:image" content="{{ asset('storage/' . setting('logo')) }}">
+    <meta property="twitter:image" content="{{ asset('storage/' . setting('favicon')) }}">
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
