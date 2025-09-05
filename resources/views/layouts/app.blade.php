@@ -76,12 +76,13 @@
         @font-face {
             font-family: 'FuturaLT';
             src: url("{{ asset('fonts/FuturaLT-Light.ttf') }}") format('truetype');
-            font-weight: 100;
+            font-weight: 300;
             font-style: normal;
         }
 
         body {
             font-family: 'FuturaLT', 'BrownSugar';
+            color: #000;
         }
         .star-rating input[type="radio"] { display: none; }
         .star-rating label { font-size: 2.5rem; color: #d1d5db; cursor: pointer; transition: color 0.2s; }
@@ -112,7 +113,7 @@
                 @endif
             </a>
             <!-- Desktop Menu -->
-            <nav class="hidden md:flex items-center space-x-6">
+            <nav class="hidden md:flex items-center space-x-6 text-2xl">
                 <a href="{{ route('home') }}" class="hover:text-green-400 transition-colors">Home</a>
                 <a href="{{ route('rooms') }}" class="hover:text-green-400 transition-colors">Rooms</a>
                 <a href="{{ route('gallery') }}" class="hover:text-green-400 transition-colors">Gallery</a>
@@ -156,7 +157,9 @@
 
     <footer class="bg-gray-800 text-white py-8">
         <div class="container mx-auto text-center">
-            <p>&copy; {{ date('Y') }} Brickspoint Hotel. All Rights Reserved.</p>
+            <p>&copy; {{ date('Y') }} BRICKSPOINT BOUTIQUE APARTHOTEL. All Rights Reserved.</p>
+            <p class="text-white">&trade; Developed with ❤️ by IT Team</p>
+
         </div>
     </footer>
     

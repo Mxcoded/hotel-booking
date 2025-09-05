@@ -10,14 +10,16 @@ class FeedbackController extends Controller
     public function index()
     {
         $feedbacks = Feedback::latest()->paginate(15);
-        return view('admin.feedback.index', compact('feedbacks'));
+        $unreadFeedbackCount = Feedback::where('is_read', false)->count(); //count the unread feedback
+        return view('admin.feedback.index', compact('feedbacks','unreadFeedbackCount'));
     }
 
     public function show(Feedback $feedback)
     {
         // Mark as read when viewed
         $feedback->update(['is_read' => true]);
-        return view('admin.feedback.show', compact('feedback'));
+        $unreadFeedbackCount = Feedback::where('is_read', false)->count(); //count the unread feedback
+        return view('admin.feedback.show', compact('feedback', 'unreadFeedbackCount'));
     }
     
     public function toggleApproval(Feedback $feedback)

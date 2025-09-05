@@ -8,6 +8,7 @@ use App\Models\Gallery;
 use App\Models\Room;
 use App\Models\Setting;
 use App\Models\Contact;
+use App\Models\Feedback;
 
 class PageController extends Controller
 {
@@ -22,6 +23,14 @@ class PageController extends Controller
         // Fetch hero settings from the database
         $heroSetting = Setting::where('key', 'hero_media')->first();
 
+        // Fetch the 3 latest approved testimonials with a rating of 4 or higher
+        $testimonials = Feedback::where('is_approved', true)
+            ->where('rating', '>=', 4)
+            ->latest()
+            ->take(3)
+            ->get();
+
+
         $contactDetails = [
             'address' => '11 Adzope Crescent, off Kumasi Crescent, Wuse, Abuja 900288, Federal Capital Territory',
             'email' => 'reservations@brickspoint.ng',
@@ -34,6 +43,7 @@ class PageController extends Controller
             'address' => $contactDetails['address'],
             'email' => $contactDetails['email'],
             'phone' => $contactDetails['phone'],
+            'testimonials' => $testimonials,
         ]);
     }
 

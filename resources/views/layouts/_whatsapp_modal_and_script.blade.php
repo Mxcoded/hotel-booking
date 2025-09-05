@@ -264,13 +264,13 @@
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
             fetch('{{ route('feedback.store') }}', {
-                method: 'POST',
-                headers: { 
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json',
-                },
-                body: formData
-            })
+                    method: 'POST', // <-- THIS IS THE FIX
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json',
+                    },
+                    body: formData
+                })
             .then(response => response.json().then(data => ({ status: response.status, body: data })))
             .then(({ status, body }) => {
                 if (status === 200 && body.success) {
@@ -295,7 +295,7 @@
 
 
         // Initial setup on page load
-        updateFavoritesCount();
-        updateFavoriteIcons();
+        // updateFavoritesCount();
+        // updateFavoriteIcons();
     });
 </script>

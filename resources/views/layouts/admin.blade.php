@@ -74,16 +74,13 @@
             </nav>
         </div>
 
-      <!-- Content -->
-        <div class="flex-1 flex flex-col overflow-hidden">
-            <header class="flex justify-between md:justify-end items-center py-4 px-6 bg-white border-b-4 border-green-500">
-                 <!-- Mobile Menu Button -->
-                <button id="mobile-menu-button" class="text-gray-500 focus:outline-none focus:text-gray-700 md:hidden">
+             <!-- Main Content -->
+        <div class="flex-1 md:ml-64">
+            <header class="bg-white shadow p-4 flex justify-between items-center">
+                <button id="open-sidebar-btn" class="md:hidden text-gray-800">
                     <i class="fas fa-bars text-2xl"></i>
                 </button>
-                <div class="flex items-center">
-                    <span class="text-gray-700 mr-4">Welcome, {{ Auth::user()->name }}</span>
-                </div>
+                <h1 class="text-xl font-semibold">@yield('title', 'Dashboard')</h1>
             </header>
             <main class="p-6">
                 @yield('content')

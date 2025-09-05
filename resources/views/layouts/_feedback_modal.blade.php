@@ -4,7 +4,7 @@
             <button id="close-feedback-modal-btn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl">&times;</button>
             <div id="feedback-form-content">
                 <h3 class="text-2xl font-bold text-center mb-2">Leave Your Feedback</h3>
-                <p class="text-center text-gray-600 mb-6">We'd love to hear about your experience!</p>
+                <p class="text-center text-gray-700 mb-6">We'd love to hear about your experience!</p>
                 <form id="feedback-form">
                     <div class="mb-4 star-rating flex items-center justify-center flex-row-reverse">
                         <input type="radio" id="star5" name="rating" value="5" required/><label for="star5" title="5 stars">&#9733;</label>

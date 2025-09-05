@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\WhatsappLeadController;
 use App\Http\Controllers\FeedbackController as AdminFeedbackController;
+use App\Http\Controllers\FeedbackController;
 
 
 /*

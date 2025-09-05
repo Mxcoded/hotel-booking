@@ -142,32 +142,29 @@
     <section class="py-20 bg-white">
         <div class="container mx-auto px-6">
             <h2 class="text-4xl font-bold text-center mb-12">What Our Guests Say</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Testimonial 1 -->
-                <div class="p-6 rounded-lg">
-                    <div class="whatsapp-bubble p-4 rounded-lg relative">
-                        <p class="text-gray-700">"Booking through WhatsApp was a breeze! The staff was incredibly responsive and helpful. The hotel itself is beautiful. Highly recommended!"</p>
-                        <div class="absolute bottom-0 right-0 transform translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-green-200"></div>
-                    </div>
-                    <p class="mt-4 font-bold text-right">- Sarah L.</p>
+            
+            @if($testimonials->count() > 0)
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    @foreach($testimonials as $testimonial)
+                        <div class="bg-green-50 p-6 rounded-lg shadow-md">
+                             <div class="flex items-center mb-4">
+                                @for ($i = 0; $i < 5; $i++)
+                                    @if ($i < $testimonial->rating)
+                                        <i class="fas fa-star text-yellow-400"></i>
+                                    @else
+                                        <i class="far fa-star text-gray-300"></i>
+                                    @endif
+                                @endfor
+                            </div>
+                            <p class="text-gray-600 italic mb-4">"{{ $testimonial->message }}"</p>
+                            <p class="font-bold text-right text-gray-800">- {{ $testimonial->name ?? 'Anonymous' }}</p>
+                        </div>
+                    @endforeach
                 </div>
-                <!-- Testimonial 2 -->
-                <div class="p-6 rounded-lg">
-                    <div class="whatsapp-bubble p-4 rounded-lg relative">
-                        <p class="text-gray-700">"The best hotel experience I've had in a long time. The location is perfect, and the service is top-notch. I'll definitely be back."</p>
-                        <div class="absolute bottom-0 right-0 transform translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-green-200"></div>
-                    </div>
-                    <p class="mt-4 font-bold text-right">- Michael B.</p>
-                </div>
-                <!-- Testimonial 3 -->
-                <div class="p-6 rounded-lg">
-                    <div class="whatsapp-bubble p-4 rounded-lg relative">
-                        <p class="text-gray-700">"A true 5-star experience from start to finish. Chatting with the concierge on WhatsApp for recommendations was so convenient."</p>
-                        <div class="absolute bottom-0 right-0 transform translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-green-200"></div>
-                    </div>
-                    <p class="mt-4 font-bold text-right">- Emily R.</p>
-                </div>
-            </div>
+            @else
+                <p class="text-center text-gray-600">We value our guests' feedback. Be the first to leave a review!</p>
+            @endif
+            
         </div>
     </section>
 
