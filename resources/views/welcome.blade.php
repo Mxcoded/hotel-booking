@@ -12,7 +12,7 @@
         font-family: 'BrownSugar', cursive;
     }
     .font-gotham {
-        font-family: 'GothamLight', sans-serif;
+        font-family: 'GothamLight', 'FuturaLT';
     }
 </style>
 @endpush

@@ -8,6 +8,7 @@ use App\Models\Gallery;
 use App\Models\Room;
 use App\Models\Visitor;
 use App\Models\WhatsappLead;
+use App\Models\Feedback;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -60,7 +61,10 @@ class AdminController extends Controller
         $roomCount = Room::count();
         $galleryCount = Gallery::count();
         $unreadMessages = Contact::where('is_read', false)->count();
-        $whatsappLeadsCount = WhatsappLead::count(); // Add this line
+        $whatsappLeadsCount = WhatsappLead::count(); // WhatsApp leads count
+        $approvedFeedbackCount = Feedback::where('is_approved', true)->count(); //count the approved feedback
+        $unreadFeedbackCount = Feedback::where('is_read', false)->count(); //count the unread feedback
+
 
         // Visitor Chart Data
         $visitors = Visitor::select(
@@ -81,7 +85,9 @@ class AdminController extends Controller
             'roomCount', 
             'galleryCount', 
             'unreadMessages', 
-            'whatsappLeadsCount', // Add this line
+            'whatsappLeadsCount', // WhatsApp leads count
+            'approvedFeedbackCount', // Approved feedback count
+            'unreadFeedbackCount', // Unread feedback count
             'visitorLabels', 
             'visitorData',
             'todayVisitors'
