@@ -56,10 +56,18 @@
                     class="flex items-center p-4 rounded hover:bg-gray-700 transition-colors">
                     <i class="fab fa-whatsapp mr-3"></i> WhatsApp Leads
                 </a>
-                <a href="{{ route('admin.settings.index') }}"
-                    class="flex items-center p-4 rounded hover:bg-gray-700 transition-colors">
-                    <i class="fas fa-cog mr-3"></i> Site Settings
-                </a>
+                <div class="p-4 rounded hover:bg-gray-700 transition-colors">
+                    <a href="{{ route('admin.settings.index') }}" class="flex items-center">
+                        <i class="fas fa-cog mr-3"></i> Site Settings
+                    </a>
+                    <div class="ml-6 mt-2">
+                        <a href="{{ route('admin.attractions.index') }}"
+                            class="flex items-center p-2 rounded hover:bg-gray-700">
+                            <i class="fas fa-map-signs mr-3"></i> Manage Attractions
+                        </a>
+                    </div>
+                </div>
+
                 <a href="{{ route('home') }}" target="_blank"
                     class="flex items-center p-4 rounded hover:bg-gray-700 transition-colors">
                     <i class="fas fa-globe mr-3"></i> View Website
@@ -74,7 +82,7 @@
             </nav>
         </div>
 
-             <!-- Main Content -->
+        <!-- Main Content -->
         <div class="flex-1 md:ml-64">
             <header class="bg-white shadow p-4 flex justify-between items-center">
                 <button id="open-sidebar-btn" class="md:hidden text-gray-800">
@@ -95,11 +103,11 @@
         document.getElementById('close-sidebar-btn').addEventListener('click', function() {
             document.getElementById('sidebar').classList.add('-translate-x-full');
         });
-         document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
             document.getElementById('sidebar').classList.toggle('-translate-x-full');
         });
     </script>
-     
+
 </body>
 
 </html>

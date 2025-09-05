@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\WhatsappLeadController;
 use App\Http\Controllers\FeedbackController as AdminFeedbackController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\Admin\AttractionController;
 
 
 /*
@@ -35,6 +36,7 @@ Route::get('/rooms', [PageController::class, 'rooms'])->name('rooms');
 Route::get('/gallery', [PageController::class, 'gallery'])->name('gallery');
 Route::get('/rooms/{room}', [PageController::class, 'showRoom'])->name('rooms.show');
 Route::post('/contact', [PageController::class, 'storeContact'])->name('contact.store');
+Route::get('/local-guide', [PageController::class, 'localGuide'])->name('local-guide');
 // New Routes for Favorites
 Route::get('/favorites', [PageController::class, 'favorites'])->name('favorites');
 Route::post('/api/get-favorite-rooms', [PageController::class, 'getFavoriteRooms'])->name('api.favorites');
@@ -63,6 +65,8 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     // Settings Management
     Route::resource('settings', SettingController::class);
+    Route::resource('attractions', AttractionController::class)->except('show');
+
 
     // Contact Messages Management
     Route::get('contacts', [ContactController::class, 'index'])->name('contacts.index');

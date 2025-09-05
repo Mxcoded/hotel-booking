@@ -9,6 +9,7 @@ use App\Models\Room;
 use App\Models\Setting;
 use App\Models\Contact;
 use App\Models\Feedback;
+use App\Models\Attraction;
 
 class PageController extends Controller
 {
@@ -108,5 +109,11 @@ class PageController extends Controller
         $rooms = Room::whereIn('id', $roomIds)->get();
 
         return response()->json($rooms);
+    }
+    public function localGuide()
+    {
+        $attractions = Attraction::latest()->get();
+        $categories = $attractions->pluck('category')->unique();
+        return view('local-guide', compact('attractions', 'categories'));
     }
 }

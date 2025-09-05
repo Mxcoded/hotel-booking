@@ -18,7 +18,11 @@
         'priceRange' => '₦173,250.00 - ₦500,000.00',
     ];
 @endphp
-
+@php
+    $unreadContacts = \App\Models\Contact::where('is_read', false)->count();
+    $unreadFeedback = \App\Models\Feedback::where('is_read', false)->count();
+    $unreadFeedbackCount = $unreadFeedback;
+@endphp
 <!DOCTYPE html>
 <html lang="en">
 
@@ -113,10 +117,11 @@
                 @endif
             </a>
             <!-- Desktop Menu -->
-            <nav class="hidden md:flex items-center space-x-6 text-2xl">
+            <nav class="hidden md:flex items-center space-x-6 text-xl">
                 <a href="{{ route('home') }}" class="hover:text-green-400 transition-colors">Home</a>
                 <a href="{{ route('rooms') }}" class="hover:text-green-400 transition-colors">Rooms</a>
                 <a href="{{ route('gallery') }}" class="hover:text-green-400 transition-colors">Gallery</a>
+                 <a href="{{ route('local-guide') }}" class="hover:text-green-400 transition-colors">Explore Wuse II</a>
                 <a href="{{ route('favorites') }}" class="hover:text-green-400 transition-colors relative">
                     Favorites
                     <span id="favorites-count"
