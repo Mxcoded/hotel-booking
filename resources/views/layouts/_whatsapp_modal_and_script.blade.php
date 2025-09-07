@@ -226,6 +226,7 @@
         const feedbackForm = document.getElementById('feedback-form');
         const feedbackLink = document.getElementById('feedback-link');
         const mobileFeedbackLink = document.getElementById('mobile-feedback-link');
+        const welcomeFeedbackLink = document.getElementById('feedback-link-welcome'); // Get the welcome page button
         const closeFeedbackBtn = document.getElementById('close-feedback-modal-btn');
         const feedbackFormContent = document.getElementById('feedback-form-content');
         const feedbackSuccessMessage = document.getElementById('feedback-success-message');
@@ -250,9 +251,10 @@
             document.querySelectorAll('.form-error').forEach(el => el.textContent = '');
         }
 
-        feedbackLink.addEventListener('click', openFeedbackModal);
-        mobileFeedbackLink.addEventListener('click', openFeedbackModal);
-        closeFeedbackBtn.addEventListener('click', closeFeedbackModal);
+        if(feedbackLink) feedbackLink.addEventListener('click', openFeedbackModal);
+        if(mobileFeedbackLink) mobileFeedbackLink.addEventListener('click', openFeedbackModal);
+        if(welcomeFeedbackLink) welcomeFeedbackLink.addEventListener('click', openFeedbackModal); // Add listener for the welcome button
+        if(closeFeedbackBtn) closeFeedbackBtn.addEventListener('click', closeFeedbackModal);
 
         feedbackForm.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -264,7 +266,7 @@
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
             fetch('{{ route('feedback.store') }}', {
-                    method: 'POST', // <-- THIS IS THE FIX
+                    method: 'POST', 
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                         'Accept': 'application/json',
@@ -293,9 +295,5 @@
             });
         });
 
-
-        // Initial setup on page load
-        // updateFavoritesCount();
-        // updateFavoriteIcons();
     });
 </script>

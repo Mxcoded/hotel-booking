@@ -88,11 +88,23 @@
             font-family: 'FuturaLT', 'BrownSugar';
             color: #000;
         }
-        .star-rating input[type="radio"] { display: none; }
-        .star-rating label { font-size: 2.5rem; color: #d1d5db; cursor: pointer; transition: color 0.2s; }
-        .star-rating input[type="radio"]:checked ~ label,
+
+        .star-rating input[type="radio"] {
+            display: none;
+        }
+
+        .star-rating label {
+            font-size: 2.5rem;
+            color: #d1d5db;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .star-rating input[type="radio"]:checked~label,
         .star-rating label:hover,
-        .star-rating label:hover ~ label { color: #f59e0b; }
+        .star-rating label:hover~label {
+            color: #f59e0b;
+        }
     </style>
 
     @stack('styles')
@@ -110,7 +122,7 @@
             <a href="{{ route('home') }}" class="text-4xl font-bold font-brownsugar tracking-[0.2rem] leading-relaxed"
                 style="font-family: 'BrownSugar'">
                 @if (setting('logo'))
-                    <img src="{{ asset('storage/' . setting('logo')) }}" alt="Brickspoint Hotel Logo"
+                    <img src="{{ asset('storage/' . setting('logos')) }}" alt="Brickspoint Hotel Logo"
                         class="h-16 w-auto">
                 @else
                     Brickspoint <small class="font-gotham -mt-2 text-xs">Wuse II</small>
@@ -121,16 +133,20 @@
                 <a href="{{ route('home') }}" class="hover:text-green-400 transition-colors">Home</a>
                 <a href="{{ route('rooms') }}" class="hover:text-green-400 transition-colors">Rooms</a>
                 <a href="{{ route('gallery') }}" class="hover:text-green-400 transition-colors">Gallery</a>
-                 <a href="{{ route('local-guide') }}" class="hover:text-green-400 transition-colors">Explore Wuse II</a>
+                <a href="{{ route('local-guide') }}" class="hover:text-green-400 transition-colors">Explore Wuse II</a>
                 <a href="{{ route('favorites') }}" class="hover:text-green-400 transition-colors relative">
                     Favorites
                     <span id="favorites-count"
                         class="absolute -top-2 -right-4 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
                 </a>
-                <a href="#" id="feedback-link" class="hover:text-green-400 transition-colors">Feedback</a>
+
                 <a href="{{ route('home') }}#contact" class="hover:text-green-400 transition-colors">Contact</a>
                 @guest
-                    <a href="{{ route('login') }}" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-md">Login</a>
+                    <a href="#" id="feedback-link"
+                        class="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-5 py-3 rounded-md shadow-md transition duration-300">
+                        <i class="fas fa-comment-dots text-white"></i>
+                        <span class="font-medium">Leave Feedback</span>
+                    </a>
                 @endguest
             </nav>
             <!-- Mobile Menu Button -->
@@ -150,7 +166,11 @@
                 <a href="#" id="mobile-feedback-link" class="hover:text-green-400 transition-colors">Feedback</a>
                 <a href="{{ route('home') }}#contact" class="hover:text-green-400 transition-colors">Contact</a>
                 @guest
-                    <a href="{{ route('login') }}" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-md">Login</a>
+                    <a href="#" id="feedback-link"
+                        class="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-5 py-3 rounded-md shadow-md transition duration-300">
+                        <i class="fas fa-comment-dots text-white"></i>
+                        <span class="font-medium">Leave Feedback</span>
+                    </a>
                 @endguest
             </nav>
         </div>
@@ -167,7 +187,7 @@
 
         </div>
     </footer>
-    
+
     @include('layouts._whatsapp_modal_and_script')
 
 </body>
