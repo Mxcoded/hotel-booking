@@ -12,7 +12,7 @@
             'postalCode' => '900288',
             'addressCountry' => 'NG',
         ],
-        'image' => asset('storage/' . setting('logo')),
+        'image' => asset('storage/' . setting('seo_logo')),
         'telephone' => setting('phone_number', '+2348099999620'),
         'url' => route('home'),
         'priceRange' => '₦173,250.00 - ₦500,000.00',
@@ -117,7 +117,7 @@
             <a href="{{ route('home') }}" class="text-4xl font-bold font-brownsugar tracking-[0.2rem] leading-relaxed"
                 style="font-family: 'BrownSugar'">
                 @if (setting('logo'))
-                    <img src="{{ asset('storage/' . setting('logos')) }}" alt="Brickspoint Hotel Logo"
+                    <img src="{{ asset('storage/' . setting('logo')) }}" alt="Brickspoint Hotel Logo"
                         class="h-16 w-auto">
                 @else
                     Brickspoint <small class="font-gotham -mt-2 text-xs">Wuse II</small>
