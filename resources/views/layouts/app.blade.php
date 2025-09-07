@@ -18,11 +18,6 @@
         'priceRange' => '₦173,250.00 - ₦500,000.00',
     ];
 @endphp
-@php
-    $unreadContacts = \App\Models\Contact::where('is_read', false)->count();
-    $unreadFeedback = \App\Models\Feedback::where('is_read', false)->count();
-    $unreadFeedbackCount = $unreadFeedback;
-@endphp
 <!DOCTYPE html>
 <html lang="en">
 

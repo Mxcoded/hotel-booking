@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache; // Add this line
+use Illuminate\Support\Facades\Cache; 
+use App\Models\Feedback;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -14,7 +15,8 @@ class SettingController extends Controller
     public function index()
     {
         $settings = Setting::latest()->paginate(15);
-        return view('admin.settings.index', compact('settings'));
+        $unreadFeedbackCount = Feedback::where('is_read', false)->count(); //count the unread feedback
+        return view('admin.settings.index', compact('settings', 'unreadFeedbackCount'));
     }
 
     public function create()
@@ -57,12 +59,14 @@ class SettingController extends Controller
 
     public function show(Setting $setting)
     {
-        return view('admin.settings.show', compact('setting'));
+        $unreadFeedbackCount = Feedback::where('is_read', false)->count(); //count the unread feedback
+        return view('admin.settings.show', compact('setting', 'unreadFeedbackCount'));
     }
 
     public function edit(Setting $setting)
     {
-        return view('admin.settings.edit', compact('setting'));
+        $unreadFeedbackCount = Feedback::where('is_read', false)->count(); //count the unread feedback
+        return view('admin.settings.edit', compact('setting', 'unreadFeedbackCount'));
     }
 
     public function update(Request $request, Setting $setting)

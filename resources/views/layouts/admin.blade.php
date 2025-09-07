@@ -1,3 +1,8 @@
+@php
+    $unreadContacts = \App\Models\Contact::where('is_read', false)->count();
+    $unreadFeedback = \App\Models\Feedback::where('is_read', false)->count();
+    $unreadFeedbackCount = $unreadFeedback;
+@endphp
 <!DOCTYPE html>
 <html lang="en">
 
