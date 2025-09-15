@@ -38,7 +38,7 @@ class RoomController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'guests' => 'required|integer|min:1',
-            'image' => 'required|image|max:2048',
+            'image' => 'required|image|max:5120', // Max 5MB
             'features' => 'nullable|array'
         ]);
 
@@ -67,7 +67,7 @@ class RoomController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'guests' => 'required|integer|min:1',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|image|max:5120',
             'features' => 'nullable|array'
         ]);
 
@@ -101,7 +101,7 @@ class RoomController extends Controller
     public function storeMedia(Request $request, Room $room)
     {
         $request->validate([
-            'media.*' => 'required|file|mimes:jpeg,png,jpg,gif,svg,mp4,mov,ogg,qt|max:20480',
+            'media.*' => 'required|file|mimes:jpeg,png,jpg,gif,svg,mp4,mov,ogg,qt|max:5120', // Max 5MB per file
         ]);
 
         if ($request->hasFile('media')) {
