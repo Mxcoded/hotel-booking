@@ -30,7 +30,7 @@
                             <input type="email" id="feedback-email" name="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
                         </div>
                     </div>
-                    <button type="submit" id="feedback-submit-btn" class="mt-6 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center text-lg">
+                    <button type="submit" id="feedback-submit-btn" class="mt-6 w-full bg-orange-500 hover:bg-orange-900 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center text-lg">
                         Submit Feedback
                     </button>
                 </form>

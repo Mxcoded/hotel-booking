@@ -57,6 +57,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
+        :root {
+            --button-bg: #e87102;
+            --button-bg-hover: #059669;
+            --button-text: #FFFFFF;
+        }
         /* Define Custom Local Fonts */
         @font-face {
             font-family: 'BrownSugar';
@@ -130,18 +135,18 @@
                 <a href="{{ route('gallery') }}" class="hover:text-green-400 transition-colors">Gallery</a>
                 <a href="{{ route('local-guide') }}" class="hover:text-green-400 transition-colors">Explore Wuse II</a>
                 <a href="{{ route('favorites') }}" class="hover:text-green-400 transition-colors relative">
-                    Favorites
+                    My Favorites
                     <span id="favorites-count"
                         class="absolute -top-2 -right-4 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
                 </a>
 
                 <a href="{{ route('home') }}#contact" class="hover:text-green-400 transition-colors">Contact</a>
                 @guest
-                    <a href="#" id="feedback-link"
-                        class="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-5 py-3 rounded-md shadow-md transition duration-300">
+                    <button type="button" id="feedback-link"
+                        class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 rounded-md shadow-md transition duration-300">
                         <i class="fas fa-comment-dots text-white"></i>
                         <span class="font-medium">Leave Feedback</span>
-                    </a>
+                    </button>
                 @endguest
             </nav>
             <!-- Mobile Menu Button -->
@@ -157,15 +162,14 @@
                 <a href="{{ route('home') }}" class="hover:text-green-400 transition-colors">Home</a>
                 <a href="{{ route('rooms') }}" class="hover:text-green-400 transition-colors">Rooms</a>
                 <a href="{{ route('gallery') }}" class="hover:text-green-400 transition-colors">Gallery</a>
-                <a href="{{ route('favorites') }}" class="hover:text-green-400 transition-colors">Favorites</a>
-                <a href="#" id="mobile-feedback-link" class="hover:text-green-400 transition-colors">Feedback</a>
+                <a href="{{ route('favorites') }}" class="hover:text-green-400 transition-colors">My Favorites</a>
                 <a href="{{ route('home') }}#contact" class="hover:text-green-400 transition-colors">Contact</a>
                 @guest
-                    <a href="#" id="feedback-link"
-                        class="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-5 py-3 rounded-md shadow-md transition duration-300">
+                    <button type="button" id="mobile-feedback-link"
+                        class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 rounded-md shadow-md transition duration-300">
                         <i class="fas fa-comment-dots text-white"></i>
                         <span class="font-medium">Leave Feedback</span>
-                    </a>
+                    </button>
                 @endguest
             </nav>
         </div>

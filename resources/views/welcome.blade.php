@@ -186,7 +186,7 @@
                         BRICKSPOINT.</p>
 
                    <button type="button" id="feedback-link-welcome"
-                        class="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-5 py-3 rounded-md shadow-md transition duration-300">
+                         class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 rounded-md shadow-md transition duration-300">
                         <i class="fas fa-comment-dots text-white"></i>
                         <span class="font-medium">Leave Feedback</span>
                     </button>
