@@ -1,22 +1,49 @@
 @php
-    // Prepare the JSON-LD data as a PHP array
-    $structuredData = [
-        '@context' => 'https://schema.org',
-        '@type' => 'Hotel',
-        'name' => 'Brickspoint Boutique Aparthotel',
-        'address' => [
-            '@type' => 'PostalAddress',
-            'streetAddress' => '11 Adzope Crescent',
-            'addressLocality' => 'Wuse II',
-            'addressRegion' => 'Abuja',
-            'postalCode' => '900288',
-            'addressCountry' => 'NG',
+$structuredData = [
+    '@context' => 'https://schema.org',
+    '@type' => 'Hotel',
+    'name' => 'Brickspoint Boutique Aparthotel',
+    'description' => 'Luxury serviced apartments in the heart of Abuja, offering premium hospitality for business and leisure travelers.',
+    'image' => asset('storage/' . setting('seo_logo')),
+    'telephone' => setting('phone_number', '+2348099999620'),
+    'url' => route('home'),
+    'priceRange' => '₦173,250.00 - ₦500,000.00',
+    'address' => [
+        '@type' => 'PostalAddress',
+        'streetAddress' => '11 Adzope Crescent',
+        'addressLocality' => 'Wuse II',
+        'addressRegion' => 'Abuja',
+        'postalCode' => '900288',
+        'addressCountry' => [
+            '@type' => 'Country',
+            'name' => 'NG',
         ],
-        'image' => asset('storage/' . setting('seo_logo')),
-        'telephone' => setting('phone_number', '+2348099999620'),
-        'url' => route('home'),
-        'priceRange' => '₦173,250.00 - ₦500,000.00',
-    ];
+    ],
+    'geo' => [
+        '@type' => 'GeoCoordinates',
+        'latitude' => '9.072264',
+        'longitude' => '7.491302',
+    ],
+    'checkinTime' => '14:00',
+    'checkoutTime' => '12:00',
+    'amenityFeature' => [
+        ['@type' => 'LocationFeatureSpecification', 'name' => 'Free Wi-Fi', 'value' => true],
+        ['@type' => 'LocationFeatureSpecification', 'name' => '24/7 Front Desk', 'value' => true],
+        ['@type' => 'LocationFeatureSpecification', 'name' => 'Airport Shuttle', 'value' => true],
+        ['@type' => 'LocationFeatureSpecification', 'name' => 'Swimming Pool', 'value' => true],
+    ],
+    'aggregateRating' => [
+        '@type' => 'AggregateRating',
+        'ratingValue' => '4.8',
+        'reviewCount' => '132',
+    ],
+    'hasMap' => 'https://www.google.com/maps/place/11+Adzope+Crescent,+Wuse+II,+Abuja',
+    'sameAs' => [
+        'https://www.facebook.com/brickspointapartment',
+        'https://www.instagram.com/brickspapartment',
+        'https://twitter.com/bpaparthotel',
+    ],
+];
 @endphp
 <!DOCTYPE html>
 <html lang="en">
