@@ -35,7 +35,7 @@ $structuredData = [
     'aggregateRating' => [
         '@type' => 'AggregateRating',
         'ratingValue' => '4.8',
-        'reviewCount' => '132',
+        'reviewCount' => '234',
     ],
     'hasMap' => 'https://www.google.com/maps/place/11+Adzope+Crescent,+Wuse+II,+Abuja',
     'sameAs' => [
