@@ -48,7 +48,7 @@ Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.s
 
 
 // Authentication Routes (Login, Register, etc.)
-Auth::routes(['register' => false]);
+Auth::routes(['register' => true]);
 
 // Admin Panel Routes
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
