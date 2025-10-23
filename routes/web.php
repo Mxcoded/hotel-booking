@@ -43,7 +43,9 @@ Route::post('/api/get-favorite-rooms', [PageController::class, 'getFavoriteRooms
 
 // WhatsApp Lead Capture Route
 Route::post('/log-whatsapp-lead', [LeadController::class, 'store'])->name('whatsapp.lead.store');
+Route::get('/feedback', [FeedbackController::class, 'create'])->name('feedback.create');
 Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+
 
 // Authentication Routes (Login, Register, etc.)
 Auth::routes(['register' => false]);
@@ -79,6 +81,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::delete('whatsapp-leads/{whatsappLead}', [WhatsappLeadController::class, 'destroy'])->name('whatsapp-leads.destroy');
 
     // Guest Feedback
+
     Route::get('/feedback', [AdminFeedbackController::class, 'index'])->name('feedback.index');
     Route::get('/feedback/{feedback}', [AdminFeedbackController::class, 'show'])->name('feedback.show');
     Route::patch('/feedback/{feedback}/toggle-approval', [AdminFeedbackController::class, 'toggleApproval'])->name('feedback.toggleApproval');
