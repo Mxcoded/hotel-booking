@@ -30,7 +30,15 @@ $structuredData = [
         ['@type' => 'LocationFeatureSpecification', 'name' => 'Free Wi-Fi', 'value' => true],
         ['@type' => 'LocationFeatureSpecification', 'name' => '24/7 Front Desk', 'value' => true],
         ['@type' => 'LocationFeatureSpecification', 'name' => 'Airport Shuttle', 'value' => true],
-        ['@type' => 'LocationFeatureSpecification', 'name' => 'Swimming Pool', 'value' => true],
+        ['@type' => 'LocationFeatureSpecification', 'name' => 'Swimming Pool', 'value' => false],
+        // --- NEW AMENITIES FROM YOUR KEYWORD LIST ---
+        ['@type' => 'LocationFeatureSpecification', 'name' => 'Kitchenette', 'value' => true],
+        ['@type' => 'LocationFeatureSpecification', 'name' => 'Gym Access', 'value' => false],
+        ['@type' => 'LocationFeatureSpecification', 'name' => 'Med Spa', 'value' => false],
+        ['@type' => 'LocationFeatureSpecification', 'name' => 'Complimentary Breakfast', 'value' => true],
+        ['@type' => 'LocationFeatureSpecification', 'name' => 'In House Restaurant (Taste Restaurant)', 'value' => true],
+        ['@type' => 'LocationFeatureSpecification', 'name' => 'Conference Hall', 'value' => false],
+        ['@type' => 'LocationFeatureSpecification', 'name' => 'Private Balcony', 'value' => true],
     ],
     'aggregateRating' => [
         '@type' => 'AggregateRating',
@@ -53,28 +61,28 @@ $structuredData = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('storage/' . setting('favicon')) }}">
-    <!-- SEO Meta Tags -->
-    <title>@yield('title', 'Brickspoint Boutique Aparthotel - Wuse II, Abuja')</title>
+    <title>@yield('title', 'Brickspoint Boutique Aparthotel - Best Hotel in Wuse II, Abuja')</title>
+    
     <meta name="description"
-        content="Book your stay at Brickspoint Boutique Aparthotel, a luxury hotel located at 11 Adzope Crescent, Wuse II, Abuja. Enjoy premium comfort and convenience.">
+        content="Book one of the best hotels in Abuja. Brickspoint Boutique Aparthotel offers luxury serviced apartments in Wuse II with a in house Restaurant, Cafe, Lounge. Ideal for business or leisure.">
+    
     <meta name="keywords"
-        content="hotel in abuja, brickspoint, boutique hotel, aparthotel wuse 2, luxury hotel abuja, book hotel abuja">
+        content="Best hotels in Abuja, Top hotels in Abuja, BricksPoint Wuse booking, BricksPoint Boutique Aparthotel, Hotels in Wuse Abuja, ApartHotel Abuja, Serviced apartments Abuja, Luxury suites in Wuse, Conference hall rental Abuja, Hotel in Wuse, Hotels in Abuja with kitchenette,">
+    
     <link rel="canonical" href="{{ url()->current() }}" />
 
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:title" content="Brickspoint Boutique Aparthotel - Wuse II, Abuja">
     <meta property="og:description"
-        content="Luxury and comfort at 11 Adzope Crescent, Wuse II, Abuja. Book your stay directly via WhatsApp for the best experience.">
+        content="Book one of the best hotels in Abuja. Brickspoint Boutique Aparthotel offers luxury serviced apartments in Wuse II with a in house Restaurant, Cafe, Lounge. Ideal for business or leisure.">
     <meta property="og:image" content="{{ asset('storage/' . setting('favicon')) }}">
 
-    <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="{{ url()->current() }}">
     <meta property="twitter:title" content="Brickspoint Boutique Aparthotel - Wuse II, Abuja">
     <meta property="twitter:description"
-        content="Luxury and comfort at 11 Adzope Crescent, Wuse II, Abuja. Book your stay directly via WhatsApp for the best experience.">
+        content="Book one of the best hotels in Abuja. Brickspoint Boutique Aparthotel offers luxury serviced apartments in Wuse II with a in house Restaurant, Cafe, Lounge. Ideal for business or leisure.">
     <meta property="twitter:image" content="{{ asset('storage/' . setting('favicon')) }}">
 
     <!-- Tailwind CSS CDN -->
