@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\WhatsappLeadController;
+use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\FeedbackController as AdminFeedbackController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\Admin\AttractionController;
@@ -45,10 +46,11 @@ Route::post('/api/get-favorite-rooms', [PageController::class, 'getFavoriteRooms
 Route::post('/log-whatsapp-lead', [LeadController::class, 'store'])->name('whatsapp.lead.store');
 Route::get('/feedback', [FeedbackController::class, 'create'])->name('feedback.create');
 Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+Route::get('/menu', [PageController::class, 'menu'])->name('menu');
 
 
 // Authentication Routes (Login, Register, etc.)
-Auth::routes(['register' => false]);
+Auth::routes(['register' => true]);
 
 // Admin Panel Routes
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
@@ -79,6 +81,11 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     // WhatsApp Leads Management
     Route::get('whatsapp-leads', [WhatsappLeadController::class, 'index'])->name('whatsapp-leads.index');
     Route::delete('whatsapp-leads/{whatsappLead}', [WhatsappLeadController::class, 'destroy'])->name('whatsapp-leads.destroy');
+
+    // Food Menu Management
+    Route::get('menu', [MenuController::class, 'index'])->name('menu.index');
+    Route::post('menu', [MenuController::class, 'store'])->name('menu.store');
+    Route::delete('menu', [MenuController::class, 'destroy'])->name('menu.destroy');
 
     // Guest Feedback
 

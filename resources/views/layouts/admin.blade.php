@@ -61,6 +61,10 @@
                     class="flex items-center p-4 rounded hover:bg-gray-700 transition-colors">
                     <i class="fab fa-whatsapp mr-3"></i> WhatsApp Leads
                 </a>
+                <a href="{{ route('admin.menu.index') }}"
+                    class="flex items-center p-4 rounded hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-utensils mr-3"></i> Food Menu
+                </a>
                 <div class="p-4 rounded hover:bg-gray-700 transition-colors">
                     <a href="{{ route('admin.settings.index') }}" class="flex items-center">
                         <i class="fas fa-cog mr-3"></i> Site Settings
