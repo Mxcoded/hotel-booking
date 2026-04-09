@@ -174,7 +174,7 @@ $structuredData = [
                     <span id="favorites-count"
                         class="absolute -top-2 -right-4 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
                 </a>
-
+                <a href="{{ route('menu') }}" class="hover:text-green-400 transition-colors">Menu</a>
                 <a href="{{ route('home') }}#contact" class="hover:text-green-400 transition-colors">Contact</a>
                 @guest
                     <button type="button" id="feedback-link"
@@ -198,6 +198,7 @@ $structuredData = [
                 <a href="{{ route('rooms') }}" class="hover:text-green-400 transition-colors">Rooms</a>
                 <a href="{{ route('gallery') }}" class="hover:text-green-400 transition-colors">Gallery</a>
                 <a href="{{ route('favorites') }}" class="hover:text-green-400 transition-colors">My Favorites</a>
+                <a href="{{ route('menu') }}" class="hover:text-green-400 transition-colors">Menu</a>
                 <a href="{{ route('home') }}#contact" class="hover:text-green-400 transition-colors">Contact</a>
                 @guest
                     <button type="button" id="mobile-feedback-link"

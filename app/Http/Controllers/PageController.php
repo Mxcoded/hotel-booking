@@ -116,4 +116,13 @@ class PageController extends Controller
         $categories = $attractions->pluck('category')->unique();
         return view('local-guide', compact('attractions', 'categories'));
     }
+
+    /**
+     * Display the public food menu page.
+     */
+    public function menu()
+    {
+        $menuPdf = setting('food_menu_pdf');
+        return view('menu', compact('menuPdf'));
+    }
 }
