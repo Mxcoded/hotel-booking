@@ -153,59 +153,84 @@ $structuredData = [
 <body class="bg-gray-50 text-gray-800">
 
     <header class="bg-gray-900/80 backdrop-blur text-white sticky top-0 z-40">
-        <div class="container mx-auto flex justify-between items-center p-4">
-            <a href="{{ route('home') }}" class="text-4xl font-bold font-brownsugar tracking-[0.2rem] leading-relaxed"
+        <div class="container mx-auto flex justify-between items-center px-4 py-2 md:py-3">
+            <a href="{{ route('home') }}" class="flex items-center text-xl md:text-3xl font-bold tracking-[0.15rem] md:tracking-[0.2rem]"
                 style="font-family: 'BrownSugar'">
                 @if (setting('logo'))
-                    <img src="{{ asset('storage/' . setting('logo')) }}" alt="Brickspoint Hotel Logo"
-                        class="h-16 w-auto">
+                <img src="{{ asset('storage/' . setting('logo')) }}" alt="Brickspoint Hotel Logo"
+                        class="h-8 md:h-12 lg:h-16 w-auto max-w-[130px] md:max-w-xs object-contain">
                 @else
-                    Brickspoint <small class="font-gotham -mt-2 text-xs">Wuse II</small>
+                    Brickspoint <small class="font-gotham text-xs ml-1">Wuse II</small>
                 @endif
             </a>
             <!-- Desktop Menu -->
-            <nav class="hidden md:flex items-center space-x-6 text-xl">
-                <a href="{{ route('home') }}" class="hover:text-green-400 transition-colors">Home</a>
-                <a href="{{ route('rooms') }}" class="hover:text-green-400 transition-colors">Rooms</a>
-                <a href="{{ route('gallery') }}" class="hover:text-green-400 transition-colors">Gallery</a>
-                <a href="{{ route('local-guide') }}" class="hover:text-green-400 transition-colors">Explore Wuse II</a>
-                <a href="{{ route('favorites') }}" class="hover:text-green-400 transition-colors relative">
-                    My Favorites
+            <nav class="hidden md:flex items-center space-x-3 lg:space-x-6 text-sm lg:text-base xl:text-xl">
+                <a href="{{ route('home') }}" class="hover:text-green-400 transition-colors whitespace-nowrap">Home</a>
+                <a href="{{ route('rooms') }}" class="hover:text-green-400 transition-colors whitespace-nowrap">Rooms</a>
+                <a href="{{ route('gallery') }}" class="hover:text-green-400 transition-colors whitespace-nowrap">Gallery</a>
+                <a href="{{ route('local-guide') }}" class="hover:text-green-400 transition-colors whitespace-nowrap">Explore Wuse II</a>
+                <a href="{{ route('favorites') }}" class="hover:text-green-400 transition-colors relative whitespace-nowrap">
+                    Favorites
                     <span id="favorites-count"
                         class="absolute -top-2 -right-4 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
                 </a>
-                <a href="{{ route('menu') }}" class="hover:text-green-400 transition-colors">Menu</a>
-                <a href="{{ route('home') }}#contact" class="hover:text-green-400 transition-colors">Contact</a>
+                <a href="{{ route('menu') }}" class="hover:text-green-400 transition-colors whitespace-nowrap">Menu</a>
+                <a href="{{ route('home') }}#contact" class="hover:text-green-400 transition-colors whitespace-nowrap">Contact</a>
                 @guest
                     <button type="button" id="feedback-link"
-                        class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 rounded-md shadow-md transition duration-300">
+                        class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-3 lg:px-5 py-2 lg:py-3 rounded-md shadow-md transition duration-300 whitespace-nowrap">
                         <i class="fas fa-comment-dots text-white"></i>
-                        <span class="font-medium">Leave Feedback</span>
+                        <span class="font-medium hidden lg:inline">Leave Feedback</span>
+                        <span class="font-medium lg:hidden">Feedback</span>
                     </button>
                 @endguest
             </nav>
             <!-- Mobile Menu Button -->
             <div class="md:hidden">
-                <button id="mobile-menu-button">
+                <button id="mobile-menu-button" class="p-2 text-white" aria-label="Open navigation menu">
                     <i class="fas fa-bars text-2xl"></i>
                 </button>
             </div>
         </div>
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-gray-800">
-            <nav class="flex flex-col items-center space-y-4 py-4">
-                <a href="{{ route('home') }}" class="hover:text-green-400 transition-colors">Home</a>
-                <a href="{{ route('rooms') }}" class="hover:text-green-400 transition-colors">Rooms</a>
-                <a href="{{ route('gallery') }}" class="hover:text-green-400 transition-colors">Gallery</a>
-                <a href="{{ route('favorites') }}" class="hover:text-green-400 transition-colors">My Favorites</a>
-                <a href="{{ route('menu') }}" class="hover:text-green-400 transition-colors">Menu</a>
-                <a href="{{ route('home') }}#contact" class="hover:text-green-400 transition-colors">Contact</a>
+        <div id="mobile-menu" class="hidden md:hidden bg-gray-900 border-t border-gray-700">
+            {{-- Menu header with close button --}}
+            <div class="flex justify-between items-center px-5 py-3 border-b border-gray-800">
+                <span class="text-gray-400 text-xs font-semibold uppercase tracking-widest">Navigation</span>
+                <button id="mobile-menu-close" aria-label="Close menu" class="text-gray-400 hover:text-white p-1 -mr-1">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <nav class="flex flex-col py-1">
+                <a href="{{ route('home') }}" class="px-5 py-3.5 text-white hover:bg-gray-800 hover:text-green-400 transition-colors text-base border-b border-gray-800/50">
+                    <i class="fas fa-home w-5 mr-2 text-gray-500"></i>Home
+                </a>
+                <a href="{{ route('rooms') }}" class="px-5 py-3.5 text-white hover:bg-gray-800 hover:text-green-400 transition-colors text-base border-b border-gray-800/50">
+                    <i class="fas fa-bed w-5 mr-2 text-gray-500"></i>Rooms
+                </a>
+                <a href="{{ route('gallery') }}" class="px-5 py-3.5 text-white hover:bg-gray-800 hover:text-green-400 transition-colors text-base border-b border-gray-800/50">
+                    <i class="fas fa-images w-5 mr-2 text-gray-500"></i>Gallery
+                </a>
+                <a href="{{ route('local-guide') }}" class="px-5 py-3.5 text-white hover:bg-gray-800 hover:text-green-400 transition-colors text-base border-b border-gray-800/50">
+                    <i class="fas fa-map-marker-alt w-5 mr-2 text-gray-500"></i>Explore Wuse II
+                </a>
+                <a href="{{ route('favorites') }}" class="px-5 py-3.5 text-white hover:bg-gray-800 hover:text-green-400 transition-colors text-base border-b border-gray-800/50">
+                    <i class="fas fa-heart w-5 mr-2 text-gray-500"></i>My Favorites
+                </a>
+                <a href="{{ route('menu') }}" class="px-5 py-3.5 text-white hover:bg-gray-800 hover:text-green-400 transition-colors text-base border-b border-gray-800/50">
+                    <i class="fas fa-utensils w-5 mr-2 text-gray-500"></i>Food Menu
+                </a>
+                <a href="{{ route('home') }}#contact" class="px-5 py-3.5 text-white hover:bg-gray-800 hover:text-green-400 transition-colors text-base">
+                    <i class="fas fa-envelope w-5 mr-2 text-gray-500"></i>Contact
+                </a>
                 @guest
+                <div class="px-5 py-4 border-t border-gray-800 mt-1">
                     <button type="button" id="mobile-feedback-link"
-                        class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 rounded-md shadow-md transition duration-300">
-                        <i class="fas fa-comment-dots text-white"></i>
+                        class="w-full inline-flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 rounded-md shadow-md transition duration-300">
+                        <i class="fas fa-comment-dots"></i>
                         <span class="font-medium">Leave Feedback</span>
                     </button>
+                </div>
                 @endguest
             </nav>
         </div>
@@ -224,6 +249,21 @@ $structuredData = [
     </footer>
 
     @include('layouts._whatsapp_modal_and_script')
+
+    <script>
+    // Mobile nav: close on X button or any link tap
+    (function () {
+        const menu     = document.getElementById('mobile-menu');
+        const closeBtn = document.getElementById('mobile-menu-close');
+        if (!menu) return;
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => menu.classList.add('hidden'));
+        }
+        menu.querySelectorAll('a').forEach(function (link) {
+            link.addEventListener('click', () => menu.classList.add('hidden'));
+        });
+    })();
+    </script>
 
 </body>
 

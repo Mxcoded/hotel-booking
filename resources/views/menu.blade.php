@@ -63,42 +63,31 @@
 @section('content')
 
 {{-- Page Header --}}
-<div class="bg-stone-900 py-12 px-6 text-center">
+<div class="bg-stone-900 py-8 md:py-12 px-4 text-center">
     <p class="text-xs font-semibold uppercase tracking-widest text-orange-400 mb-2">Brickspoint Restaurant</p>
-    <h1 class="text-4xl font-bold tracking-tight text-white">Our Food Menu</h1>
-    <p class="mt-3 max-w-lg mx-auto text-stone-400 text-base">
+    <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-white">Our Food Menu</h1>
+    <p class="mt-2 max-w-lg mx-auto text-stone-400 text-sm md:text-base">
         Explore our freshly prepared selection of dishes and beverages.
     </p>
 </div>
 
 {{-- Book Viewer --}}
-<section id="book-section" class="py-10 min-h-screen">
-    <div class="px-2 md:px-6">
+<section id="book-section" class="py-6 md:py-10 min-h-screen">
+    <div class="w-full">
 
         @if($menuPdf)
 
             {{-- Loading State --}}
-            <div id="loading-state" class="flex flex-col items-center justify-center py-28 text-stone-400">
+            <div id="loading-state" class="flex flex-col items-center justify-center py-24 text-stone-400">
                 <i class="fas fa-book-open text-5xl text-orange-500 mb-5 loading-pulse"></i>
-                <p class="text-lg tracking-wide">Opening your menu&hellip;</p>
+                <p class="text-base tracking-wide">Opening your menu&hellip;</p>
             </div>
 
             {{-- Book Wrapper (shown after load) --}}
-            <div id="book-wrapper" class="hidden">
+            <div id="book-wrapper" class="hidden flex flex-col items-center gap-0">
 
-                {{-- Page counter --}}
-                <p class="text-center text-stone-400 text-sm mb-5 tracking-wide" id="page-label">&nbsp;</p>
-
-                {{-- Navigation + Book --}}
-                <div class="flex items-center justify-center gap-2 md:gap-5">
-
-                    {{-- Prev --}}
-                    <button id="prev-btn" disabled aria-label="Previous pages"
-                        class="nav-btn shrink-0 w-11 h-11 md:w-13 md:h-13 rounded-full bg-orange-700/80 text-white flex items-center justify-center shadow-xl text-base md:text-lg">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-
-                    {{-- Book --}}
+                {{-- Book (full-width on mobile, centred on desktop) --}}
+                <div class="flex justify-center w-full px-2 md:px-6">
                     <div id="book-container" class="flex items-stretch overflow-hidden rounded-sm">
 
                         {{-- Left page --}}
@@ -115,37 +104,52 @@
                         </div>
 
                     </div>
-
-                    {{-- Next --}}
-                    <button id="next-btn" disabled aria-label="Next pages"
-                        class="nav-btn shrink-0 w-11 h-11 md:w-13 md:h-13 rounded-full bg-orange-700/80 text-white flex items-center justify-center shadow-xl text-base md:text-lg">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-
                 </div>
 
+                {{-- Navigation Bar (below book on all screens) --}}
+                <div class="flex items-center justify-between w-full max-w-sm md:max-w-lg px-4 mt-5 gap-3">
+                    <button id="prev-btn" disabled aria-label="Previous page"
+                        class="nav-btn flex items-center gap-2 bg-orange-700/80 hover:bg-orange-600 text-white rounded-full py-3 px-5 shadow-lg text-sm font-medium min-w-[90px] justify-center">
+                        <i class="fas fa-chevron-left text-xs"></i>
+                        <span>Prev</span>
+                    </button>
+
+                    <p id="page-label" class="text-stone-400 text-xs text-center leading-snug flex-1">&nbsp;</p>
+
+                    <button id="next-btn" disabled aria-label="Next page"
+                        class="nav-btn flex items-center gap-2 bg-orange-700/80 hover:bg-orange-600 text-white rounded-full py-3 px-5 shadow-lg text-sm font-medium min-w-[90px] justify-center">
+                        <span>Next</span>
+                        <i class="fas fa-chevron-right text-xs"></i>
+                    </button>
+                </div>
+
+                {{-- Swipe hint (mobile only) --}}
+                <p class="md:hidden text-center mt-2 text-stone-600 text-xs">
+                    <i class="fas fa-hand-pointer mr-1"></i> Swipe left or right to turn pages
+                </p>
+
                 {{-- Zoom Controls --}}
-                <div class="flex items-center justify-center gap-3 mt-6">
+                <div class="flex items-center justify-center gap-3 mt-5 px-4">
                     <button id="zoom-out-btn" aria-label="Zoom out"
-                        class="zoom-btn w-8 h-8 rounded-full bg-stone-700 hover:bg-stone-600 text-stone-300 flex items-center justify-center text-sm">
+                        class="zoom-btn w-11 h-11 rounded-full bg-stone-700 hover:bg-stone-600 text-stone-300 flex items-center justify-center text-base">
                         <i class="fas fa-minus"></i>
                     </button>
-                    <div class="flex items-center gap-2 bg-stone-800/70 border border-stone-700 rounded-full px-3 py-1">
+                    <div class="flex items-center gap-2 bg-stone-800/70 border border-stone-700 rounded-full px-4 py-2">
                         <i class="fas fa-magnifying-glass text-stone-500 text-xs"></i>
                         <span id="zoom-label" class="text-stone-300 text-sm font-mono w-10 text-center">100%</span>
                     </div>
                     <button id="zoom-in-btn" aria-label="Zoom in"
-                        class="zoom-btn w-8 h-8 rounded-full bg-stone-700 hover:bg-stone-600 text-stone-300 flex items-center justify-center text-sm">
+                        class="zoom-btn w-11 h-11 rounded-full bg-stone-700 hover:bg-stone-600 text-stone-300 flex items-center justify-center text-base">
                         <i class="fas fa-plus"></i>
                     </button>
                     <button id="zoom-reset-btn" aria-label="Reset zoom"
-                        class="text-stone-600 hover:text-stone-300 text-xs transition-colors ml-1 underline underline-offset-2">
+                        class="text-stone-500 hover:text-stone-300 text-xs transition-colors ml-1 underline underline-offset-2 py-2 px-1">
                         Reset
                     </button>
                 </div>
 
-                {{-- Keyboard hint --}}
-                <p class="text-center mt-4 text-stone-600 text-xs">
+                {{-- Keyboard hint (desktop only) --}}
+                <p class="hidden md:block text-center mt-4 text-stone-600 text-xs">
                     <i class="fas fa-keyboard mr-1"></i>
                     <kbd class="bg-stone-800 text-stone-300 border border-stone-700 px-1.5 py-0.5 rounded text-xs">&larr;</kbd>
                     <kbd class="bg-stone-800 text-stone-300 border border-stone-700 px-1.5 py-0.5 rounded text-xs">&rarr;</kbd>
@@ -217,27 +221,37 @@
 
     // ── Render helpers ────────────────────────────────────────────────────────
     function pageWidthPx() {
-        // Available horizontal space minus nav buttons (≈120px each side) and padding
-        const maxW  = Math.min(window.innerWidth - 180, 1100);
-        // On desktop split between two pages; on mobile full width
-        return isDesktop() ? Math.floor((maxW - 20) / 2) : Math.min(maxW, window.innerWidth - 48);
+        const vw = window.innerWidth;
+        if (isDesktop()) {
+            // Two-page spread: up to 90 vw, capped at 1100 px total; half per page
+            return Math.floor(Math.min(vw * 0.90, 1100) / 2);
+        }
+        // Single page: full viewport width minus 16 px total padding (8 px each side)
+        return vw - 16;
     }
 
     async function renderPage(pageNum, canvas) {
         if (pageNum < 1 || pageNum > totalPages) return;
 
-        const page   = await pdfDoc.getPage(pageNum);
-        const vp0    = page.getViewport({ scale: 1 });
-        const maxH   = window.innerHeight * 0.82;
+        const page = await pdfDoc.getPage(pageNum);
+        const vp0  = page.getViewport({ scale: 1 });
+        const maxH = window.innerHeight * 0.82;
+        // Device pixel ratio: S21 ≈ 2.625 — multiply render scale so text stays crisp
+        const dpr  = window.devicePixelRatio || 1;
 
-        // Base scale: fit to width, clamp to 82 vh (at zoom = 1), then apply zoom multiplier
+        // Base scale: fit to logical width, clamp to 82 vh (at zoom = 1)
         let baseScale = pageWidthPx() / vp0.width;
         if (vp0.height * baseScale > maxH) baseScale = maxH / vp0.height;
-        const scale = baseScale * zoomScale;
+        const logicalScale = baseScale * zoomScale;
 
-        const vp = page.getViewport({ scale });
+        // Render at physical pixels (dpr × logical scale) for a sharp result
+        const vp = page.getViewport({ scale: logicalScale * dpr });
         canvas.width  = vp.width;
         canvas.height = vp.height;
+
+        // Keep the CSS display size at the logical dimensions
+        canvas.style.width  = Math.floor(vp0.width  * logicalScale) + 'px';
+        canvas.style.height = Math.floor(vp0.height * logicalScale) + 'px';
 
         await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
     }
