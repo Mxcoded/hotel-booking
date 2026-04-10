@@ -176,6 +176,7 @@
                             </div>
                             <p class="text-gray-600 italic mb-4">"{{ $testimonial->message }}"</p>
                             <p class="font-bold text-right text-gray-800">- {{ $testimonial->name ?? 'Anonymous' }}</p>
+                            <p class="text-sm text-gray-500">{{ $testimonial->created_at->diffForHumans() }}</p>
                         </div>
                     @endforeach
                 </div>

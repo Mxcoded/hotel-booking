@@ -28,7 +28,7 @@ class PageController extends Controller
         $testimonials = Feedback::where('is_approved', true)
             ->where('rating', '>=', 4)
             ->latest()
-            ->take(3)
+            ->take(6)
             ->get();
 
 
