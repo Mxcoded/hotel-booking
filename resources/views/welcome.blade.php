@@ -108,7 +108,7 @@
                 </div>
                 <div class="text-center mt-12">
                     <a href="{{ route('rooms') }}"
-                        class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-lg transition duration-300">View
+                        class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-lg transition duration-300">View
                         All Rooms</a>
                 </div>
             @else
@@ -125,28 +125,28 @@
             <h2 class="text-4xl font-bold mb-12">Why Stay With Us?</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
                 <div class="flex flex-col items-center">
-                    <div class="bg-green-500 text-white rounded-full p-4 mb-4">
+                    <div class="bg-amber-500 text-white rounded-full p-4 mb-4">
                         <i class="fas fa-concierge-bell text-3xl"></i>
                     </div>
                     <h3 class="text-xl font-bold">24/7 Concierge</h3>
                     <p class="text-gray-600">Always here to help you.</p>
                 </div>
                 <div class="flex flex-col items-center">
-                    <div class="bg-green-500 text-white rounded-full p-4 mb-4">
+                    <div class="bg-amber-500 text-white rounded-full p-4 mb-4">
                         <i class="fas fa-map-marker-alt text-3xl"></i>
                     </div>
                     <h3 class="text-xl font-bold">Prime Location</h3>
                     <p class="text-gray-600">In the heart of the city.</p>
                 </div>
                 <div class="flex flex-col items-center">
-                    <div class="bg-green-500 text-white rounded-full p-4 mb-4">
+                    <div class="bg-amber-500 text-white rounded-full p-4 mb-4">
                         <i class="fas fa-utensils text-3xl"></i>
                     </div>
                     <h3 class="text-xl font-bold">Free Breakfast</h3>
                     <p class="text-gray-600">Start your day right.<small>T&c apply</small></p>
                 </div>
                 <div class="flex flex-col items-center">
-                    <div class="bg-green-500 text-white rounded-full p-4 mb-4">
+                    <div class="bg-amber-500 text-white rounded-full p-4 mb-4">
                         <i class="fas fa-plane-arrival text-3xl"></i>
                     </div>
                     <h3 class="text-xl font-bold">Airport Pickup</h3>
@@ -164,7 +164,7 @@
             @if ($testimonials->count() > 0)
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     @foreach ($testimonials as $testimonial)
-                        <div class="bg-green-50 p-6 rounded-lg shadow-md">
+                        <div class="bg-amber-50 p-6 rounded-lg shadow-md">
                             <div class="flex items-center mb-4">
                                 @for ($i = 0; $i < 5; $i++)
                                     @if ($i < $testimonial->rating)
@@ -181,8 +181,8 @@
                     @endforeach
                 </div>
             @else
-                <div class="text-center mt-8 bg-green-100 border border-green-300 rounded-lg p-6 shadow-md">
-                    <h3 class="text-2xl font-semibold text-green-800 mb-2">Your voice matters!</h3>
+                <div class="text-center mt-8 bg-amber-50 border border-amber-200 rounded-lg p-6 shadow-md">
+                    <h3 class="text-2xl font-semibold text-amber-800 mb-2">Your voice matters!</h3>
                     <p class="text-gray-700 mb-4">Be the first to share your experience and inspire others to visit
                         BRICKSPOINT.</p>
 

@@ -3,7 +3,7 @@
 @section('content')
 <div class="flex justify-between items-center mb-6">
     <h1 class="text-3xl font-bold">Manage Local Attractions</h1>
-    <a href="{{ route('admin.attractions.create') }}" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg">Add New Attraction</a>
+    <a href="{{ route('admin.attractions.create') }}" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded-lg">Add New Attraction</a>
 </div>
 
 @if (session('success'))

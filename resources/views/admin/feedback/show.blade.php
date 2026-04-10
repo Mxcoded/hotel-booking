@@ -40,7 +40,7 @@
         <form action="{{ route('admin.feedback.toggleApproval', $feedback) }}" method="POST">
             @csrf
             @method('PATCH')
-            <button type="submit" class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white {{ $feedback->is_approved ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-green-600 hover:bg-green-700' }}">
+            <button type="submit" class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white {{ $feedback->is_approved ? 'bg-gray-600 hover:bg-gray-700' : 'bg-amber-600 hover:bg-amber-700' }}">
                 {{ $feedback->is_approved ? 'Unapprove' : 'Approve for Testimonials' }}
             </button>
         </form>

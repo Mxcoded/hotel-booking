@@ -34,7 +34,7 @@
                         <img src="{{ asset('storage/' . $attraction->image) }}" alt="{{ $attraction->name }}" class="w-full h-56 object-cover">
                         <div class="p-6">
                             <h3 class="text-2xl font-bold mb-2">{{ $attraction->name }}</h3>
-                            <span class="inline-block bg-green-200 text-green-800 text-xs px-2 rounded-full uppercase font-semibold tracking-wide">{{ $attraction->category }}</span>
+                            <span class="inline-block bg-amber-200 text-amber-800 text-xs px-2 rounded-full uppercase font-semibold tracking-wide">{{ $attraction->category }}</span>
                             <p class="text-gray-600 mt-4">{{ $attraction->description }}</p>
                         </div>
                     </div>
@@ -51,7 +51,7 @@
     transition: all 0.2s ease-in-out;
 }
 .filter-btn.active, .filter-btn:hover {
-    background-color: #10b981;
+    background-color: #D97706;
     color: white;
 }
 </style>

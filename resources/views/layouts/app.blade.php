@@ -94,7 +94,7 @@ $structuredData = [
     <style>
         :root {
             --button-bg: #e87102;
-            --button-bg-hover: #059669;
+            --button-bg-hover: #D97706;
             --button-text: #FFFFFF;
         }
         /* Define Custom Local Fonts */
@@ -165,17 +165,17 @@ $structuredData = [
             </a>
             <!-- Desktop Menu -->
             <nav class="hidden md:flex items-center space-x-3 lg:space-x-6 text-sm lg:text-base xl:text-xl">
-                <a href="{{ route('home') }}" class="hover:text-green-400 transition-colors whitespace-nowrap">Home</a>
-                <a href="{{ route('rooms') }}" class="hover:text-green-400 transition-colors whitespace-nowrap">Rooms</a>
-                <a href="{{ route('gallery') }}" class="hover:text-green-400 transition-colors whitespace-nowrap">Gallery</a>
-                <a href="{{ route('local-guide') }}" class="hover:text-green-400 transition-colors whitespace-nowrap">Explore Wuse II</a>
-                <a href="{{ route('favorites') }}" class="hover:text-green-400 transition-colors relative whitespace-nowrap">
+                <a href="{{ route('home') }}" class="hover:text-amber-400 transition-colors whitespace-nowrap">Home</a>
+                <a href="{{ route('rooms') }}" class="hover:text-amber-400 transition-colors whitespace-nowrap">Rooms</a>
+                <a href="{{ route('gallery') }}" class="hover:text-amber-400 transition-colors whitespace-nowrap">Gallery</a>
+                <a href="{{ route('local-guide') }}" class="hover:text-amber-400 transition-colors whitespace-nowrap">Explore Wuse II</a>
+                <a href="{{ route('favorites') }}" class="hover:text-amber-400 transition-colors relative whitespace-nowrap">
                     Favorites
                     <span id="favorites-count"
                         class="absolute -top-2 -right-4 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
                 </a>
-                <a href="{{ route('menu') }}" class="hover:text-green-400 transition-colors whitespace-nowrap">Menu</a>
-                <a href="{{ route('home') }}#contact" class="hover:text-green-400 transition-colors whitespace-nowrap">Contact</a>
+                <a href="{{ route('menu') }}" class="hover:text-amber-400 transition-colors whitespace-nowrap">Menu</a>
+                <a href="{{ route('home') }}#contact" class="hover:text-amber-400 transition-colors whitespace-nowrap">Contact</a>
                 @guest
                     <button type="button" id="feedback-link"
                         class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-3 lg:px-5 py-2 lg:py-3 rounded-md shadow-md transition duration-300 whitespace-nowrap">
@@ -202,25 +202,25 @@ $structuredData = [
                 </button>
             </div>
             <nav class="flex flex-col py-1">
-                <a href="{{ route('home') }}" class="px-5 py-3.5 text-white hover:bg-gray-800 hover:text-green-400 transition-colors text-base border-b border-gray-800/50">
+                <a href="{{ route('home') }}" class="px-5 py-3.5 text-white hover:bg-gray-800 hover:text-amber-400 transition-colors text-base border-b border-gray-800/50">
                     <i class="fas fa-home w-5 mr-2 text-gray-500"></i>Home
                 </a>
-                <a href="{{ route('rooms') }}" class="px-5 py-3.5 text-white hover:bg-gray-800 hover:text-green-400 transition-colors text-base border-b border-gray-800/50">
+                <a href="{{ route('rooms') }}" class="px-5 py-3.5 text-white hover:bg-gray-800 hover:text-amber-400 transition-colors text-base border-b border-gray-800/50">
                     <i class="fas fa-bed w-5 mr-2 text-gray-500"></i>Rooms
                 </a>
-                <a href="{{ route('gallery') }}" class="px-5 py-3.5 text-white hover:bg-gray-800 hover:text-green-400 transition-colors text-base border-b border-gray-800/50">
+                <a href="{{ route('gallery') }}" class="px-5 py-3.5 text-white hover:bg-gray-800 hover:text-amber-400 transition-colors text-base border-b border-gray-800/50">
                     <i class="fas fa-images w-5 mr-2 text-gray-500"></i>Gallery
                 </a>
-                <a href="{{ route('local-guide') }}" class="px-5 py-3.5 text-white hover:bg-gray-800 hover:text-green-400 transition-colors text-base border-b border-gray-800/50">
+                <a href="{{ route('local-guide') }}" class="px-5 py-3.5 text-white hover:bg-gray-800 hover:text-amber-400 transition-colors text-base border-b border-gray-800/50">
                     <i class="fas fa-map-marker-alt w-5 mr-2 text-gray-500"></i>Explore Wuse II
                 </a>
-                <a href="{{ route('favorites') }}" class="px-5 py-3.5 text-white hover:bg-gray-800 hover:text-green-400 transition-colors text-base border-b border-gray-800/50">
+                <a href="{{ route('favorites') }}" class="px-5 py-3.5 text-white hover:bg-gray-800 hover:text-amber-400 transition-colors text-base border-b border-gray-800/50">
                     <i class="fas fa-heart w-5 mr-2 text-gray-500"></i>My Favorites
                 </a>
-                <a href="{{ route('menu') }}" class="px-5 py-3.5 text-white hover:bg-gray-800 hover:text-green-400 transition-colors text-base border-b border-gray-800/50">
+                <a href="{{ route('menu') }}" class="px-5 py-3.5 text-white hover:bg-gray-800 hover:text-amber-400 transition-colors text-base border-b border-gray-800/50">
                     <i class="fas fa-utensils w-5 mr-2 text-gray-500"></i>Food Menu
                 </a>
-                <a href="{{ route('home') }}#contact" class="px-5 py-3.5 text-white hover:bg-gray-800 hover:text-green-400 transition-colors text-base">
+                <a href="{{ route('home') }}#contact" class="px-5 py-3.5 text-white hover:bg-gray-800 hover:text-amber-400 transition-colors text-base">
                     <i class="fas fa-envelope w-5 mr-2 text-gray-500"></i>Contact
                 </a>
                 @guest

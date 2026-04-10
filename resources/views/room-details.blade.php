@@ -21,12 +21,12 @@
                 <!-- Thumbnails -->
                 <div class="grid grid-cols-4 sm:grid-cols-5 gap-2">
                     <!-- Main Room Image Thumbnail -->
-                    <div class="cursor-pointer border-2 border-green-500 rounded p-1 thumbnail-item">
+                    <div class="cursor-pointer border-2 border-amber-500 rounded p-1 thumbnail-item">
                         <img src="{{ asset('storage/' . $room->image) }}" alt="Main image thumbnail" class="w-full h-20 object-cover rounded" data-type="image" data-src="{{ asset('storage/' . $room->image) }}">
                     </div>
 
                     @foreach($room->media as $media)
-                        <div class="relative group cursor-pointer border-2 border-transparent hover:border-green-500 rounded p-1 thumbnail-item">
+                        <div class="relative group cursor-pointer border-2 border-transparent hover:border-amber-500 rounded p-1 thumbnail-item">
                              @if ($media->type === 'image')
                                 <img src="{{ asset('storage/' . $media->file_path) }}" alt="Room media thumbnail" class="w-full h-20 object-cover rounded" data-type="image" data-src="{{ asset('storage/' . $media->file_path) }}">
                             @else
@@ -69,13 +69,13 @@
                         @if(is_array($room->features))
                             @foreach($room->features as $feature)
                                 <div class="flex items-center">
-                                    <i class="fas {{ $feature['icon'] }} text-green-500 mr-3"></i>
+                                    <i class="fas {{ $feature['icon'] }} text-amber-500 mr-3"></i>
                                     <span>{{ $feature['name'] }}</span>
                                 </div>
                             @endforeach
                         @endif
                         <div class="flex items-center">
-                            <i class="fas fa-users text-green-500 mr-3"></i>
+                            <i class="fas fa-users text-amber-500 mr-3"></i>
                             <span>Up to {{ $room->guests }} Guest(s)</span>
                         </div>
                     </div>
@@ -102,9 +102,9 @@
                 }
 
                 // Remove active border from all thumbnails
-                thumbnails.forEach(thumb => thumb.classList.remove('border-green-500'));
+                thumbnails.forEach(thumb => thumb.classList.remove('border-amber-500'));
                 // Add active border to clicked thumbnail
-                this.classList.add('border-green-500');
+                this.classList.add('border-amber-500');
 
                 const mediaElement = this.querySelector('[data-type]');
                 const type = mediaElement.getAttribute('data-type');

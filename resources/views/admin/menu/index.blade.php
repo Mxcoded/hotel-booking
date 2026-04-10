@@ -70,7 +70,7 @@
                     <a
                         href="{{ asset('storage/' . $menuSetting->value) }}"
                         download
-                        class="inline-flex items-center gap-2 bg-green-100 hover:bg-green-200 text-green-800 font-semibold py-2 px-4 rounded-lg transition-colors">
+                        class="inline-flex items-center gap-2 bg-amber-100 hover:bg-amber-200 text-amber-800 font-semibold py-2 px-4 rounded-lg transition-colors">
                         <i class="fas fa-download"></i> Download
                     </a>
                     <form action="{{ route('admin.menu.destroy') }}" method="POST" onsubmit="return confirm('Are you sure you want to remove the current food menu?');">

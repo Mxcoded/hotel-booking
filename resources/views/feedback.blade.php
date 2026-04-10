@@ -9,7 +9,7 @@
             {{-- This block handles the success message for non-JS users --}}
             @if (session('success'))
                 <div class="text-center">
-                    <div class="text-green-500 mb-4">
+                    <div class="text-amber-500 mb-4">
                         <i class="fas fa-check-circle fa-4x"></i>
                     </div>
                     <h3 class="text-2xl font-bold">Thank You!</h3>

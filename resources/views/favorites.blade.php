@@ -27,7 +27,7 @@
             <i class="fas fa-heart-broken text-5xl text-gray-400 mb-4"></i>
             <h2 class="text-2xl font-bold mb-2">You haven't saved any rooms yet.</h2>
             <p class="mb-6">Click the heart icon on any room to add it to your favorites.</p>
-            <a href="{{ route('rooms') }}" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-lg transition duration-300">Explore Rooms</a>
+            <a href="{{ route('rooms') }}" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-lg transition duration-300">Explore Rooms</a>
         </div>
 
         <div id="loading-spinner" class="text-center text-gray-500">
