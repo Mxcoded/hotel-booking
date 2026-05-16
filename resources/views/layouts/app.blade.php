@@ -176,6 +176,45 @@ $structuredData = [
                 </a>
                 <a href="{{ route('menu') }}" class="hover:text-amber-400 transition-colors whitespace-nowrap">Menu</a>
                 <a href="{{ route('home') }}#contact" class="hover:text-amber-400 transition-colors whitespace-nowrap">Contact</a>
+
+                {{-- Our Hotel dropdown --}}
+                <div class="relative group">
+                    <button class="flex items-center gap-1 hover:text-amber-400 transition-colors whitespace-nowrap py-1">
+                        Our Hotel
+                        <i class="fas fa-chevron-down text-xs transition-transform duration-200 group-hover:rotate-180"></i>
+                    </button>
+                    {{-- Dropdown panel --}}
+                    <div class="absolute right-0 top-full pt-2 w-60 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                        <div class="bg-gray-900 border border-gray-700 rounded-xl shadow-2xl overflow-hidden">
+                            <div class="px-4 py-2 border-b border-gray-800">
+                                <span class="text-xs font-semibold uppercase tracking-widest text-gray-500">Our Branches</span>
+                            </div>
+                            {{-- Wuse II (current) --}}
+                            <a href="{{ route('home') }}"
+                               class="flex items-center gap-3 px-4 py-3 hover:bg-gray-800 hover:text-amber-400 transition-colors group/item border-b border-gray-800/60">
+                                <div class="shrink-0 w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center">
+                                    <i class="fas fa-location-dot text-amber-400 text-xs"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-sm font-semibold text-white group-hover/item:text-amber-400 transition-colors">Brickspoint Wuse II</div>
+                                    <div class="text-xs text-gray-400">Abuja &mdash; <span class="text-amber-500">Current</span></div>
+                                </div>
+                            </a>
+                            {{-- Asokoro branch --}}
+                            <a href="https://brickspoint.com" target="_blank" rel="noopener noreferrer"
+                               class="flex items-center gap-3 px-4 py-3 hover:bg-gray-800 hover:text-amber-400 transition-colors group/item">
+                                <div class="shrink-0 w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
+                                    <i class="fas fa-location-dot text-gray-400 text-xs"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="text-sm font-semibold text-white group-hover/item:text-amber-400 transition-colors">Brickspoint Asokoro</div>
+                                    <div class="text-xs text-gray-400">Abuja &bull; brickspoint.com <i class="fas fa-arrow-up-right-from-square text-[10px] ml-0.5"></i></div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
                 @guest
                     <button type="button" id="feedback-link"
                         class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-3 lg:px-5 py-2 lg:py-3 rounded-md shadow-md transition duration-300 whitespace-nowrap">
@@ -220,9 +259,37 @@ $structuredData = [
                 <a href="{{ route('menu') }}" class="px-5 py-3.5 text-white hover:bg-gray-800 hover:text-amber-400 transition-colors text-base border-b border-gray-800/50">
                     <i class="fas fa-utensils w-5 mr-2 text-gray-500"></i>Food Menu
                 </a>
-                <a href="{{ route('home') }}#contact" class="px-5 py-3.5 text-white hover:bg-gray-800 hover:text-amber-400 transition-colors text-base">
+                <a href="{{ route('home') }}#contact" class="px-5 py-3.5 text-white hover:bg-gray-800 hover:text-amber-400 transition-colors text-base border-b border-gray-800/50">
                     <i class="fas fa-envelope w-5 mr-2 text-gray-500"></i>Contact
                 </a>
+
+                {{-- Our Hotel accordion --}}
+                <div class="border-b border-gray-800/50">
+                    <button id="mobile-hotel-toggle"
+                        class="w-full flex items-center justify-between px-5 py-3.5 text-white hover:bg-gray-800 hover:text-amber-400 transition-colors text-base">
+                        <span><i class="fas fa-hotel w-5 mr-2 text-gray-500"></i>Our Hotel</span>
+                        <i class="fas fa-chevron-down text-xs text-gray-500 transition-transform duration-200" id="mobile-hotel-chevron"></i>
+                    </button>
+                    <div id="mobile-hotel-dropdown" class="hidden">
+                        <a href="{{ route('home') }}"
+                           class="flex items-center gap-3 pl-10 pr-5 py-3 text-gray-300 hover:bg-gray-800 hover:text-amber-400 transition-colors text-sm border-t border-gray-800/40">
+                            <i class="fas fa-location-dot text-amber-500 text-xs w-4"></i>
+                            <div>
+                                <div class="font-medium">Brickspoint Wuse II</div>
+                                <div class="text-xs text-gray-500">Abuja &mdash; <span class="text-amber-500">Current</span></div>
+                            </div>
+                        </a>
+                        <a href="https://brickspoint.com" target="_blank" rel="noopener noreferrer"
+                           class="flex items-center gap-3 pl-10 pr-5 py-3 text-gray-300 hover:bg-gray-800 hover:text-amber-400 transition-colors text-sm border-t border-gray-800/40">
+                            <i class="fas fa-location-dot text-gray-500 text-xs w-4"></i>
+                            <div>
+                                <div class="font-medium">Brickspoint Asokoro</div>
+                                <div class="text-xs text-gray-500">Abuja &bull; brickspoint.com <i class="fas fa-arrow-up-right-from-square text-[10px]"></i></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
                 @guest
                 <div class="px-5 py-4 border-t border-gray-800 mt-1">
                     <button type="button" id="mobile-feedback-link"
@@ -251,8 +318,8 @@ $structuredData = [
     @include('layouts._whatsapp_modal_and_script')
 
     <script>
-    // Mobile nav: close on X button or any link tap
     (function () {
+        // Mobile nav: close on X button or any link tap
         const menu     = document.getElementById('mobile-menu');
         const closeBtn = document.getElementById('mobile-menu-close');
         if (!menu) return;
@@ -262,6 +329,18 @@ $structuredData = [
         menu.querySelectorAll('a').forEach(function (link) {
             link.addEventListener('click', () => menu.classList.add('hidden'));
         });
+
+        // "Our Hotel" mobile accordion
+        const hotelToggle   = document.getElementById('mobile-hotel-toggle');
+        const hotelDropdown = document.getElementById('mobile-hotel-dropdown');
+        const hotelChevron  = document.getElementById('mobile-hotel-chevron');
+        if (hotelToggle && hotelDropdown) {
+            hotelToggle.addEventListener('click', function () {
+                const isOpen = !hotelDropdown.classList.contains('hidden');
+                hotelDropdown.classList.toggle('hidden', isOpen);
+                if (hotelChevron) hotelChevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+            });
+        }
     })();
     </script>
 
