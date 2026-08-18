@@ -223,6 +223,7 @@
 
                 <form action="{{ route('contact.store') }}" method="POST" class="space-y-4">
                     @csrf
+                    <input type="hidden" name="honeypot" value="" tabindex="-1" autocomplete="off">
                     <div>
                         <label for="name" class="block mb-1 font-medium">Full Name</label>
                         <input type="text" id="name" name="name"

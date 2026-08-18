@@ -49,6 +49,7 @@ class FeedbackController extends Controller
             'email' => 'nullable|email|max:255',
             'rating' => 'required|integer|min:1|max:5',
             'message' => 'required|string',
+            'honeypot' => 'nullable|string|size:0',
         ]);
 
         Feedback::create($validated);

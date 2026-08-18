@@ -8,6 +8,7 @@
         <p class="text-center text-gray-600 mb-6">Just enter your details below and we'll redirect you instantly.
         </p>
         <form id="whatsapp-lead-form">
+            <input type="hidden" name="honeypot" value="" tabindex="-1" autocomplete="off">
             <div class="mb-4">
                 <label for="lead-name" class="block text-sm font-medium text-gray-700">Name</label>
                 <input type="text" id="lead-name" name="name" required
@@ -67,7 +68,8 @@
                 const formData = new FormData(this);
                 const leadData = {
                     name: formData.get('name'),
-                    phone: formData.get('phone')
+                    phone: formData.get('phone'),
+                    honeypot: formData.get('honeypot')
                 };
                 fetch("{{ route('whatsapp.lead.store') }}", {
                         method: 'POST',
@@ -263,6 +265,10 @@
             submitBtn.innerHTML = 'Submitting...';
 
             const formData = new FormData(this);
+            // Add honeypot if not already in form
+            if (!formData.has('honeypot')) {
+                formData.append('honeypot', '');
+            }
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
             fetch('{{ route('feedback.store') }}', {

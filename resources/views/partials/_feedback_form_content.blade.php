@@ -3,6 +3,7 @@
     <p class="text-center text-gray-700 mb-6">We'd love to hear about your experience!</p>
     <form id="feedback-form" action="{{ route('feedback.store') }}" method="POST">
         @csrf
+        <input type="hidden" name="honeypot" value="" tabindex="-1" autocomplete="off">
         <div class="mb-4 star-rating flex items-center justify-center flex-row-reverse">
             <input type="radio" id="star5" name="rating" value="5" required/><label for="star5" title="5 stars">&#9733;</label>
             <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 stars">&#9733;</label>

@@ -12,6 +12,7 @@ class LeadController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
+            'honeypot' => 'nullable|string|size:0',
         ]);
 
         // Check if a lead with this phone number already exists.
