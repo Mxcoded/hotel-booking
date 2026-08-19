@@ -4,19 +4,33 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Setting extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'key',
+        'type',
+        'group',
+        'label',
+        'description',
+        'sort',
+        'is_active',
+        'options',
         'value',
-        'type', // Add the new type field
     ];
+
+    protected $casts = [
+        'options' => 'array',
+        'is_active' => 'boolean',
+        'sort' => 'integer',
+    ];
+
+    protected static function booted(): void
+    {
+        static::saved(fn () => Cache::forget('settings'));
+        static::deleted(fn () => Cache::forget('settings'));
+    }
 }

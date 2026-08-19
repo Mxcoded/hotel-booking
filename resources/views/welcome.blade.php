@@ -70,34 +70,34 @@
             <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">Discover our curated selection of rooms, each
                 designed for ultimate comfort and relaxation.</p>
 
-            @if ($featuredRooms->count() > 0)
+            @if ($featuredRoomTypes->count() > 0)
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     @php
                         $usd_rate = (float) setting('usd_exchange_rate', 0); // Get the rate from settings
                     @endphp
 
-                    @foreach ($featuredRooms as $room)
+                    @foreach ($featuredRoomTypes as $roomType)
                         <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden group relative">
                             <!-- Favorite Button -->
-                            <button onclick="toggleFavorite({{ $room->id }})"
+                            <button onclick="toggleFavorite('roomtype-{{ $roomType->id }}')"
                                 class="favorite-btn absolute top-4 right-4 bg-white/80 rounded-full p-2 z-10 transition-transform duration-200 hover:scale-110"
-                                data-room-id="{{ $room->id }}">
+                                data-room-id="roomtype-{{ $roomType->id }}">
                                 <i class="far fa-heart text-gray-700 text-xl"></i>
                             </button>
-                            <a href="{{ route('rooms.show', $room) }}">
-                                <img src="{{ asset('storage/' . $room->image) }}" alt="{{ $room->name }}"
+                            <a href="{{ route('rooms.show', $roomType) }}">
+                                <img src="{{ asset('storage/' . $roomType->image) }}" alt="{{ $roomType->name }}"
                                     class="w-full h-64 object-cover">
                             </a>
                             <div class="p-6">
-                                <h3 class="text-2xl font-bold mb-2">{{ $room->name }}</h3>
+                                <h3 class="text-2xl font-bold mb-2">{{ $roomType->name }}</h3>
                                 <div class="text-gray-600 mb-4">
-                                    <p class="font-bold text-xl text-gray-900">From ₦{{ number_format($room->price, 2) }} /
+                                    <p class="font-bold text-xl text-gray-900">From ₦{{ number_format($roomType->price, 2) }} /
                                         night</p>
                                     @if ($usd_rate > 0)
-                                        <p class="text-sm">Approx. ${{ number_format($room->price / $usd_rate, 2) }}</p>
+                                        <p class="text-sm">Approx. ${{ number_format($roomType->price / $usd_rate, 2) }}</p>
                                     @endif
                                 </div>
-                                <a href="https://wa.me/{{ setting('whatsapp_number', '+2348099999620') }}?text=Hi,%20I'm%20interested%20in%20the%20{{ urlencode($room->name) }}."
+                                <a href="https://wa.me/{{ setting('whatsapp_number', '+2348099999620') }}?text=Hi,%20I'm%20interested%20in%20the%20{{ urlencode($roomType->name) }}."
                                     target="_blank"
                                     class="whatsapp-link bg-gray-800 hover:bg-black text-white font-semibold py-2 px-4 rounded-lg w-full flex items-center justify-center">
                                     <i class="fab fa-whatsapp mr-2"></i> Reserve via WhatsApp

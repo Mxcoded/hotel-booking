@@ -8,16 +8,8 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\LeadController;
 
 // Admin Panel Controllers
-use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\RoomController;
-use App\Http\Controllers\Admin\GalleryController;
-use App\Http\Controllers\Admin\SettingController;
-use App\Http\Controllers\Admin\ContactController;
-use App\Http\Controllers\Admin\WhatsappLeadController;
 use App\Http\Controllers\Admin\MenuController;
-use App\Http\Controllers\FeedbackController as AdminFeedbackController;
 use App\Http\Controllers\FeedbackController;
-use App\Http\Controllers\Admin\AttractionController;
 
 // Auth Controllers
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -116,44 +108,12 @@ Route::middleware('auth')->group(function () {
 });
 
 // Admin Panel Routes
-Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
-    // Dashboard
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Dashboard redirect to Filament
+    Route::get('/dashboard', fn () => redirect()->route('filament.admin.pages.dashboard'))->name('dashboard');
 
-    // Room Management (with media routes)
-    Route::post('rooms/{room}/media', [RoomController::class, 'storeMedia'])->name('rooms.media.store');
-    Route::delete('rooms/media/{media}', [RoomController::class, 'destroyMedia'])->name('rooms.media.destroy');
-    Route::resource('rooms', RoomController::class);
-
-    // Gallery Management
-    Route::get('gallery', [GalleryController::class, 'index'])->name('gallery.index');
-    Route::post('gallery', [GalleryController::class, 'store'])->name('gallery.store');
-    Route::delete('gallery/{gallery}', [GalleryController::class, 'destroy'])->name('gallery.destroy');
-
-    // Settings Management
-    Route::resource('settings', SettingController::class);
-    Route::resource('attractions', AttractionController::class)->except('show');
-
-
-    // Contact Messages Management
-    Route::get('contacts', [ContactController::class, 'index'])->name('contacts.index');
-    Route::get('contacts/{contact}', [ContactController::class, 'show'])->name('contacts.show');
-    Route::put('contacts/{contact}', [ContactController::class, 'update'])->name('contacts.update');
-    Route::delete('contacts/{contact}', [ContactController::class, 'destroy'])->name('contacts.destroy');
-
-    // WhatsApp Leads Management
-    Route::get('whatsapp-leads', [WhatsappLeadController::class, 'index'])->name('whatsapp-leads.index');
-    Route::delete('whatsapp-leads/{whatsappLead}', [WhatsappLeadController::class, 'destroy'])->name('whatsapp-leads.destroy');
-
-    // Food Menu Management
+    // Food Menu Management (no Filament resource yet)
     Route::get('menu', [MenuController::class, 'index'])->name('menu.index');
     Route::post('menu', [MenuController::class, 'store'])->name('menu.store');
     Route::delete('menu', [MenuController::class, 'destroy'])->name('menu.destroy');
-
-    // Guest Feedback
-
-    Route::get('/feedback', [AdminFeedbackController::class, 'index'])->name('feedback.index');
-    Route::get('/feedback/{feedback}', [AdminFeedbackController::class, 'show'])->name('feedback.show');
-    Route::patch('/feedback/{feedback}/toggle-approval', [AdminFeedbackController::class, 'toggleApproval'])->name('feedback.toggleApproval');
-    Route::delete('/feedback/{feedback}', [AdminFeedbackController::class, 'destroy'])->name('feedback.destroy');
 });

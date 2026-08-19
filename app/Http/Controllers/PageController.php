@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\Gallery;
-use App\Models\Room;
+use App\Models\RoomType;
+use App\Models\RoomUnit;
 use App\Models\Setting;
 use App\Models\Contact;
 use App\Models\Feedback;
@@ -18,8 +19,8 @@ class PageController extends Controller
      */
     public function home()
     {
-        // Fetch featured rooms (e.g., the first 3)
-        $featuredRooms = Room::take(3)->get();
+        // Fetch featured room types (e.g., the first 3)
+        $featuredRoomTypes = RoomType::featured()->ordered()->take(3)->get();
 
         // Fetch hero settings from the database
         $heroSetting = Setting::where('key', 'hero_media')->first();
@@ -39,7 +40,7 @@ class PageController extends Controller
         ];
 
         return view('welcome', [
-            'featuredRooms' => $featuredRooms,
+            'featuredRoomTypes' => $featuredRoomTypes,
             'heroSetting' => $heroSetting,
             'address' => $contactDetails['address'],
             'email' => $contactDetails['email'],
@@ -53,16 +54,19 @@ class PageController extends Controller
      */
     public function rooms()
     {
-        // Fetch all rooms from the database
-        $rooms = Room::all();
-        return view('rooms', compact('rooms'));
+        // Fetch all active room types with their available units
+        $roomTypes = RoomType::active()->ordered()->with(['units' => fn ($q) => $q->active()->available()])->get();
+        return view('rooms', compact('roomTypes'));
     }
-    public function showRoom(Room $room)
+
+    public function showRoom(RoomType $roomType)
     {
-        // Eager load the media files for the room
-        $room->load('media');
-        return view('room-details', compact('room'));
+        // Load active units for this room type
+        $roomType->load(['units' => fn ($q) => $q->active()->available()]);
+        $roomType->load('media');
+        return view('room-details', compact('roomType'));
     }
+
     /**
      * Display the gallery page.
      */
@@ -92,25 +96,27 @@ class PageController extends Controller
         // Redirect back to the contact section with a success message
         return redirect('/#contact')->with('success', 'Thank you for your message! We will get back to you shortly.');
     }
+
     // New method for the favorites page view
     public function favorites()
     {
         return view('favorites');
     }
 
-    // New method to fetch room data for the favorites page via AJAX
+    // New method to fetch room type data for the favorites page via AJAX
     public function getFavoriteRooms(Request $request)
     {
-        $roomIds = $request->input('ids', []);
+        $roomTypeIds = $request->input('ids', []);
 
-        if (empty($roomIds)) {
+        if (empty($roomTypeIds)) {
             return response()->json([]);
         }
 
-        $rooms = Room::whereIn('id', $roomIds)->get();
+        $roomTypes = RoomType::whereIn('id', $roomTypeIds)->get();
 
-        return response()->json($rooms);
+        return response()->json($roomTypes);
     }
+
     public function localGuide()
     {
         $attractions = Attraction::latest()->get();

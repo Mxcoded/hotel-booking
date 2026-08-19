@@ -1,76 +1,85 @@
 @extends('layouts.guest')
 
-@push('styles')
-<style>
-    .login-card { animation: slideUp 0.5s ease-out; }
-    @keyframes slideUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    .brand-gradient { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
-    .brand-gradient:hover { background: linear-gradient(135deg, #d97706 0%, #b45309 100%); }
-</style>
-@endpush
-
 @section('body')
-<div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:py-20 px-4 sm:px-6 lg:px-8">
-    <div class="sm:mx-auto sm:w-full sm:max-w-md">
-        <div class="text-center mb-8">
-            <a href="{{ route('home') }}" class="inline-block" aria-label="Brickspoint Hotel Home">
-                @if (setting('logo'))
-                    <img src="{{ asset('storage/' . setting('logo')) }}" alt="Brickspoint Hotel Logo" class="h-16 w-auto mx-auto">
-                @else
-                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full brand-gradient mx-auto mb-3">
-                        <span class="text-3xl font-bold text-white">B</span>
-                    </div>
-                    <h2 class="text-2xl font-bold text-gray-900">Brickspoint</h2>
-                    <p class="text-gray-600 tracking-widest uppercase text-sm">Admin Portal</p>
-                @endif
-            </a>
+<div class="auth-split">
+    {{-- Left: Brand Showcase --}}
+    <aside class="auth-showcase">
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-sm mb-6">
+                <span class="text-4xl font-bold text-white tracking-tight">B</span>
+            </div>
+            <h1 class="text-3xl font-bold text-white mb-2">Brickspoint Hotel</h1>
+            <p class="text-white/80 text-sm tracking-widest uppercase">Admin Portal</p>
         </div>
 
-        <div class="bg-white py-8 px-6 shadow-lg rounded-2xl sm:px-10 login-card">
-            <h1 class="text-center text-2xl font-bold text-gray-900 mb-2">{{ __('Verify Email Address') }}</h1>
+        <div class="max-w-sm text-center">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/15 mb-5">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            </div>
+            <h3 class="text-white font-semibold text-lg mb-2">Verify Your Email</h3>
+            <p class="text-white/70 text-sm leading-relaxed">We've sent a verification link to your email address. Click the link to activate your admin account.</p>
+        </div>
 
-            <x-auth-session-status class="mb-6" :status="session('status')" />
+        <div class="mt-10 pt-6 border-t border-white/20 w-full max-w-sm">
+            <p class="text-white/50 text-xs text-center">© {{ date('Y') }} Brickspoint Hotel. All rights reserved.</p>
+        </div>
+    </aside>
 
-            <p class="text-center text-gray-600 mb-8 text-sm leading-relaxed">
-                {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you?') }}
+    {{-- Right: Form --}}
+    <main class="auth-form-panel">
+        <div class="auth-card w-full">
+            {{-- Logo on mobile --}}
+            <div class="lg:hidden text-center mb-8">
+                <a href="{{ route('home') }}" class="inline-block">
+                    <div class="inline-flex items-center justify-center w-14 h-14 rounded-xl auth-btn-primary mb-3">
+                        <span class="text-2xl font-bold text-white">B</span>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-900">Brickspoint</h2>
+                    <p class="text-gray-500 text-xs tracking-widest uppercase">Admin Portal</p>
+                </a>
+            </div>
+
+            <h1 class="text-2xl font-bold text-gray-900 mb-1">Verify your email</h1>
+            <p class="text-gray-500 text-sm mb-7">
+                Thanks for registering! Before getting started, please verify your email address by clicking the link we sent.
             </p>
 
-            <div class="mb-6">
-                <form method="POST" action="{{ route('verification.send') }}">
-                    @csrf
-                    <button
-                        type="submit"
-                        class="w-full brand-gradient text-white font-semibold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-all duration-200 flex items-center justify-center gap-2"
-                    >
-                        {{ __('Resend Verification Email') }}
-                    </button>
-                </form>
-            </div>
+            {{-- Session Status --}}
+            @if (session('status'))
+                <div class="auth-success">{{ session('status') }}</div>
+            @endif
+
+            <form method="POST" action="{{ route('verification.send') }}" id="verify-form">
+                @csrf
+                <button type="submit" class="auth-btn auth-btn-primary" id="verify-btn">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    <span>Resend verification email</span>
+                </button>
+            </form>
 
             <div class="mt-4 text-center">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button
-                        type="submit"
-                        class="text-sm text-gray-500 hover:text-gray-700 font-medium transition-colors"
-                    >
-                        {{ __('Log out') }}
+                    <button type="submit" class="text-sm text-gray-500 hover:text-gray-700 font-medium transition-colors">
+                        Log out
                     </button>
                 </form>
             </div>
 
-            <div class="mt-4 text-center">
-                <a href="{{ route('home') }}" class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 transition-colors">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                    </svg>
-                    {{ __('Back to website') }}
-                </a>
-            </div>
+            <p class="text-center text-xs text-gray-400 mt-6">
+                <a href="{{ route('home') }}" class="hover:text-gray-600 transition-colors">← Back to website</a>
+            </p>
         </div>
-    </div>
+    </main>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.getElementById('verify-form')?.addEventListener('submit', function() {
+    const btn = document.getElementById('verify-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg><span>Sending…</span>';
+});
+</script>
+@endpush

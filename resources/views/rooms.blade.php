@@ -10,57 +10,71 @@
     </div>
     <div class="relative mx-auto max-w-7xl text-center">
         <h1 class="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">Our Rooms & Suites</h1>
-        <p class="mt-6 max-w-3xl mx-auto text-xl text-indigo-100">Find the perfect space for your stay. Each room is designed with your comfort in mind.</p>
+        <p class="mt-6 max-w-3xl mx-auto text-xl text-indigo-100">Find the perfect space for your stay. Each room type offers multiple units designed with your comfort in mind.</p>
     </div>
 </div>
 
 {{-- Rooms Listing Section --}}
 <div class="bg-white">
     <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-        <h2 class="sr-only">Our Rooms</h2>
+        <h2 class="sr-only">Our Room Types</h2>
 
-        @if($rooms->count() > 0)
+        @if($roomTypes->count() > 0)
             <div class="grid grid-cols-1 gap-y-10 gap-x-6 lg:grid-cols-2 xl:gap-x-8">
                 @php
                     $usd_rate = (float) setting('usd_exchange_rate', 0);
                 @endphp
 
-                @foreach($rooms as $room)
+                @foreach($roomTypes as $roomType)
+                    @php
+                        $availableUnits = $roomType->activeUnits()->count();
+                        $basePrice = $roomType->price;
+                    @endphp
                     <div class="group relative rounded-lg border border-gray-200 p-4 sm:p-6 flex flex-col">
                         <!-- Favorite Button -->
-                        <button onclick="toggleFavorite({{ $room->id }})" class="favorite-btn absolute top-6 right-6 bg-white/80 rounded-full p-2 z-10 transition-transform duration-200 hover:scale-110" data-room-id="{{ $room->id }}">
+                        <button onclick="toggleFavorite('roomtype-{{ $roomType->id }}')" class="favorite-btn absolute top-6 right-6 bg-white/80 rounded-full p-2 z-10 transition-transform duration-200 hover:scale-110" data-room-id="roomtype-{{ $roomType->id }}">
                             <i class="far fa-heart text-gray-700 text-xl"></i>
                         </button>
                         <div class="aspect-w-3 aspect-h-2 overflow-hidden rounded-lg bg-gray-200 group-hover:opacity-75">
-                            <a href="{{ route('rooms.show', $room) }}">
-                                <img src="{{ asset('storage/' . $room->image) }}" alt="{{ $room->name }}" class="h-full w-full object-cover object-center">
+                            <a href="{{ route('rooms.show', $roomType) }}">
+                                @if($roomType->image)
+                                    <img src="{{ asset('storage/' . $roomType->image) }}" alt="{{ $roomType->name }}" class="h-full w-full object-cover object-center">
+                                @else
+                                    <img src="https://placehold.co/800x533/333333/FFFFFF?text={{ urlencode($roomType->name) }}" alt="{{ $roomType->name }}" class="h-full w-full object-cover object-center">
+                                @endif
                             </a>
                         </div>
                         <div class="pt-6 pb-4 text-center flex-grow flex flex-col justify-between">
                             <div>
                                 <h3 class="text-2xl font-bold text-gray-900">
-                                    <a href="{{ route('rooms.show', $room) }}">
-                                        {{ $room->name }}
+                                    <a href="{{ route('rooms.show', $roomType) }}">
+                                        {{ $roomType->name }}
                                     </a>
                                 </h3>
-                                <p class="mt-2 text-base text-gray-600">{{ $room->description }}</p>
+                                <p class="mt-2 text-base text-gray-600">{{ $roomType->description }}</p>
                                 <div class="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm text-gray-500">
-                                    @if(isset($room->features) && is_array($room->features))
-                                        @foreach($room->features as $feature)
+                                    @if(isset($roomType->features) && is_array($roomType->features))
+                                        @foreach($roomType->features as $feature)
                                             <span><i class="fas {{ $feature['icon'] }} mr-1"></i> {{ $feature['name'] }}</span>
                                         @endforeach
                                     @endif
-                                    <span><i class="fas fa-users mr-1"></i> {{ $room->guests }} Guest(s)</span>
+                                    <span><i class="fas fa-users mr-1"></i> {{ $roomType->base_guests }} Guest(s)</span>
+                                    @if($roomType->max_guests && $roomType->max_guests > $roomType->base_guests)
+                                        <span class="text-amber-600"><i class="fas fa-user-plus mr-1"></i> Up to {{ $roomType->max_guests }}</span>
+                                    @endif
+                                    @if($availableUnits > 1)
+                                        <span class="text-green-600"><i class="fas fa-door-open mr-1"></i> {{ $availableUnits }} Units</span>
+                                    @endif
                                 </div>
                             </div>
                             <div class="flex flex-col items-center mt-4">
                                 <div class="text-gray-600 mb-4">
-                                    <p class="font-bold text-xl text-gray-900">From ₦{{ number_format($room->price, 2) }} / night</p>
+                                    <p class="font-bold text-xl text-gray-900">From ₦{{ number_format($basePrice, 2) }} / night</p>
                                     @if($usd_rate > 0)
-                                        <p class="text-sm">Approx. ${{ number_format($room->price / $usd_rate, 2) }}</p>
+                                        <p class="text-sm">Approx. ${{ number_format($basePrice / $usd_rate, 2) }}</p>
                                     @endif
                                 </div>
-                                <a href="https://wa.me/{{ setting('whatsapp_number', '+2348099999620') }}?text=Hi,%20I'm%20interested%20in%20booking%20the%20{{ urlencode($room->name) }}." target="_blank" class="whatsapp-link mt-auto w-full max-w-xs bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 inline-flex items-center justify-center">
+                                <a href="https://wa.me/{{ setting('whatsapp_number', '+2348099999620') }}?text=Hi,%20I'm%20interested%20in%20booking%20the%20{{ urlencode($roomType->name) }}." target="_blank" class="whatsapp-link mt-auto w-full max-w-xs bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 inline-flex items-center justify-center">
                                     <i class="fab fa-whatsapp mr-2"></i> Reserve via WhatsApp
                                 </a>
                             </div>
