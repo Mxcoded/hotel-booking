@@ -3,7 +3,6 @@
 namespace Tests\Browser;
 
 use Tests\Browser\DuskTestCase;
-use App\Models\User;
 use App\Models\Contact;
 use App\Models\Feedback;
 use App\Models\WhatsappLead;
@@ -17,74 +16,53 @@ class AdminCommunicationsTest extends DuskTestCase
         $this->seed();
     }
 
-    protected function loginAsAdmin($browser): void
+    public function test_contacts_index_lists_messages(): void
     {
-        $user = User::first();
+        Contact::create([
+            'name' => 'Ada Obi',
+            'email' => 'ada@example.com',
+            'message' => 'Do you have airport pickup?',
+        ]);
 
-        $browser->visit('/login')
-            ->type('email', $user->email)
-            ->type('password', 'password')
-            ->press('Log in')
-            ->waitForReload();
-    }
-
-    public function test_contacts_index_page_loads(): void
-    {
         $this->browse(function ($browser) {
             $this->loginAsAdmin($browser);
+
             $browser->visit('/admin/contacts')
-                ->assertSee('Contact');
+                ->assertSee('Ada Obi');
         });
     }
 
-    public function test_contacts_displays_messages(): void
+    public function test_whatsapp_leads_index_lists_leads(): void
     {
-        Contact::factory()->count(3)->create();
+        WhatsappLead::create([
+            'name' => 'Walk-in guest',
+            'phone' => '+2348012345678',
+            'ip_address' => '203.0.113.9',
+        ]);
 
         $this->browse(function ($browser) {
             $this->loginAsAdmin($browser);
-            $browser->visit('/admin/contacts')
-                ->assertSee('Contact');
-        });
-    }
 
-    public function test_feedback_index_page_loads(): void
-    {
-        $this->browse(function ($browser) {
-            $this->loginAsAdmin($browser);
-            $browser->visit('/admin/feedback')
-                ->assertSee('Feedback');
-        });
-    }
-
-    public function test_feedback_displays_entries(): void
-    {
-        Feedback::factory()->count(5)->create();
-
-        $this->browse(function ($browser) {
-            $this->loginAsAdmin($browser);
-            $browser->visit('/admin/feedback')
-                ->assertSee('Feedback');
-        });
-    }
-
-    public function test_whatsapp_leads_page_loads(): void
-    {
-        $this->browse(function ($browser) {
-            $this->loginAsAdmin($browser);
             $browser->visit('/admin/whatsapp-leads')
-                ->assertSee('WhatsApp');
+                ->assertSee('+2348012345678');
         });
     }
 
-    public function test_whatsapp_leads_displays_entries(): void
+    public function test_feedback_index_lists_submissions(): void
     {
-        WhatsappLead::factory()->count(3)->create();
+        Feedback::create([
+            'name' => 'Musa Idris',
+            'email' => 'musa@example.com',
+            'rating' => 5,
+            'message' => 'Excellent service throughout our stay.',
+            'is_approved' => false,
+        ]);
 
         $this->browse(function ($browser) {
             $this->loginAsAdmin($browser);
-            $browser->visit('/admin/whatsapp-leads')
-                ->assertSee('WhatsApp');
+
+            $browser->visit('/admin/feedback')
+                ->assertSee('Excellent service throughout our stay.');
         });
     }
 }

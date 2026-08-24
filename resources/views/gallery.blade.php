@@ -21,7 +21,7 @@
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 @foreach($galleryImages as $image)
                     <div class="overflow-hidden rounded-lg shadow-lg">
-                        <img class="h-auto w-full max-w-full transform transition-transform duration-300 hover:scale-105" src="{{ asset('storage/' . $image->path) }}" alt="{{ $image->alt_text }}">
+                        <img class="h-auto w-full max-w-full transform transition-transform duration-300 hover:scale-105" src="{{ thumbnail_url($image->path, 'card') }}" alt="{{ $image->alt_text }}">
                     </div>
                 @endforeach
             </div>

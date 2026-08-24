@@ -3,7 +3,7 @@
 namespace Tests\Browser;
 
 use Tests\Browser\DuskTestCase;
-use App\Models\Room;
+use App\Models\RoomType;
 use App\Models\RoomMedia;
 
 class RoomsPageTest extends DuskTestCase
@@ -19,54 +19,48 @@ class RoomsPageTest extends DuskTestCase
     {
         $this->browse(function ($browser) {
             $browser->visit('/rooms')
-                ->assertSee('Rooms');
+                ->assertSee('Standard King Room')
+                ->assertSee('Deluxe');
         });
     }
 
-    public function test_rooms_page_displays_rooms(): void
+    public function test_room_cards_link_to_detail_page(): void
     {
-        Room::factory()->count(5)->create();
+        $room = RoomType::where('slug', 'standard-king-room')->first();
 
-        $this->browse(function ($browser) {
+        $this->browse(function ($browser) use ($room) {
             $browser->visit('/rooms')
-                ->waitFor('.room-card', 5)
-                ->assertSee('₦');
+                ->clickLink($room->name)
+                ->assertPathIs('/rooms/' . $room->id)
+                ->assertSee($room->name);
         });
     }
 
     public function test_room_detail_page_loads(): void
     {
-        $room = Room::factory()->create();
+        $room = RoomType::where('slug', 'standard-king-room')->first();
 
         $this->browse(function ($browser) use ($room) {
-            $browser->visit("/rooms/{$room->id}")
+            $browser->visit('/rooms/' . $room->id)
                 ->assertSee($room->name)
-                ->assertSee($room->description)
-                ->assertSee('₦' . number_format($room->price));
+                ->assertSee('King Bed')
+                ->assertSee('Guest(s)');
         });
     }
 
     public function test_room_detail_page_shows_media(): void
     {
-        $room = Room::factory()->create();
-        RoomMedia::factory()->create([
-            'room_id' => $room->id,
+        $room = RoomType::where('slug', 'standard-king-room')->first();
+
+        RoomMedia::create([
+            'room_type_id' => $room->id,
+            'file_path' => 'room-media/seeded-detail.jpg',
             'type' => 'image',
         ]);
 
         $this->browse(function ($browser) use ($room) {
-            $browser->visit("/rooms/{$room->id}")
-                ->assertSee($room->name);
-        });
-    }
-
-    public function test_room_detail_page_has_back_button(): void
-    {
-        $room = Room::factory()->create();
-
-        $this->browse(function ($browser) use ($room) {
-            $browser->visit("/rooms/{$room->id}")
-                ->assertSeeLink('Back');
+            $browser->visit('/rooms/' . $room->id)
+                ->assertSourceHas('room-media/seeded-detail.jpg');
         });
     }
 }

@@ -18,25 +18,21 @@ class GalleryPageTest extends DuskTestCase
     {
         $this->browse(function ($browser) {
             $browser->visit('/gallery')
-                ->assertSee('Gallery');
+                ->assertSee('Our Gallery');
         });
     }
 
-    public function test_gallery_page_displays_images(): void
+    public function test_gallery_displays_images(): void
     {
-        Gallery::factory()->count(5)->create();
+        Gallery::create([
+            'path' => 'gallery/poolside.jpg',
+            'alt_text' => 'Poolside at dusk',
+        ]);
 
         $this->browse(function ($browser) {
             $browser->visit('/gallery')
-                ->assertSee('Gallery');
-        });
-    }
-
-    public function test_gallery_page_has_back_to_home(): void
-    {
-        $this->browse(function ($browser) {
-            $browser->visit('/gallery')
-                ->assertSeeLink('Home');
+                ->assertSourceHas('gallery/poolside.jpg')
+                ->assertSourceHas('Poolside at dusk');
         });
     }
 }

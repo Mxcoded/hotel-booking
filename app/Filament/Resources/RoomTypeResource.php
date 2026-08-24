@@ -135,6 +135,7 @@ class RoomTypeResource extends Resource
                             ->label('Seasonal Pricing')
                             ->keyLabel('Period Name|Start to End (e.g., "Harmattan|2024-12-01 to 2025-02-28")')
                             ->valueLabel('Price (₦)')
+                            ->dehydrateStateUsing(fn ($state) => is_array($state) ? collect($state)->filter(fn ($value, $key) => is_string($key) && filled($key))->map(fn ($value) => filled($value) ? (string) $value : null)->all() : $state)
                             ->columnSpanFull(),
                     ])->columns(4),
 
@@ -198,6 +199,7 @@ class RoomTypeResource extends Resource
                             ->addActionLabel('Add Feature')
                             ->keyLabel('Feature')
                             ->valueLabel('Icon (FontAwesome class)')
+                            ->dehydrateStateUsing(fn ($state) => is_array($state) ? collect($state)->filter(fn ($value, $key) => is_string($key) && filled($key))->map(fn ($value, $key) => ['name' => (string) $key, 'icon' => filled($value) ? (string) $value : ''])->values()->all() : $state)
                             ->columnSpanFull(),
                     ])->collapsible(),
             ]);

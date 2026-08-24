@@ -177,7 +177,10 @@
                             ids: favoriteIds
                         })
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) throw new Error('Failed to load favorites');
+                        return response.json();
+                    })
                     .then(rooms => {
                         spinner.classList.add('hidden');
                         if (rooms.length > 0) {
@@ -192,6 +195,12 @@
                                     priceUsd =
                                         `<p class="text-sm">Approx. $${(room.price / usd_rate).toFixed(2)}</p>`;
                                 }
+                                const weekendHint = room.weekend_price
+                                    ? `<p class="text-xs text-amber-600 mt-1"><i class="fas fa-calendar-day mr-1"></i>₦${Number(room.weekend_price).toLocaleString()} on Fri &amp; Sat</p>`
+                                    : '';
+                                const imageHtml = room.image_url
+                                    ? `<img src="${room.image_url}" alt="${room.name}" class="w-full h-64 object-cover">`
+                                    : `<img src="https://placehold.co/800x533/333333/FFFFFF?text=${encodeURIComponent(room.name)}" alt="${room.name}" class="w-full h-64 object-cover">`;
 
                                 return `
                                     <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden relative">
@@ -199,12 +208,13 @@
                                             <i class="fas fa-heart text-red-500 text-xl"></i>
                                         </button>
                                         <a href="/rooms/${room.id}">
-                                            <img src="/storage/${room.image}" alt="${room.name}" class="w-full h-64 object-cover">
+                                            ${imageHtml}
                                         </a>
                                         <div class="p-6">
                                             <h3 class="text-2xl font-bold mb-2">${room.name}</h3>
                                             <div class="text-gray-600 mb-4">
                                                 <p class="font-bold text-xl text-gray-900">From ${priceNaira} / night</p>
+                                                ${weekendHint}
                                                 ${priceUsd}
                                             </div>
                                             <a href="https://wa.me/{{ setting('whatsapp_number', '+2348099999620') }}?text=Hi,%20I'm%20interested%20in%20the%20${encodeURIComponent(room.name)}." target="_blank" class="whatsapp-link bg-gray-800 hover:bg-black text-white font-semibold py-2 px-4 rounded-lg w-full flex items-center justify-center">
@@ -217,6 +227,10 @@
                         } else {
                             noFavsMsg.classList.remove('hidden');
                         }
+                    })
+                    .catch(() => {
+                        spinner.classList.add('hidden');
+                        noFavsMsg.classList.remove('hidden');
                     });
             } else {
                 spinner.classList.add('hidden');

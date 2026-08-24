@@ -85,7 +85,8 @@ class SettingResource extends Resource
                             ->keyLabel('Key')
                             ->valueLabel('Value')
                             ->addActionLabel('Add Option')
-                            ->helperText('Options for select/radio inputs (JSON)'),
+                            ->helperText('Options for select/radio inputs (JSON)')
+                            ->dehydrateStateUsing(fn ($state) => is_array($state) ? collect($state)->filter(fn ($value, $key) => is_string($key) && filled($key))->map(fn ($value) => filled($value) ? (string) $value : null)->all() : $state),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Value')
@@ -95,10 +96,19 @@ class SettingResource extends Resource
                         Forms\Components\Textarea::make('value')
                             ->rows(4)
                             ->visible(fn (Forms\Get $get) => in_array($get('type'), ['text', 'number'])),
-                        Forms\Components\FileUpload::make('value')
+                        Forms\Components\FileUpload::make('file_upload')
+                            ->label('File')
                             ->directory('settings')
                             ->maxSize(10240)
-                            ->visible(fn (Forms\Get $get) => in_array($get('type'), ['image', 'video', 'file'])),
+                            ->visible(fn (Forms\Get $get) => in_array($get('type'), ['image', 'video', 'file']))
+                            ->afterStateHydrated(function (Forms\Components\FileUpload $component, $state, $record): void {
+                                if ($record && in_array($record->type, ['image', 'video', 'file']) && filled($record->value)) {
+                                    $component->state($record->value);
+                                } else {
+                                    $component->state(null);
+                                }
+                            })
+                            ->dehydrated(false),
                     ])->columnSpanFull(),
             ]);
     }

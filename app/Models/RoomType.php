@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 
 class RoomType extends Model
 {
+    use LogsActivity;
     use HasFactory;
 
     protected $fillable = [
@@ -43,11 +46,21 @@ class RoomType extends Model
     protected $casts = [
         'features' => 'array',
         'seasonal_pricing' => 'array',
+        'price' => 'float',
+        'weekend_price' => 'float',
+        'holiday_price' => 'float',
+        'extra_guest_fee' => 'float',
         'discount_percent' => 'decimal:2',
         'discount_start' => 'date',
         'discount_end' => 'date',
         'check_in_time' => 'datetime:H:i',
         'check_out_time' => 'datetime:H:i',
+        'base_guests' => 'integer',
+        'max_guests' => 'integer',
+        'min_stay' => 'integer',
+        'max_stay' => 'integer',
+        'advance_booking_days' => 'integer',
+        'sort_order' => 'integer',
         'is_active' => 'boolean',
         'is_featured' => 'boolean',
     ];
@@ -89,6 +102,19 @@ class RoomType extends Model
     public function scopeOfType(Builder $query, string $type): Builder
     {
         return $query->where('room_type', $type);
+    }
+
+    // ── Audit Logging ─────────────────────────────────────────
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->logExcept(['updated_at', 'created_at'])
+            ->logOnlyDirty()
+            ->dontLogEmptyChanges()
+            ->useLogName('room_types')
+            ->setDescriptionForEvent(fn (string $eventName) => "Room type {$eventName}");
     }
 
     // ── Business Logic ───────────────────────────────────────
@@ -161,9 +187,12 @@ class RoomType extends Model
     }
 
     /**
-     * Check if type has availability for date range
+     * Check if type has availability for date range.
+     *
+     * Pass $overridesIndex (from RoomAvailability::indexForRange) so all
+     * units are checked against one preloaded map instead of per-night queries.
      */
-    public function isAvailableForRange(string $start, string $end): bool
+    public function isAvailableForRange(string $start, string $end, ?array $overridesIndex = null): bool
     {
         $startDate = \Carbon\Carbon::parse($start);
         $endDate = \Carbon\Carbon::parse($end);
@@ -186,9 +215,9 @@ class RoomType extends Model
 
         // Check if any active unit is available for the range
         $availableUnits = $this->activeUnits()->get();
-        
+
         foreach ($availableUnits as $unit) {
-            if ($unit->isAvailableForRange($start, $end)) {
+            if ($unit->isAvailableForRange($start, $end, $overridesIndex)) {
                 return true;
             }
         }

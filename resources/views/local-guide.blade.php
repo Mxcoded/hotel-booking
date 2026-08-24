@@ -31,7 +31,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 attraction-grid">
                 @foreach($attractions as $attraction)
                     <div class="attraction-item {{ Str::slug($attraction->category) }} bg-gray-50 rounded-lg shadow-lg overflow-hidden">
-                        <img src="{{ asset('storage/' . $attraction->image) }}" alt="{{ $attraction->name }}" class="w-full h-56 object-cover">
+                        <img src="{{ thumbnail_url($attraction->image, 'card') }}" alt="{{ $attraction->name }}" class="w-full h-56 object-cover">
                         <div class="p-6">
                             <h3 class="text-2xl font-bold mb-2">{{ $attraction->name }}</h3>
                             <span class="inline-block bg-amber-200 text-amber-800 text-xs px-2 rounded-full uppercase font-semibold tracking-wide">{{ $attraction->category }}</span>

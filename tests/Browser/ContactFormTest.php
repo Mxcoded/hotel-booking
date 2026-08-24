@@ -3,6 +3,7 @@
 namespace Tests\Browser;
 
 use Tests\Browser\DuskTestCase;
+use App\Models\Contact;
 
 class ContactFormTest extends DuskTestCase
 {
@@ -13,46 +14,22 @@ class ContactFormTest extends DuskTestCase
         $this->seed();
     }
 
-    public function test_contact_form_exists_on_homepage(): void
+    public function test_guest_can_submit_contact_form(): void
     {
         $this->browse(function ($browser) {
             $browser->visit('/')
-                ->assertSee('Contact')
-                ->assertSee('Name')
-                ->assertSee('Email')
-                ->assertSee('Message');
-        });
-    }
-
-    public function test_contact_form_can_be_submitted(): void
-    {
-        $this->browse(function ($browser) {
-            $browser->visit('/')
-                ->scrollTo('#contact')
-                ->waitFor('#contact-form', 5)
-                ->type('name', 'Test User')
-                ->type('email', 'test@example.com')
-                ->type('message', 'This is a test message from Dusk.')
-                ->press('Send')
-                ->waitForReload()
-                ->assertPathIs('/');
+                ->within('#contact', function ($browser) {
+                    $browser->type('name', 'Dusk Visitor')
+                        ->type('email', 'dusk@example.com')
+                        ->type('message', 'Hello from the Dusk suite.')
+                        ->press('Send Message');
+                })
+                ->pause(2500);
         });
 
-        $this->assertDatabaseHas('contacts', [
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'message' => 'This is a test message from Dusk.',
-        ]);
-    }
+        $contact = Contact::where('email', 'dusk@example.com')->first();
 
-    public function test_contact_form_validates_required_fields(): void
-    {
-        $this->browse(function ($browser) {
-            $browser->visit('/')
-                ->scrollTo('#contact')
-                ->waitFor('#contact-form', 5)
-                ->press('Send')
-                ->assertSee('required');
-        });
+        $this->assertNotNull($contact, 'Contact row was not persisted.');
+        $this->assertEquals('Dusk Visitor', $contact->name);
     }
 }

@@ -85,7 +85,7 @@
                                 <i class="far fa-heart text-gray-700 text-xl"></i>
                             </button>
                             <a href="{{ route('rooms.show', $roomType) }}">
-                                <img src="{{ asset('storage/' . $roomType->image) }}" alt="{{ $roomType->name }}"
+                                <img src="{{ thumbnail_url($roomType->image, 'card') }}" alt="{{ $roomType->name }}"
                                     class="w-full h-64 object-cover">
                             </a>
                             <div class="p-6">

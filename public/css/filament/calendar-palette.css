@@ -1,0 +1,121 @@
+/*
+ * Brickspoint — Availability Calendar palette & helpers.
+ *
+ * Filament ships only the utilities its own components use, so classes
+ * used by custom pages (app/Filament/Pages/AvailabilityCalendar.php and
+ * resources/views/filament/pages/availability-calendar.blade.php) never
+ * get compiled. This sheet defines exactly those utilities using the
+ * real Tailwind names, so a proper theme build can replace this later
+ * without touching the views.
+ *
+ * Loaded via AdminPanelProvider ->assets().
+ */
+
+/* ── Layout / behaviour ─────────────────────────────────── */
+
+.min-w-max { min-width: max-content; }
+.tabular-nums { font-variant-numeric: tabular-nums; }
+.backdrop-blur-sm { backdrop-filter: blur(4px); }
+.animate-ping { animation: cal-ping 1s cubic-bezier(0, 0, 0.2, 1) infinite; }
+@keyframes cal-ping { 75%, 100% { transform: scale(2); opacity: 0; } }
+
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.focus-visible\:outline-2:focus-visible { outline-width: 2px; }
+.active\:scale-90:active { transform: scale(0.9); }
+
+/* Calendar body row separators (replaces arbitrary [&>tr…] variants) */
+table.cal-grid tbody.cal-body > tr:not(:last-child) {
+    border-bottom: 1px solid #f3f4f6;
+}
+.dark table.cal-grid tbody.cal-body > tr:not(:last-child) {
+    border-bottom-color: #1f2937;
+}
+
+/* ── Neutral greys used by the grid ─────────────────────── */
+.bg-gray-100 { --tw-bg-opacity: 1; background-color: rgb(243 244 246 / var(--tw-bg-opacity)); }
+.text-gray-300 { color: rgb(209 213 219); }
+.text-gray-400 { color: rgb(156 163 175); }
+.border-gray-100 { border-color: #f3f4f6; }
+
+.dark .dark\:bg-gray-700 { background-color: #374151; }
+.dark .dark\:bg-gray-800 { background-color: #1f2937; }
+.dark .dark\:bg-gray-900 { background-color: #111827; }
+.dark .dark\:text-gray-300 { color: #d1d5db; }
+.dark .dark\:text-gray-600 { color: #4b5563; }
+.dark .dark\:border-gray-700 { border-color: #374151; }
+.dark .dark\:border-gray-800 { border-color: #1f2937; }
+
+.hover\:bg-gray-50\/60:hover { background-color: rgb(249 250 251 / 0.6); }
+.group:hover .group-hover\:bg-gray-50 { background-color: #f9fafb; }
+.dark .group:hover .dark\:group-hover\:bg-gray-800 { background-color: #1f2937; }
+.dark .dark\:hover\:bg-gray-800\/40:hover { background-color: rgb(31 41 55 / 0.4); }
+
+/* ── Green = available ──────────────────────────────────── */
+.bg-green-100 { background-color: #dcfce7; }
+.bg-green-200 { background-color: #bbf7d0; }
+.bg-green-400 { background-color: #4ade80; }
+.border-green-300 { border-color: #86efac; }
+.hover\:bg-green-400:hover { background-color: #4ade80; }
+.hover\:\!bg-green-400:hover { background-color: #4ade80 !important; }
+.hover\:\!text-white:hover { color: #fff !important; }
+
+/* ── Red = booked ───────────────────────────────────────── */
+.bg-red-500 { background-color: #ef4444; }
+.bg-red-200 { background-color: #fecaca; }
+.text-red-400 { color: #f87171; }
+.text-red-600 { color: #dc2626; }
+.border-red-100 { border-color: #fee2e2; }
+.bg-red-50\/60 { background-color: rgb(254 242 242 / 0.6); }
+.dark .dark\:bg-red-950\/30 { background-color: rgb(76 5 25 / 0.3); }
+.dark .dark\:border-red-900\/40 { border-color: rgb(127 29 29 / 0.4); }
+.dark .dark\:text-red-400 { color: #f87171; }
+
+/* ── Orange = blocked (staff hold) ──────────────────────── */
+.bg-orange-400 { background-color: #fb923c; }
+.hover\:bg-orange-500:hover,
+.hover\:\!bg-orange-500:hover { background-color: #f97316 !important; }
+.border-orange-100 { border-color: #ffedd5; }
+.bg-orange-50\/60 { background-color: rgb(255 247 237 / 0.6); }
+.text-orange-500 { color: #f97316; }
+.text-orange-600 { color: #ea580c; }
+.dark .dark\:bg-orange-950\/30 { background-color: rgb(67 20 7 / 0.3); }
+.dark .dark\:border-orange-900\/40 { border-color: rgb(124 45 18 / 0.4); }
+.dark .dark\:text-orange-400 { color: #fb923c; }
+
+/* ── Slate = maintenance (out of order) ─────────────────── */
+.bg-slate-400 { background-color: #94a3b8; }
+.hover\:\!bg-slate-400:hover { background-color: #94a3b8 !important; }
+
+/* ── Emerald accents (occupancy / live dot) ─────────────── */
+.border-emerald-100 { border-color: #d1fae5; }
+.bg-emerald-50\/60 { background-color: rgb(236 253 245 / 0.6); }
+.bg-emerald-100 { background-color: #d1fae5; }
+.bg-emerald-500 { background-color: #10b981; }
+.bg-emerald-900\/60 { background-color: rgb(6 78 59 / 0.6); }
+.text-emerald-500 { color: #10b981; }
+.text-emerald-700 { color: #047857; }
+.dark .dark\:bg-emerald-950\/30 { background-color: rgb(2 44 34 / 0.3); }
+.dark .dark\:border-emerald-900\/40 { border-color: rgb(6 78 59 / 0.4); }
+.dark .dark\:text-emerald-300 { color: #6ee7b7; }
+
+/* ── Indigo structure (type headers / today / accents) ──── */
+.bg-indigo-50 { background-color: #eef2ff; }
+.bg-indigo-50\/95 { background-color: rgb(238 242 255 / 0.95); }
+.bg-indigo-50\/60 { background-color: rgb(238 242 255 / 0.6); }
+.bg-indigo-50\/40 { background-color: rgb(238 242 255 / 0.4); }
+.bg-indigo-500 { background-color: #6366f1; }
+.text-indigo-500 { color: #6366f1; }
+.text-indigo-600 { color: #4f46e5; }
+.text-indigo-800 { color: #3730a3; }
+.focus-visible\:outline:focus-visible { outline-style: solid; }
+.focus-visible\:outline-indigo-500:focus-visible { outline-color: #6366f1; }
+.dark .dark\:bg-indigo-900\/20 { background-color: rgb(49 46 129 / 0.2); }
+.dark .dark\:bg-indigo-900\/40 { background-color: rgb(49 46 129 / 0.4); }
+.dark .dark\:bg-indigo-900\/10 { background-color: rgb(49 46 129 / 0.1); }
+.dark .dark\:bg-indigo-950\/80 { background-color: rgb(30 27 75 / 0.8); }
+.dark .dark\:text-indigo-300 { color: #a5b4fc; }
+
+/* ── White veils / overlays ─────────────────────────────── */
+.bg-white\/70 { background-color: rgb(255 255 255 / 0.7); }
+.dark .dark\:bg-gray-900\/70 { background-color: rgb(17 24 39 / 0.7); }

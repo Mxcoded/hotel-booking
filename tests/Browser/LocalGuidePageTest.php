@@ -18,31 +18,23 @@ class LocalGuidePageTest extends DuskTestCase
     {
         $this->browse(function ($browser) {
             $browser->visit('/local-guide')
-                ->assertSee('Local Guide');
+                ->assertSee('Explore Wuse II');
         });
     }
 
     public function test_local_guide_displays_attractions(): void
     {
-        Attraction::factory()->count(3)->create([
-            'category' => 'Food',
+        Attraction::create([
+            'name' => 'Jabi Lake Mall',
+            'category' => 'shopping',
+            'description' => 'Lakeside shopping mall ten minutes away.',
+            'image' => 'attractions/jabi-lake.jpg',
         ]);
 
         $this->browse(function ($browser) {
             $browser->visit('/local-guide')
-                ->assertSee('Food');
-        });
-    }
-
-    public function test_local_guide_has_category_filtering(): void
-    {
-        Attraction::factory()->create(['category' => 'Food']);
-        Attraction::factory()->create(['category' => 'Shopping']);
-
-        $this->browse(function ($browser) {
-            $browser->visit('/local-guide')
-                ->assertSee('Food')
-                ->assertSee('Shopping');
+                ->assertSee('Jabi Lake Mall')
+                ->assertSee('Lakeside shopping mall ten minutes away.');
         });
     }
 }

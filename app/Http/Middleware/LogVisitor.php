@@ -5,25 +5,33 @@ namespace App\Http\Middleware;
 use App\Models\Visitor;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpFoundation\Response;
 
 class LogVisitor
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
+    private const CACHE_KEY = 'visitor_log:';
+
     public function handle(Request $request, Closure $next): Response
     {
+        if ($request->user() && $request->user()->hasAnyRole(['admin', 'super_admin'])) {
+            return $next($request);
+        }
+
         try {
-            // Log the visitor's IP address and the date of the visit
-            Visitor::firstOrCreate([
-                'ip_address' => $request->ip(),
-                'visited_date' => now()->toDateString(),
-            ]);
+            $ip = $request->ip();
+            $today = now()->toDateString();
+            $cacheKey = self::CACHE_KEY . md5($ip . $today);
+
+            if (!Cache::has($cacheKey)) {
+                Visitor::firstOrCreate([
+                    'ip_address' => $ip,
+                    'visited_date' => $today,
+                ]);
+
+                Cache::put($cacheKey, true, 3600);
+            }
         } catch (\Exception $e) {
-            // If there's an error (e.g., duplicate entry), just continue
         }
 
         return $next($request);

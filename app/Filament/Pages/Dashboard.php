@@ -16,6 +16,7 @@ class Dashboard extends BaseDashboard
     {
         return [
             \App\Filament\Widgets\HotelStatsWidget::class,
+            \App\Filament\Widgets\BookingFunnelWidget::class,
             \App\Filament\Widgets\VisitorChartWidget::class,
             \App\Filament\Widgets\RecentContactsWidget::class,
             \App\Filament\Widgets\RecentFeedbackWidget::class,

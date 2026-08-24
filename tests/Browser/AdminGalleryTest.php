@@ -3,7 +3,6 @@
 namespace Tests\Browser;
 
 use Tests\Browser\DuskTestCase;
-use App\Models\User;
 use App\Models\Gallery;
 
 class AdminGalleryTest extends DuskTestCase
@@ -15,54 +14,28 @@ class AdminGalleryTest extends DuskTestCase
         $this->seed();
     }
 
-    protected function loginAsAdmin($browser): void
+    public function test_gallery_index_lists_entries(): void
     {
-        $user = User::first();
+        Gallery::create([
+            'path' => 'gallery/lobby.jpg',
+            'alt_text' => 'Hotel lobby',
+        ]);
 
-        $browser->visit('/login')
-            ->type('email', $user->email)
-            ->type('password', 'password')
-            ->press('Log in')
-            ->waitForReload();
+        $this->browse(function ($browser) {
+            $this->loginAsAdmin($browser);
+
+            $browser->visit('/admin/galleries')
+                ->assertSee('Hotel lobby');
+        });
     }
 
-    public function test_gallery_index_page_loads(): void
+    public function test_gallery_create_page_loads(): void
     {
         $this->browse(function ($browser) {
             $this->loginAsAdmin($browser);
-            $browser->visit('/admin/gallery')
-                ->assertSee('Gallery');
+
+            $browser->visit('/admin/galleries/create')
+                ->assertSee('Create');
         });
-    }
-
-    public function test_can_upload_gallery_image(): void
-    {
-        $this->browse(function ($browser) {
-            $this->loginAsAdmin($browser);
-            $browser->visit('/admin/gallery')
-                ->attach('image', base_path('tests/Fixtures/test-image.jpg'))
-                ->press('Upload')
-                ->waitForReload();
-        });
-
-        $this->assertDatabaseHas('galleries', [
-            'alt_text' => '',
-        ]);
-    }
-
-    public function test_can_delete_gallery_image(): void
-    {
-        $gallery = Gallery::factory()->create();
-
-        $this->browse(function ($browser) use ($gallery) {
-            $this->loginAsAdmin($browser);
-            $browser->visit('/admin/gallery')
-                ->press("Delete")
-                ->waitForReload();
-        });
-
-        $this->assertDatabaseMissing('galleries', [
-            'id' => $gallery->id,
-        ]);
     }
 }

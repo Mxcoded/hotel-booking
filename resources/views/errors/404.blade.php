@@ -7,7 +7,7 @@
     @if (setting('favicon'))
         <link rel="icon" type="image/x-icon" href="{{ asset('storage/' . setting('favicon')) }}">
     @endif
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite(['resources/css/app.css'])
     <style>
         body { min-height: 100vh; margin: 0; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
         .error-split { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; }

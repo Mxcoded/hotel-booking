@@ -103,9 +103,12 @@ class RoomUnit extends Model
     // ── Availability Checks ───────────────────────────────────
 
     /**
-     * Check if unit is available for a date range
+     * Check if unit is available for a date range.
+     *
+     * Pass $overridesIndex (from RoomAvailability::indexForRange) to answer
+     * from a preloaded map instead of hitting the database per night.
      */
-    public function isAvailableForRange(string $start, string $end): bool
+    public function isAvailableForRange(string $start, string $end, ?array $overridesIndex = null): bool
     {
         if (!$this->isAvailable()) {
             return false;
@@ -128,13 +131,19 @@ class RoomUnit extends Model
         if ($maxStay && $nights > $maxStay) return false;
         if ($startDate->gt(now()->addDays($advanceDays))) return false;
 
-        // Check each night for availability overrides
-        for ($date = $startDate->copy(); $date->lt($endDate); $date->addDay()) {
-            $availability = $this->availabilities()
-                ->where('date', $date->format('Y-m-d'))
-                ->first();
+        $blocked = $overridesIndex !== null
+            ? ($overridesIndex[(int) $this->id] ?? [])
+            : RoomAvailability::query()
+                ->where('room_unit_id', $this->id)
+                ->whereIn('status', RoomAvailability::BLOCKING_STATUSES)
+                ->whereBetween('date', [$start, $endDate->copy()->subDay()->toDateString()])
+                ->pluck('status', 'date')
+                ->all();
 
-            if ($availability && in_array($availability->status, ['booked', 'blocked', 'maintenance'])) {
+        for ($date = $startDate->copy(); $date->lt($endDate); $date->addDay()) {
+            $status = $blocked[$date->toDateString()] ?? null;
+
+            if ($status !== null && in_array($status, RoomAvailability::BLOCKING_STATUSES, true)) {
                 return false;
             }
         }

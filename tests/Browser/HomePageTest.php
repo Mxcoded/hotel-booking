@@ -3,11 +3,6 @@
 namespace Tests\Browser;
 
 use Tests\Browser\DuskTestCase;
-use App\Models\Room;
-use App\Models\Gallery;
-use App\Models\Setting;
-use App\Models\Attraction;
-use App\Models\Feedback;
 
 class HomePageTest extends DuskTestCase
 {
@@ -18,13 +13,12 @@ class HomePageTest extends DuskTestCase
         $this->seed();
     }
 
-    public function test_home_page_loads(): void
+    public function test_home_page_loads_with_branding(): void
     {
         $this->browse(function ($browser) {
             $browser->visit('/')
                 ->assertSee('Brickspoint')
-                ->assertSee('Hotel')
-                ->assertSee('Rooms');
+                ->assertSee('Featured Rooms & Suites');
         });
     }
 
@@ -35,18 +29,17 @@ class HomePageTest extends DuskTestCase
                 ->assertSeeLink('Home')
                 ->assertSeeLink('Rooms')
                 ->assertSeeLink('Gallery')
-                ->assertSeeLink('Local Guide');
+                ->assertSeeLink('Menu')
+                ->assertSeeLink('Explore Wuse II');
         });
     }
 
-    public function test_home_page_displays_featured_rooms(): void
+    public function test_home_page_displays_seeded_rooms(): void
     {
-        Room::factory()->count(3)->create();
-
         $this->browse(function ($browser) {
             $browser->visit('/')
-                ->waitFor('.room-card', 5)
-                ->assertSee('₦');
+                ->waitForText('Standard King Room', 15)
+                ->assertSee('Standard King Room');
         });
     }
 
@@ -54,9 +47,13 @@ class HomePageTest extends DuskTestCase
     {
         $this->browse(function ($browser) {
             $browser->visit('/')
-                ->assertSee('Contact')
-                ->assertSee('Send')
-                ->assertSee('Message');
+                ->within('#contact', function ($browser) {
+                    $browser->assertSee('Or Send Us a Message')
+                        ->assertInputPresent('name')
+                        ->assertInputPresent('email')
+                        ->assertInputPresent('message')
+                        ->assertButtonEnabled('Send Message');
+                });
         });
     }
 
@@ -64,7 +61,7 @@ class HomePageTest extends DuskTestCase
     {
         $this->browse(function ($browser) {
             $browser->visit('/')
-                ->assertSee('WhatsApp');
+                ->assertSee('Book Now on WhatsApp');
         });
     }
 
@@ -74,7 +71,7 @@ class HomePageTest extends DuskTestCase
             $browser->visit('/')
                 ->clickLink('Rooms')
                 ->assertPathIs('/rooms')
-                ->assertSee('Rooms');
+                ->assertSee('Standard King Room');
         });
     }
 
@@ -84,7 +81,7 @@ class HomePageTest extends DuskTestCase
             $browser->visit('/')
                 ->clickLink('Gallery')
                 ->assertPathIs('/gallery')
-                ->assertSee('Gallery');
+                ->assertSee('Our Gallery');
         });
     }
 
@@ -92,9 +89,9 @@ class HomePageTest extends DuskTestCase
     {
         $this->browse(function ($browser) {
             $browser->visit('/')
-                ->clickLink('Local Guide')
+                ->clickLink('Explore Wuse II')
                 ->assertPathIs('/local-guide')
-                ->assertSee('Local Guide');
+                ->assertSee('Explore Wuse II');
         });
     }
 
@@ -110,8 +107,10 @@ class HomePageTest extends DuskTestCase
     {
         $this->browse(function ($browser) {
             $browser->visit('/feedback')
-                ->assertSee('Feedback')
-                ->assertSee('Rating');
+                ->assertInputPresent('rating')
+                ->assertInputPresent('name')
+                ->assertInputPresent('email')
+                ->assertInputPresent('message');
         });
     }
 }

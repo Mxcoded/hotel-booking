@@ -10,6 +10,17 @@ class RoomAvailability extends Model
 {
     use HasFactory;
 
+    public const STATUS_AVAILABLE = 'available';
+    public const STATUS_BOOKED = 'booked';
+    public const STATUS_BLOCKED = 'blocked';
+    public const STATUS_MAINTENANCE = 'maintenance';
+
+    public const BLOCKING_STATUSES = [
+        self::STATUS_BOOKED,
+        self::STATUS_BLOCKED,
+        self::STATUS_MAINTENANCE,
+    ];
+
     protected $fillable = [
         'room_unit_id',
         'date',
@@ -26,5 +37,26 @@ class RoomAvailability extends Model
     public function roomUnit(): BelongsTo
     {
         return $this->belongsTo(RoomUnit::class);
+    }
+
+    /**
+     * Load every blocking override in a date window with a single query,
+     * indexed as [unit_id][Y-m-d] => status for O(1) range lookups.
+     */
+    public static function indexForRange(string $start, string $end): array
+    {
+        return static::query()
+            ->whereIn('status', self::BLOCKING_STATUSES)
+            ->whereBetween('date', [$start, $end])
+            ->get(['room_unit_id', 'date', 'status'])
+            ->groupBy('room_unit_id')
+            ->mapWithKeys(function ($rows, $unitId) {
+                $dates = $rows->mapWithKeys(fn (self $row) => [
+                    $row->date instanceof \Carbon\Carbon ? $row->date->toDateString() : (string) $row->date => $row->status,
+                ]);
+
+                return [(int) $unitId => $dates->all()];
+            })
+            ->all();
     }
 }

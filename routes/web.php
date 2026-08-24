@@ -8,7 +8,6 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\LeadController;
 
 // Admin Panel Controllers
-use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\FeedbackController;
 
 // Auth Controllers
@@ -38,12 +37,30 @@ use App\Http\Controllers\ProfileController;
 Route::get('/', [PageController::class, 'home'])->name('home');
 Route::get('/rooms', [PageController::class, 'rooms'])->name('rooms');
 Route::get('/gallery', [PageController::class, 'gallery'])->name('gallery');
-Route::get('/rooms/{room}', [PageController::class, 'showRoom'])->name('rooms.show');
+Route::get('/rooms/{roomType}', [PageController::class, 'showRoom'])->name('rooms.show');
 Route::post('/contact', [PageController::class, 'storeContact'])->name('contact.store');
 Route::get('/local-guide', [PageController::class, 'localGuide'])->name('local-guide');
 // New Routes for Favorites
 Route::get('/favorites', [PageController::class, 'favorites'])->name('favorites');
 Route::post('/api/get-favorite-rooms', [PageController::class, 'getFavoriteRooms'])->name('api.favorites');
+
+// Stay Quote (dynamic pricing + availability)
+Route::get('/api/stay-quote', [PageController::class, 'stayQuote'])
+    ->middleware('throttle:60,1')
+    ->name('api.stay-quote');
+
+// Availability search across room types
+Route::get('/api/availability', [PageController::class, 'availabilitySearch'])
+    ->middleware('throttle:60,1')
+    ->name('api.availability');
+
+// Booking requests from the availability widget
+Route::post('/api/reservations', [PageController::class, 'storeReservation'])
+    ->middleware('throttle:10,1')
+    ->name('api.reservations.store');
+
+// SEO
+Route::get('/sitemap.xml', [PageController::class, 'sitemap'])->name('sitemap');
 
 // WhatsApp Lead Capture Route
 Route::post('/log-whatsapp-lead', [LeadController::class, 'store'])->name('whatsapp.lead.store');
@@ -112,8 +129,6 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     // Dashboard redirect to Filament
     Route::get('/dashboard', fn () => redirect()->route('filament.admin.pages.dashboard'))->name('dashboard');
 
-    // Food Menu Management (no Filament resource yet)
-    Route::get('menu', [MenuController::class, 'index'])->name('menu.index');
-    Route::post('menu', [MenuController::class, 'store'])->name('menu.store');
-    Route::delete('menu', [MenuController::class, 'destroy'])->name('menu.destroy');
+    // Room Type Sample Download (used by Filament ImportRoomTypes page)
+    Route::get('room-types/sample-download', [\App\Http\Controllers\Admin\RoomTypeImportController::class, 'sampleDownload'])->name('room-types.sample-download');
 });

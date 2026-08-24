@@ -26,3 +26,6 @@ Homestead.yaml
 Thumbs.db
 vendor.zip
 *.zip
+
+tests/Browser/screenshots
+tests/Browser/source
