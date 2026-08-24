@@ -2,23 +2,32 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\NavigationGroupEnum;
 use App\Filament\Resources\ReservationResource\Pages;
 use App\Models\Reservation;
+use BackedEnum;
+use Filament\Actions\Action;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class ReservationResource extends Resource
 {
     protected static ?string $model = Reservation::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-calendar-days';
 
-    protected static ?string $navigationGroup = 'Reservations';
+    protected static UnitEnum|string|null $navigationGroup = NavigationGroupEnum::Reservations;
 
     protected static ?string $navigationLabel = 'Booking Requests';
 
@@ -28,19 +37,9 @@ class ReservationResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
-    public static function getNavigationBadge(): ?string
+    public static function form(Schema $schema): Schema
     {
-        return (string) Reservation::pending()->count() ?: null;
-    }
-
-    public static function getNavigationBadgeColor(): ?string
-    {
-        return 'warning';
-    }
-
-    public static function form(Form $form): Form
-    {
-        return $form
+        return $schema
             ->schema([
                 Forms\Components\Section::make('Guest')
                     ->schema([
@@ -146,32 +145,32 @@ class ReservationResource extends Resource
                     ->label('Room type'),
             ])
             ->actions([
-                Tables\Actions\Action::make('confirm')
+                Action::make('confirm')
                     ->icon('heroicon-m-check-circle')
                     ->color('success')
                     ->requiresConfirmation()
                     ->visible(fn (Reservation $record) => $record->isPending())
                     ->action(fn (Reservation $record) => $record->markConfirmed()),
-                Tables\Actions\Action::make('cancel')
+                Action::make('cancel')
                     ->icon('heroicon-m-x-circle')
                     ->color('danger')
                     ->requiresConfirmation()
                     ->visible(fn (Reservation $record) => $record->status !== Reservation::STATUS_CANCELLED)
                     ->action(fn (Reservation $record) => $record->markCancelled()),
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                ViewAction::make(),
+                EditAction::make(),
+                DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
 
-    public static function infolist(Infolist $infolist): Infolist
+    public static function infolist(Schema $schema): Schema
     {
-        return $infolist
+        return $schema
             ->schema([
                 Infolists\Components\Section::make('Guest')
                     ->schema([

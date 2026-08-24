@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Contact;
+use Filament\Actions\Action;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
@@ -46,11 +47,11 @@ class RecentContactsWidget extends TableWidget
             ])
             ->defaultSort('created_at', 'desc')
             ->actions([
-                Tables\Actions\Action::make('view')
+                Action::make('view')
                     ->url(fn (Contact $record): string => route('filament.admin.resources.contacts.view', $record))
                     ->icon('heroicon-o-eye')
                     ->color('primary'),
-                Tables\Actions\Action::make('markRead')
+                Action::make('markRead')
                     ->label('Mark as Read')
                     ->icon('heroicon-o-check')
                     ->color('success')

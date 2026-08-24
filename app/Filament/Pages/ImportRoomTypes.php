@@ -2,7 +2,9 @@
 
 namespace App\Filament\Pages;
 
+use App\Enums\NavigationGroupEnum;
 use App\Services\RoomTypeImportService;
+use BackedEnum;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -10,20 +12,21 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Storage;
+use UnitEnum;
 
 class ImportRoomTypes extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-arrow-up-tray';
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-arrow-up-tray';
 
     protected static ?string $navigationLabel = 'Import Rooms';
 
-    protected static ?string $navigationGroup = 'Hotel Management';
+    protected static UnitEnum|string|null $navigationGroup = NavigationGroupEnum::HotelManagement;
 
     protected static ?int $navigationSort = 5;
 
-    protected static string $view = 'filament.pages.import-room-types';
+    protected string $view = 'filament.pages.import-room-types';
 
     protected static ?string $title = 'Import Room Types';
 

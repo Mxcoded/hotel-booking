@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Feedback;
+use Filament\Actions\Action;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
@@ -48,17 +49,17 @@ class RecentFeedbackWidget extends TableWidget
             ])
             ->defaultSort('created_at', 'desc')
             ->actions([
-                Tables\Actions\Action::make('view')
+                Action::make('view')
                     ->url(fn (Feedback $record): string => route('filament.admin.resources.feedback.view', $record))
                     ->icon('heroicon-o-eye')
                     ->color('primary'),
-                Tables\Actions\Action::make('approve')
+                Action::make('approve')
                     ->label('Approve')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
                     ->requiresConfirmation()
                     ->action(fn (Feedback $record) => $record->update(['is_approved' => true])),
-                Tables\Actions\Action::make('reject')
+                Action::make('reject')
                     ->label('Reject')
                     ->icon('heroicon-o-x-circle')
                     ->color('danger')

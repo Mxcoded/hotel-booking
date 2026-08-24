@@ -2,21 +2,27 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\NavigationGroupEnum;
 use App\Filament\Resources\WhatsappLeadResource\Pages;
 use App\Models\WhatsappLead;
+use BackedEnum;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class WhatsappLeadResource extends Resource
 {
     protected static ?string $model = WhatsappLead::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-phone';
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-phone';
 
-    protected static ?string $navigationGroup = 'Guest Communications';
+    protected static UnitEnum|string|null $navigationGroup = NavigationGroupEnum::GuestCommunications;
 
     protected static ?string $navigationLabel = 'WhatsApp Leads';
 
@@ -26,9 +32,9 @@ class WhatsappLeadResource extends Resource
 
     protected static ?int $navigationSort = 3;
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
@@ -60,11 +66,11 @@ class WhatsappLeadResource extends Resource
             ])
             ->defaultSort('created_at', 'desc')
             ->actions([
-                Tables\Actions\DeleteAction::make(),
+                DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

@@ -2,7 +2,9 @@
 
 namespace App\Filament\Pages;
 
+use App\Enums\NavigationGroupEnum;
 use App\Models\User;
+use BackedEnum;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\Page;
@@ -12,21 +14,22 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Spatie\Activitylog\Models\Activity;
+use UnitEnum;
 
 class AuditLog extends Page implements HasForms, HasTable
 {
     use InteractsWithForms;
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-o-shield-check';
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-shield-check';
 
     protected static ?string $navigationLabel = 'Audit Log';
 
-    protected static ?string $navigationGroup = 'System';
+    protected static UnitEnum|string|null $navigationGroup = NavigationGroupEnum::Settings;
 
     protected static ?int $navigationSort = 1;
 
-    protected static string $view = 'filament.pages.audit-log';
+    protected string $view = 'filament.pages.audit-log';
 
     protected static ?string $title = 'Audit Log';
 

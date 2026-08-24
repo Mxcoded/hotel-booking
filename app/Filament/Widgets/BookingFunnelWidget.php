@@ -10,7 +10,7 @@ use Illuminate\Support\Carbon;
 
 class BookingFunnelWidget extends Widget
 {
-    protected static string $view = 'filament.widgets.booking-funnel';
+    protected string $view = 'filament.widgets.booking-funnel';
 
     protected static ?int $sort = 2;
 

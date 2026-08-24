@@ -2,7 +2,9 @@
 
 namespace App\Filament\Pages;
 
+use App\Enums\NavigationGroupEnum;
 use App\Models\Setting;
+use BackedEnum;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -11,20 +13,21 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use UnitEnum;
 
 class FoodMenuManager extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-clipboard-document-list';
 
     protected static ?string $navigationLabel = 'Food Menu';
 
-    protected static ?string $navigationGroup = 'Hotel Management';
+    protected static UnitEnum|string|null $navigationGroup = NavigationGroupEnum::HotelManagement;
 
     protected static ?int $navigationSort = 6;
 
-    protected static string $view = 'filament.pages.food-menu-manager';
+    protected string $view = 'filament.pages.food-menu-manager';
 
     protected static ?string $title = 'Manage Food Menu';
 

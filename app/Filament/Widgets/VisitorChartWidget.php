@@ -9,15 +9,15 @@ use Illuminate\Support\Facades\DB;
 
 class VisitorChartWidget extends ChartWidget
 {
-    protected static ?string $heading = 'Unique Visitors (Last 7 Days)';
+    protected ?string $heading = 'Unique Visitors (Last 7 Days)';
 
     protected static ?int $sort = 2;
 
-    protected static ?string $description = 'Daily unique visitors tracked by IP address';
+    protected ?string $description = 'Daily unique visitors tracked by IP address';
 
     protected int | string | array $columnSpan = 'full';
 
-    protected static ?array $options = [
+    protected ?array $options = [
         'scales' => [
             'y' => [
                 'beginAtZero' => true,

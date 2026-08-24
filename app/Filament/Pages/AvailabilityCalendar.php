@@ -2,9 +2,11 @@
 
 namespace App\Filament\Pages;
 
+use App\Enums\NavigationGroupEnum;
 use App\Models\Reservation;
 use App\Models\RoomAvailability;
 use App\Models\RoomUnit;
+use BackedEnum;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
@@ -14,18 +16,19 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Computed;
+use UnitEnum;
 
 class AvailabilityCalendar extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-calendar-days';
 
     protected static ?string $navigationLabel = 'Availability Calendar';
 
-    protected static ?string $navigationGroup = 'Reservations';
+    protected static UnitEnum|string|null $navigationGroup = NavigationGroupEnum::Reservations;
 
     protected static ?int $navigationSort = 2;
 
-    protected static string $view = 'filament.pages.availability-calendar';
+    protected string $view = 'filament.pages.availability-calendar';
 
     protected static ?string $title = 'Availability Calendar';
 
@@ -112,7 +115,7 @@ class AvailabilityCalendar extends Page
             ->all();
     }
 
-    // ── Navigation ────────────────────────────────────────────
+    // ── Navigation ────────────────────────────────────────
 
     public function previousMonth(): void
     {
@@ -145,7 +148,7 @@ class AvailabilityCalendar extends Page
     {
     }
 
-    // ── Grid Data ─────────────────────────────────────────────
+    // ── Grid Data ────────────────────────────────────────
 
     #[Computed]
     public function monthStart(): Carbon
@@ -256,7 +259,7 @@ class AvailabilityCalendar extends Page
         return $this->overrides[$unitId][$day->toDateString()] ?? 'available';
     }
 
-    // ── Cell Presentation ─────────────────────────────────────
+    // ── Cell Presentation ──────────────────────────────────
 
     /**
      * Standard PMS palette: green = sellable, red = sold, orange = manually
@@ -305,7 +308,7 @@ class AvailabilityCalendar extends Page
         return str_replace(' — ', ', ', $this->cellTitle($unitId, $day));
     }
 
-    // ── Interaction ───────────────────────────────────────────
+    // ── Interaction ────────────────────────────────────────
 
     /**
      * Plain click toggles a single day; Shift-click after an anchor click
@@ -351,6 +354,8 @@ class AvailabilityCalendar extends Page
                 ->send();
         }
     }
+
+    // ── Interaction ────────────────────────────────────────
 
     /**
      * Apply a target status across an inclusive date span for one unit.

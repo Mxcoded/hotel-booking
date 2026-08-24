@@ -2,22 +2,30 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\NavigationGroupEnum;
 use App\Filament\Resources\RoomTypeResource\Pages;
 use App\Filament\Resources\RoomTypeResource\RelationManagers;
 use App\Models\RoomType;
+use BackedEnum;
+use Filament\Actions\Action;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class RoomTypeResource extends Resource
 {
     protected static ?string $model = RoomType::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
+    protected static BackedEnum|string|null $navigationIcon = 'heroicon-o-building-office-2';
 
-    protected static ?string $navigationGroup = 'Hotel Management';
+    protected static UnitEnum|string|null $navigationGroup = NavigationGroupEnum::HotelManagement;
 
     protected static ?string $navigationLabel = 'Room Types';
 
@@ -27,7 +35,7 @@ class RoomTypeResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
         return $form
             ->schema([
@@ -282,12 +290,12 @@ class RoomTypeResource extends Resource
                     ]),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                EditAction::make(),
+                DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
