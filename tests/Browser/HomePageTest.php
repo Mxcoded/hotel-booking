@@ -10,7 +10,6 @@ class HomePageTest extends DuskTestCase
     {
         parent::setUp();
 
-        $this->seed();
     }
 
     public function test_home_page_loads_with_branding(): void
@@ -114,3 +113,4 @@ class HomePageTest extends DuskTestCase
         });
     }
 }
+

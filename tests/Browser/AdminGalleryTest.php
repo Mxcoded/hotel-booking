@@ -11,7 +11,6 @@ class AdminGalleryTest extends DuskTestCase
     {
         parent::setUp();
 
-        $this->seed();
     }
 
     public function test_gallery_index_lists_entries(): void
@@ -39,3 +38,4 @@ class AdminGalleryTest extends DuskTestCase
         });
     }
 }
+

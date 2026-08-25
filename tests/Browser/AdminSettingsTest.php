@@ -10,7 +10,6 @@ class AdminSettingsTest extends DuskTestCase
     {
         parent::setUp();
 
-        $this->seed();
     }
 
     public function test_settings_index_lists_seeded_settings(): void
@@ -23,3 +22,4 @@ class AdminSettingsTest extends DuskTestCase
         });
     }
 }
+

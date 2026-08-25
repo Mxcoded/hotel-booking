@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Enums\NavigationGroupEnum;
 use App\Filament\Resources\FeedbackResource\Pages;
+use App\Models\Feedback;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;

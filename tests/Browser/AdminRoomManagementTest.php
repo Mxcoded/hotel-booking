@@ -10,7 +10,6 @@ class AdminRoomManagementTest extends DuskTestCase
     {
         parent::setUp();
 
-        $this->seed();
     }
 
     public function test_room_types_index_lists_seeded_rooms(): void
@@ -43,4 +42,5 @@ class AdminRoomManagementTest extends DuskTestCase
         });
     }
 }
+
 

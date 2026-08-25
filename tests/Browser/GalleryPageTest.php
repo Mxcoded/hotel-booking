@@ -11,7 +11,6 @@ class GalleryPageTest extends DuskTestCase
     {
         parent::setUp();
 
-        $this->seed();
     }
 
     public function test_gallery_page_loads(): void
@@ -36,3 +35,4 @@ class GalleryPageTest extends DuskTestCase
         });
     }
 }
+

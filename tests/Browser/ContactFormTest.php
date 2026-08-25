@@ -11,7 +11,6 @@ class ContactFormTest extends DuskTestCase
     {
         parent::setUp();
 
-        $this->seed();
     }
 
     public function test_guest_can_submit_contact_form(): void
@@ -33,3 +32,4 @@ class ContactFormTest extends DuskTestCase
         $this->assertEquals('Dusk Visitor', $contact->name);
     }
 }
+

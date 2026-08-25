@@ -11,7 +11,6 @@ class FeedbackFormTest extends DuskTestCase
     {
         parent::setUp();
 
-        $this->seed();
     }
 
     public function test_guest_can_submit_feedback(): void
@@ -39,3 +38,4 @@ class FeedbackFormTest extends DuskTestCase
         $this->assertEquals(5, (int) $feedback->rating);
     }
 }
+

@@ -12,7 +12,6 @@ class RoomsPageTest extends DuskTestCase
     {
         parent::setUp();
 
-        $this->seed();
     }
 
     public function test_rooms_page_loads(): void
@@ -64,3 +63,4 @@ class RoomsPageTest extends DuskTestCase
         });
     }
 }
+

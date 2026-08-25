@@ -20,7 +20,7 @@ abstract class DuskTestCase extends BaseTestCase
      */
     protected function runDatabaseMigrations(): void
     {
-        $this->artisan('migrate:fresh');
+        $this->artisan('migrate:fresh', ['--seed' => true]);
         $this->app[\Illuminate\Contracts\Console\Kernel::class]->setArtisan(null);
     }
 
@@ -80,3 +80,4 @@ abstract class DuskTestCase extends BaseTestCase
         );
     }
 }
+

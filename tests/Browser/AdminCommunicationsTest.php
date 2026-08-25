@@ -13,7 +13,6 @@ class AdminCommunicationsTest extends DuskTestCase
     {
         parent::setUp();
 
-        $this->seed();
     }
 
     public function test_contacts_index_lists_messages(): void
@@ -62,7 +61,9 @@ class AdminCommunicationsTest extends DuskTestCase
             $this->loginAsAdmin($browser);
 
             $browser->visit('/admin/feedback')
+                ->waitForText('Excellent service throughout our stay.', 15)
                 ->assertSee('Excellent service throughout our stay.');
         });
     }
 }
+

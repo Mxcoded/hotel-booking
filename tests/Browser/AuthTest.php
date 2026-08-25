@@ -11,7 +11,6 @@ class AuthTest extends DuskTestCase
     {
         parent::setUp();
 
-        $this->seed();
     }
 
     public function test_login_page_loads(): void
@@ -79,3 +78,4 @@ class AuthTest extends DuskTestCase
         $this->assertNotNull($user, 'Registered user was not persisted.');
     }
 }
+

@@ -11,7 +11,6 @@ class LocalGuidePageTest extends DuskTestCase
     {
         parent::setUp();
 
-        $this->seed();
     }
 
     public function test_local_guide_page_loads(): void
@@ -38,3 +37,4 @@ class LocalGuidePageTest extends DuskTestCase
         });
     }
 }
+

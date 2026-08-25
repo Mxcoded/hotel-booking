@@ -39,6 +39,10 @@ class AdminPanelProvider extends PanelProvider
             ->assets([
                 \Filament\Support\Assets\Css::make('calendar-palette', 'css/filament/calendar-palette.css'),
             ])
+            ->renderHook(
+                \Filament\View\PanelsRenderHook::HEAD_END,
+                fn (): string => view('filament.tailwind-cdn')->render(),
+            )
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([

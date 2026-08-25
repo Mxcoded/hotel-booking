@@ -10,7 +10,6 @@ class ResponsiveDesignTest extends DuskTestCase
     {
         parent::setUp();
 
-        $this->seed();
     }
 
     public function test_home_page_renders_on_mobile(): void
@@ -34,3 +33,4 @@ class ResponsiveDesignTest extends DuskTestCase
         });
     }
 }
+

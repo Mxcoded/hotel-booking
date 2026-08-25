@@ -10,7 +10,6 @@ class AdminDashboardTest extends DuskTestCase
     {
         parent::setUp();
 
-        $this->seed();
     }
 
     public function test_guest_cannot_see_admin_dashboard(): void
@@ -45,3 +44,4 @@ class AdminDashboardTest extends DuskTestCase
         });
     }
 }
+

@@ -12,7 +12,6 @@ class AdminOperationsTest extends DuskTestCase
     {
         parent::setUp();
 
-        $this->seed();
     }
 
     protected function roomType(): RoomType
@@ -77,3 +76,4 @@ class AdminOperationsTest extends DuskTestCase
         });
     }
 }
+
