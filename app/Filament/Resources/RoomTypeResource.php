@@ -15,6 +15,7 @@ use Filament\Actions\EditAction;
 use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
 use Filament\Tables;
 use Filament\Tables\Table;
 use UnitEnum;
@@ -37,9 +38,9 @@ class RoomTypeResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Section::make('Basic Information')
+                Section::make('Basic Information')
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->required()
@@ -79,7 +80,7 @@ class RoomTypeResource extends Resource
                             ->suffix('m²'),
                     ])->columns(3),
 
-                Forms\Components\Section::make('Description')
+                Section::make('Description')
                     ->schema([
                         Forms\Components\Textarea::make('description')
                             ->required()
@@ -87,7 +88,7 @@ class RoomTypeResource extends Resource
                             ->columnSpanFull(),
                     ]),
 
-                Forms\Components\Section::make('Capacity & Pricing')
+                Section::make('Capacity & Pricing')
                     ->schema([
                         Forms\Components\TextInput::make('base_guests')
                             ->label('Base Guests Included')
@@ -147,7 +148,7 @@ class RoomTypeResource extends Resource
                             ->columnSpanFull(),
                     ])->columns(4),
 
-                Forms\Components\Section::make('Booking Rules')
+                Section::make('Booking Rules')
                     ->schema([
                         Forms\Components\TextInput::make('min_stay')
                             ->label('Min Stay (nights)')
@@ -175,7 +176,7 @@ class RoomTypeResource extends Resource
                             ->seconds(false),
                     ])->columns(5),
 
-                Forms\Components\Section::make('Status & Display')
+                Section::make('Status & Display')
                     ->schema([
                         Forms\Components\Toggle::make('is_active')
                             ->label('Active')
@@ -190,7 +191,7 @@ class RoomTypeResource extends Resource
                             ->default(0),
                     ])->columns(3),
 
-                Forms\Components\Section::make('Main Image')
+                Section::make('Main Image')
                     ->schema([
                         Forms\Components\FileUpload::make('image')
                             ->image()
@@ -200,7 +201,7 @@ class RoomTypeResource extends Resource
                             ->columnSpanFull(),
                     ]),
 
-                Forms\Components\Section::make('Features')
+                Section::make('Features')
                     ->schema([
                         Forms\Components\KeyValue::make('features')
                             ->reorderable()

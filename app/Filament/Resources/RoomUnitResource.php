@@ -14,6 +14,7 @@ use Filament\Actions\EditAction;
 use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
 use Filament\Tables;
 use Filament\Tables\Table;
 use UnitEnum;
@@ -36,9 +37,9 @@ class RoomUnitResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Section::make('Unit Details')
+                Section::make('Unit Details')
                     ->schema([
                         Forms\Components\Select::make('room_type_id')
                             ->label('Room Type')

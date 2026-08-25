@@ -13,6 +13,8 @@ use Filament\Actions\EditAction;
 use Filament\Forms;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Tables;
 use Filament\Tables\Table;
 use UnitEnum;
@@ -35,9 +37,9 @@ class SettingResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
-                Forms\Components\Section::make('Setting Details')
+                Section::make('Setting Details')
                     ->schema([
                         Forms\Components\TextInput::make('key')
                             ->required()
@@ -88,7 +90,7 @@ class SettingResource extends Resource
                             ->default(true)
                             ->helperText('Disable to hide without deleting'),
                         Forms\Components\KeyValue::make('options')
-                            ->visible(fn (Forms\Get $get) => in_array($get('type'), ['text', 'number']))
+                            ->visible(fn (Get $get) => in_array($get('type'), ['text', 'number']))
                             ->keyLabel('Key')
                             ->valueLabel('Value')
                             ->addActionLabel('Add Option')
@@ -96,18 +98,18 @@ class SettingResource extends Resource
                             ->dehydrateStateUsing(fn ($state) => is_array($state) ? collect($state)->filter(fn ($value, $key) => is_string($key) && filled($key))->map(fn ($value) => filled($value) ? (string) $value : null)->all() : $state),
                     ])->columns(2),
 
-                Forms\Components\Section::make('Value')
+                Section::make('Value')
                     ->schema([
                         Forms\Components\ColorPicker::make('value')
-                            ->visible(fn (Forms\Get $get) => $get('type') === 'color'),
+                            ->visible(fn (Get $get) => $get('type') === 'color'),
                         Forms\Components\Textarea::make('value')
                             ->rows(4)
-                            ->visible(fn (Forms\Get $get) => in_array($get('type'), ['text', 'number'])),
+                            ->visible(fn (Get $get) => in_array($get('type'), ['text', 'number'])),
                         Forms\Components\FileUpload::make('file_upload')
                             ->label('File')
                             ->directory('settings')
                             ->maxSize(10240)
-                            ->visible(fn (Forms\Get $get) => in_array($get('type'), ['image', 'video', 'file']))
+                            ->visible(fn (Get $get) => in_array($get('type'), ['image', 'video', 'file']))
                             ->afterStateHydrated(function (Forms\Components\FileUpload $component, $state, $record): void {
                                 if ($record && in_array($record->type, ['image', 'video', 'file']) && filled($record->value)) {
                                     $component->state($record->value);

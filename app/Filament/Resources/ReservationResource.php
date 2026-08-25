@@ -17,6 +17,7 @@ use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
 use Filament\Tables;
 use Filament\Tables\Table;
 use UnitEnum;
@@ -41,7 +42,7 @@ class ReservationResource extends Resource
     {
         return $schema
             ->schema([
-                Forms\Components\Section::make('Guest')
+                Section::make('Guest')
                     ->schema([
                         Forms\Components\TextInput::make('guest_name')
                             ->required()
@@ -53,7 +54,7 @@ class ReservationResource extends Resource
                             ->required()
                             ->maxLength(32),
                     ])->columns(3),
-                Forms\Components\Section::make('Stay')
+                Section::make('Stay')
                     ->schema([
                         Forms\Components\Select::make('room_type_id')
                             ->relationship('roomType', 'name')
@@ -80,7 +81,7 @@ class ReservationResource extends Resource
                             ])
                             ->required(),
                     ])->columns(3),
-                Forms\Components\Section::make('Details')
+                Section::make('Details')
                     ->schema([
                         Forms\Components\Textarea::make('special_requests')
                             ->rows(3)

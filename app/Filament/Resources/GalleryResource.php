@@ -35,7 +35,7 @@ class GalleryResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
                 Forms\Components\FileUpload::make('path')
                     ->directory('gallery')
