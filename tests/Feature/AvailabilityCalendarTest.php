@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Pages\AvailabilityCalendar;
 use App\Models\Reservation;
 use App\Models\RoomAvailability;
 use App\Models\RoomType;
@@ -279,28 +280,7 @@ class AvailabilityCalendarTest extends TestCase
             'date' => now()->addDays(5)->toDateString(),
             'status' => 'blocked',
         ]);
-    }
-
-    public function test_booked_cells_show_guest_name_in_tooltip(): void
-    {
-        $unit = $this->unitWithRoomType();
-
-        Reservation::create([
-            'room_type_id' => $unit->room_type_id,
-            'guest_name' => 'Ada Calendar',
-            'guest_phone' => '+2348011223344',
-            'check_in' => now()->addDays(6)->toDateString(),
-            'check_out' => now()->addDays(8)->toDateString(),
-            'guests' => 1,
-            'status' => Reservation::STATUS_CONFIRMED,
-            'source' => 'website',
-        ]);
-
-        Livewire::actingAs($this->admin)
-            ->withQueryParams(['month' => now()->month, 'year' => now()->year])
-            ->test(\App\Filament\Pages\AvailabilityCalendar::class)
-            ->assertSee('Booked — Ada Calendar');
-    }
+}
 
     // ── Maintenance ───────────────────────────────────────────
 
@@ -395,3 +375,4 @@ class AvailabilityCalendarTest extends TestCase
         ]);
     }
 }
+

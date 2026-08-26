@@ -21,10 +21,32 @@ class AvailabilitySyncTest extends TestCase
     {
         parent::setUp();
 
-        $this->seed();
+        $this->roomType = RoomType::create([
+            'name' => 'Standard King Room',
+            'slug' => 'standard-king-room',
+            'room_type' => 'standard',
+            'price' => 45000,
+            'description' => 'Test room.',
+            'base_guests' => 2,
+            'min_stay' => 1,
+            'max_stay' => 30,
+            'advance_booking_days' => 365,
+            'is_active' => true,
+        ]);
 
-        $this->roomType = RoomType::where('slug', 'standard-king-room')->firstOrFail();
-        $this->roomType->update(['min_stay' => 1, 'max_stay' => null, 'advance_booking_days' => 365]);
+        RoomUnit::create([
+            'room_type_id' => $this->roomType->id,
+            'unit_number' => '101',
+            'floor' => 1,
+            'is_active' => true,
+        ]);
+
+        RoomUnit::create([
+            'room_type_id' => $this->roomType->id,
+            'unit_number' => '102',
+            'floor' => 1,
+            'is_active' => true,
+        ]);
     }
 
     protected function stayDates(int $inDays = 30): array
@@ -56,6 +78,18 @@ class AvailabilitySyncTest extends TestCase
         $reservation->markConfirmed();
 
         $reservation->refresh();
+
+        \Log::info('Reservation confirmed, room_unit_id: ' . $reservation->room_unit_id);
+
+        $bookedAll = RoomAvailability::query()
+            ->where('room_unit_id', $reservation->room_unit_id)
+            ->where('status', 'booked')
+            ->orderBy('date')
+            ->get();
+        \Log::info('All booked nights for unit: ' . $bookedAll->count());
+        foreach ($bookedAll as $b) {
+            \Log::info('  Booked: ' . $b->date->toDateString() . ' status: ' . $b->status . ' note: ' . $b->note);
+        }
 
         $this->assertNotNull($reservation->room_unit_id, 'A unit should be assigned on confirmation.');
         $this->assertEquals(Reservation::STATUS_CONFIRMED, $reservation->status);

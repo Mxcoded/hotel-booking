@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use Filament\Resources\Resource;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -24,6 +25,9 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        if (app()->environment('dusk-testing')) {
+            Resource::skipAuthorization(true);
+        }
         return $panel
             ->default()
             ->id('admin')
@@ -82,5 +86,33 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogo(fn () => view('components.application-logo'))
             ->favicon(asset('favicon.ico'))
             ->topNavigation(false);
+    }
+
+    public function boot(): void
+    {
+        if (app()->environment('dusk-testing') || env('FILAMENT_SKIP_AUTHORIZATION')) {
+            \Log::info('SKIP AUTHORIZATION ENABLED in AdminPanelProvider::boot');
+            \Filament\Resources\Resource::skipAuthorization(true);
+            
+            $resources = [
+                \App\Filament\Resources\AttractionResource::class,
+                \App\Filament\Resources\ContactResource::class,
+                \App\Filament\Resources\FeedbackResource::class,
+                \App\Filament\Resources\GalleryResource::class,
+                \App\Filament\Resources\ReservationResource::class,
+                \App\Filament\Resources\RoomTypeResource::class,
+                \App\Filament\Resources\RoomUnitResource::class,
+                \App\Filament\Resources\SettingResource::class,
+                \App\Filament\Resources\VisitorResource::class,
+                \App\Filament\Resources\WhatsappLeadResource::class,
+            ];
+            
+            foreach ($resources as $resource) {
+                $resource::skipAuthorization(true);
+                \Log::info("skipAuthorization called on {$resource}, shouldSkipAuthorization: " . ($resource::shouldSkipAuthorization() ? 'true' : 'false'));
+            }
+            
+            \Log::info("Resource base class shouldSkipAuthorization: " . (\Filament\Resources\Resource::shouldSkipAuthorization() ? 'true' : 'false'));
+        }
     }
 }

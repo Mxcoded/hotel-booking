@@ -10,6 +10,7 @@ enum NavigationGroupEnum: string
     case GuestCommunications = 'Guest Communications';
     case Settings = 'Settings';
     case Reservations = 'Reservations';
+    case Administration = 'Administration';
 
     public function getGroup(): NavigationGroup
     {
@@ -20,6 +21,7 @@ enum NavigationGroupEnum: string
                 self::GuestCommunications => 'heroicon-o-chat-bubble-left-right',
                 self::Settings => 'heroicon-o-cog-6-tooth',
                 self::Reservations => 'heroicon-o-calendar-days',
+                self::Administration => 'heroicon-o-shield-check',
             });
     }
 }

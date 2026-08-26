@@ -13,6 +13,8 @@ abstract class DuskTestCase extends BaseTestCase
 {
     use DatabaseMigrations;
 
+    protected $connectionsToTransact = [];
+
     /**
      * Fresh schema per browser test without the rollback cycle —
      * legacy migration down() paths are unreliable, and browser
@@ -75,7 +77,7 @@ abstract class DuskTestCase extends BaseTestCase
         }
 
         $browser->waitUntil(
-            'window.location.pathname === "/admin" || window.location.pathname === "/dashboard"',
+            'window.location.pathname.startsWith("/admin") || window.location.pathname === "/dashboard"',
             30
         );
     }

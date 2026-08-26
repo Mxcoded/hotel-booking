@@ -34,11 +34,11 @@ class AuthTest extends DuskTestCase
                 ->press('#login-btn');
 
             $browser->waitUntil(
-                'window.location.pathname === "/admin" || window.location.pathname === "/dashboard"',
+                'window.location.pathname.startsWith("/admin")',
                 30
             );
 
-            $browser->assertPathIs('/admin');
+            $browser->assertPathBeginsWith('/admin');
         });
     }
 

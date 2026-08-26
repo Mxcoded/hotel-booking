@@ -16,15 +16,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             SettingsSeeder::class,
             RoomSeeder::class,
+            RolePermissionSeeder::class,
+            DuskTestDataSeeder::class,
         ]);
-
-        // Create admin role
-        Role::create(['name' => 'admin']);
-
-        // Create default admin user and assign role
-        User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'admin@brickspoint.ng',
-        ])->assignRole('admin');
     }
 }
