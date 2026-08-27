@@ -22,6 +22,7 @@
             }
         }
     </script>
+    <style>
         /* Auth page base styles */
         body { min-height: 100vh; margin: 0; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
 

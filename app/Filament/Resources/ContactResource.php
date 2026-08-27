@@ -37,7 +37,6 @@ class ContactResource extends Resource
 
     public static function canAccess(): bool
     {
-        \Log::info('ContactResource::canAccess called, shouldSkipAuthorization: ' . (static::shouldSkipAuthorization() ? 'true' : 'false'));
         return static::shouldSkipAuthorization() || parent::canAccess();
     }
 

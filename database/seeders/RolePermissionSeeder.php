@@ -215,10 +215,14 @@ class RolePermissionSeeder extends Seeder
                 $permissionNames = [];
                 foreach ($perms as $perm) {
                     if (str_ends_with($perm, '.*')) {
-                        $prefix = rtrim($perm, '.*');
+                        // CRUD permissions follow {action}_{model} (underscore) naming,
+                        // e.g. contact.* -> view_any_contact, create_contact, update_contact...
+                        $model = rtrim($perm, '.*');
                         $permissionNames = array_merge(
                             $permissionNames,
-                            Permission::where('name', 'like', $prefix . '.%')->pluck('name')->toArray()
+                            Permission::where('name', 'like', '%_' . $model)
+                                ->orWhere('name', $model . '.%')
+                                ->pluck('name')->toArray()
                         );
                     } else {
                         $permissionNames[] = $perm;
@@ -229,7 +233,7 @@ class RolePermissionSeeder extends Seeder
         }
 
         // Ensure default admin user exists and has super_admin role
-        $admin = \App\Models\User::firstOrCreate(
+        $admin = \App\Models\User::updateOrCreate(
             ['email' => 'admin@brickspoint.ng'],
             [
                 'name' => 'Admin',
@@ -239,6 +243,9 @@ class RolePermissionSeeder extends Seeder
         );
         $admin->syncRoles(['super_admin']);
 
-        $this->command->info('Roles and permissions seeded successfully.');
+        // Clear Spatie permission cache so changes take effect immediately
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
+        $this->command->info('Roles and permissions seeded successfully. Admin user: admin@brickspoint.ng / password');
     }
 }

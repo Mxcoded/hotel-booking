@@ -3,11 +3,12 @@
 namespace App\Filament\Resources\UserResource\Pages;
 
 use App\Filament\Resources\UserResource;
-use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateUser extends CreateRecord
 {
+    use CollectsGroupedPermissions;
+
     protected static string $resource = UserResource::class;
 
     protected function getRedirectUrl(): string
@@ -22,9 +23,17 @@ class CreateUser extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
+        $this->selectedPermissions = $this->collectPermissionFields($data);
+
         if (empty($data['password'])) {
             unset($data['password']);
         }
+
         return $data;
+    }
+
+    protected function afterCreate(): void
+    {
+        $this->record->syncPermissions($this->resolvePermissionNames($this->selectedPermissions));
     }
 }

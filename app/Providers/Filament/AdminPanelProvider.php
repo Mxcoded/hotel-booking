@@ -25,17 +25,11 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        if (app()->environment('dusk-testing')) {
-            Resource::skipAuthorization(true);
-        }
         return $panel
             ->default()
             ->id('admin')
             ->path('admin')
             ->login()
-            ->registration()
-            ->passwordReset()
-            ->emailVerification()
             ->profile(isSimple: false)
             ->colors([
                 'primary' => Color::Amber,
@@ -80,6 +74,9 @@ class AdminPanelProvider extends PanelProvider
                 NavigationGroup::make()
                     ->label('Settings')
                     ->icon('heroicon-o-cog-6-tooth'),
+                NavigationGroup::make()
+                    ->label('Administration')
+                    ->icon('heroicon-o-shield-check'),
             ])
             ->sidebarCollapsibleOnDesktop()
             ->brandName('Brickspoint Hotel')
@@ -90,29 +87,6 @@ class AdminPanelProvider extends PanelProvider
 
     public function boot(): void
     {
-        if (app()->environment('dusk-testing') || env('FILAMENT_SKIP_AUTHORIZATION')) {
-            \Log::info('SKIP AUTHORIZATION ENABLED in AdminPanelProvider::boot');
-            \Filament\Resources\Resource::skipAuthorization(true);
-            
-            $resources = [
-                \App\Filament\Resources\AttractionResource::class,
-                \App\Filament\Resources\ContactResource::class,
-                \App\Filament\Resources\FeedbackResource::class,
-                \App\Filament\Resources\GalleryResource::class,
-                \App\Filament\Resources\ReservationResource::class,
-                \App\Filament\Resources\RoomTypeResource::class,
-                \App\Filament\Resources\RoomUnitResource::class,
-                \App\Filament\Resources\SettingResource::class,
-                \App\Filament\Resources\VisitorResource::class,
-                \App\Filament\Resources\WhatsappLeadResource::class,
-            ];
-            
-            foreach ($resources as $resource) {
-                $resource::skipAuthorization(true);
-                \Log::info("skipAuthorization called on {$resource}, shouldSkipAuthorization: " . ($resource::shouldSkipAuthorization() ? 'true' : 'false'));
-            }
-            
-            \Log::info("Resource base class shouldSkipAuthorization: " . (\Filament\Resources\Resource::shouldSkipAuthorization() ? 'true' : 'false'));
-        }
+        //
     }
 }
