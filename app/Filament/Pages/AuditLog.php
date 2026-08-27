@@ -13,6 +13,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use Spatie\Activitylog\Models\Activity;
 use UnitEnum;
 
@@ -36,11 +37,7 @@ class AuditLog extends Page implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(
-                Activity::query()
-                    ->whereIn('log_name', ['reservations', 'room_types'])
-                    ->with(['causer', 'subject'])
-            )
+            ->query(Activity::query()->with(['causer', 'subject']))
             ->defaultSort('created_at', 'desc')
             ->paginated([25, 50, 100])
             ->columns([
@@ -57,21 +54,25 @@ class AuditLog extends Page implements HasForms, HasTable
                     ->color(fn (string $state) => match ($state) {
                         'created' => 'success',
                         'updated' => 'warning',
-                        default => 'danger',
+                        'deleted' => 'danger',
+                        default => 'gray',
                     }),
                 TextColumn::make('subject')
                     ->label('On')
                     ->getStateUsing(function (Activity $record) {
-                        $short = class_basename($record->subject_type);
+                        if (!$record->subject_type) {
+                            return '—';
+                        }
 
-                        return $short && $record->subject_id ? "#{$record->subject_id} · {$short}" : '—';
+                        $short = str_replace('App\\Models\\', '', $record->subject_type);
+
+                        return $short . ' #' . $record->subject_id;
                     }),
                 TextColumn::make('causer.name')
                     ->label('By')
-                    ->default('System / Guest')
                     ->getStateUsing(fn (Activity $record) => $record->causer instanceof User
                         ? $record->causer->name
-                        : ($record->causer ? class_basename($record->causer) . ' #' . $record->causer->getKey() : 'Guest')),
+                        : ($record->causer ? class_basename($record->causer) . ' #' . $record->causer->getKey() : 'System')),
                 TextColumn::make('changes')
                     ->label('Changes')
                     ->limit(60)
@@ -106,7 +107,8 @@ class AuditLog extends Page implements HasForms, HasTable
                     }),
                 TextColumn::make('log_name')
                     ->badge()
-                    ->color('gray'),
+                    ->color('gray')
+                    ->formatStateUsing(fn ($state) => $this->logLabel($state)),
             ])
             ->filters([
                 SelectFilter::make('event')
@@ -117,11 +119,31 @@ class AuditLog extends Page implements HasForms, HasTable
                     ]),
                 SelectFilter::make('log_name')
                     ->label('Area')
-                    ->options([
-                        'reservations' => 'Reservations',
-                        'room_types' => 'Room Types',
-                    ]),
+                    ->options($this->logAreas()),
             ]);
+    }
+
+    /**
+     * Human-readable labels for each audit area.
+     */
+    protected function logLabel(?string $logName): string
+    {
+        $label = config('activitylog_labels.' . $logName);
+
+        return $label ?? Str::headline($logName ?? '');
+    }
+
+    /**
+     * All log areas currently present, labelled for the filter dropdown.
+     */
+    protected function logAreas(): array
+    {
+        return Activity::query()
+            ->distinct()
+            ->whereNotNull('log_name')
+            ->pluck('log_name')
+            ->mapWithKeys(fn ($name) => [$name => $this->logLabel($name)])
+            ->all();
     }
 
     protected function stringify(mixed $value): string

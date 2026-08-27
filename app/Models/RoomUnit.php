@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 
 class RoomUnit extends Model
 {
     use HasFactory;
+    use LogsActivity;
 
     protected $fillable = [
         'room_type_id',
@@ -25,6 +28,17 @@ class RoomUnit extends Model
         'is_active' => 'boolean',
         'floor' => 'integer',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->logExcept(['updated_at', 'created_at'])
+            ->logOnlyDirty()
+            ->dontLogEmptyChanges()
+            ->useLogName('room_units')
+            ->setDescriptionForEvent(fn (string $eventName) => "Room unit {$eventName}");
+    }
 
     // ── Relationships ─────────────────────────────────────────
     

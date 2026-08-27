@@ -62,6 +62,7 @@ class SettingResource extends Resource
                                 'seo'      => 'SEO',
                                 'business' => 'Business',
                                 'footer'   => 'Footer',
+                                'payment'  => 'Payment Gateway',
                                 'general'  => 'General',
                             ])
                             ->required()
@@ -69,12 +70,15 @@ class SettingResource extends Resource
                             ->helperText('Organizational group for filtering'),
                         Forms\Components\Select::make('type')
                             ->options([
-                                'text'   => 'Text',
-                                'number' => 'Number',
-                                'color'  => 'Color',
-                                'image'  => 'Image',
-                                'video'  => 'Video',
-                                'file'   => 'File',
+                                'text'     => 'Text',
+                                'number'   => 'Number',
+                                'color'    => 'Color',
+                                'image'    => 'Image',
+                                'video'    => 'Video',
+                                'file'     => 'File',
+                                'toggle'   => 'Toggle',
+                                'select'   => 'Select',
+                                'password' => 'Password',
                             ])
                             ->required()
                             ->default('text')
@@ -90,7 +94,7 @@ class SettingResource extends Resource
                             ->default(true)
                             ->helperText('Disable to hide without deleting'),
                         Forms\Components\KeyValue::make('options')
-                            ->visible(fn (Get $get) => in_array($get('type'), ['text', 'number']))
+                            ->visible(fn (Get $get) => in_array($get('type'), ['text', 'number', 'select']))
                             ->keyLabel('Key')
                             ->valueLabel('Value')
                             ->addActionLabel('Add Option')
@@ -102,6 +106,15 @@ class SettingResource extends Resource
                     ->schema([
                         Forms\Components\ColorPicker::make('value')
                             ->visible(fn (Get $get) => $get('type') === 'color'),
+                        Forms\Components\Toggle::make('value')
+                            ->visible(fn (Get $get) => $get('type') === 'toggle'),
+                        Forms\Components\Select::make('value')
+                            ->options(fn (Get $get): array => $get('options') ?: [])
+                            ->visible(fn (Get $get) => $get('type') === 'select'),
+                        Forms\Components\TextInput::make('value')
+                            ->password()
+                            ->revealable()
+                            ->visible(fn (Get $get) => $get('type') === 'password'),
                         Forms\Components\Textarea::make('value')
                             ->rows(4)
                             ->visible(fn (Get $get) => in_array($get('type'), ['text', 'number'])),
@@ -152,12 +165,15 @@ class SettingResource extends Resource
                 Tables\Columns\TextColumn::make('type')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'text'   => 'gray',
-                        'number' => 'info',
-                        'color'  => 'warning',
-                        'image'  => 'success',
-                        'video'  => 'warning',
-                        'file'   => 'danger',
+                        'text'     => 'gray',
+                        'number'   => 'info',
+                        'color'    => 'warning',
+                        'image'    => 'success',
+                        'video'    => 'warning',
+                        'file'     => 'danger',
+                        'toggle'   => 'success',
+                        'select'   => 'primary',
+                        'password' => 'danger',
                     }),
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean()
@@ -186,16 +202,20 @@ class SettingResource extends Resource
                         'seo'      => 'SEO',
                         'business' => 'Business',
                         'footer'   => 'Footer',
+                        'payment'  => 'Payment Gateway',
                         'general'  => 'General',
                     ]),
                 Tables\Filters\SelectFilter::make('type')
                     ->options([
-                        'text'   => 'Text',
-                        'number' => 'Number',
-                        'color'  => 'Color',
-                        'image'  => 'Image',
-                        'video'  => 'Video',
-                        'file'   => 'File',
+                        'text'     => 'Text',
+                        'number'   => 'Number',
+                        'color'    => 'Color',
+                        'image'    => 'Image',
+                        'video'    => 'Video',
+                        'file'     => 'File',
+                        'toggle'   => 'Toggle',
+                        'select'   => 'Select',
+                        'password' => 'Password',
                     ]),
                 Tables\Filters\TernaryFilter::make('is_active')
                     ->label('Status')
