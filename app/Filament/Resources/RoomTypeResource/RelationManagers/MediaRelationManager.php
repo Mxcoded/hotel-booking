@@ -29,6 +29,7 @@ class MediaRelationManager extends RelationManager
                     ->label('File')
                     ->image()
                     ->imageEditor()
+                    ->disk('public')
                     ->directory('room-types')
                     ->maxSize(5120)
                     ->required()

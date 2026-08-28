@@ -196,6 +196,7 @@ class RoomTypeResource extends Resource
                         Forms\Components\FileUpload::make('image')
                             ->image()
                             ->imageEditor()
+                            ->disk('public')
                             ->directory('room-types')
                             ->maxSize(5120)
                             ->columnSpanFull(),

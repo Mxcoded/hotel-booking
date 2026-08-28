@@ -74,11 +74,7 @@ class ReservationResource extends Resource
                             ->numeric()
                             ->prefix('₦'),
                         Forms\Components\Select::make('status')
-                            ->options([
-                                Reservation::STATUS_PENDING => 'Pending',
-                                Reservation::STATUS_CONFIRMED => 'Confirmed',
-                                Reservation::STATUS_CANCELLED => 'Cancelled',
-                            ])
+                            ->options(Reservation::STATUS_OPTIONS)
                             ->required(),
                     ])->columns(3),
                 Section::make('Details')
@@ -121,13 +117,28 @@ class ReservationResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
-                    ->formatStateUsing(fn (string $state) => ucfirst($state))
+                    ->formatStateUsing(fn (string $state) => \Illuminate\Support\Str::headline(str_replace('_', ' ', $state)))
                     ->color(fn (string $state) => match ($state) {
                         Reservation::STATUS_PENDING => 'warning',
                         Reservation::STATUS_CONFIRMED => 'success',
-                        default => 'danger',
+                        Reservation::STATUS_CHECKED_IN => 'info',
+                        Reservation::STATUS_CHECKED_OUT => 'gray',
+                        Reservation::STATUS_NO_SHOW => 'danger',
+                        Reservation::STATUS_CANCELLED => 'danger',
+                        default => 'gray',
                     })
                     ->sortable(),
+                Tables\Columns\TextColumn::make('payment_status')
+                    ->badge()
+                    ->formatStateUsing(fn (?string $state) => $state ? ucfirst($state) : '—')
+                    ->color(fn (?string $state) => match ($state) {
+                        Reservation::PAYMENT_PAID => 'success',
+                        Reservation::PAYMENT_PARTIAL => 'warning',
+                        Reservation::PAYMENT_REFUNDED => 'gray',
+                        default => 'danger',
+                    })
+                    ->toggleable()
+                    ->placeholder('—'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -136,14 +147,26 @@ class ReservationResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
+                    ->options(Reservation::STATUS_OPTIONS),
+                Tables\Filters\SelectFilter::make('payment_status')
                     ->options([
-                        Reservation::STATUS_PENDING => 'Pending',
-                        Reservation::STATUS_CONFIRMED => 'Confirmed',
-                        Reservation::STATUS_CANCELLED => 'Cancelled',
+                        Reservation::PAYMENT_UNPAID => 'Unpaid',
+                        Reservation::PAYMENT_PARTIAL => 'Partially paid',
+                        Reservation::PAYMENT_PAID => 'Paid',
+                        Reservation::PAYMENT_REFUNDED => 'Refunded',
                     ]),
                 Tables\Filters\SelectFilter::make('room_type')
                     ->relationship('roomType', 'name')
                     ->label('Room type'),
+                Tables\Filters\TernaryFilter::make('arriving_today')
+                    ->label('Arriving today')
+                    ->queries(
+                        true: fn ($query) => $query->arriving(),
+                        false: fn ($query) => $query->where(function ($q) {
+                            $q->where('check_in', '!=', now()->toDateString())->orWhereNotIn('status', [Reservation::STATUS_CONFIRMED, Reservation::STATUS_PENDING]);
+                        }),
+                    )
+                    ->placeholder('All bookings'),
             ])
             ->actions([
                 Action::make('confirm')
@@ -158,12 +181,54 @@ class ReservationResource extends Resource
                     ->requiresConfirmation()
                     ->visible(fn (Reservation $record) => $record->status !== Reservation::STATUS_CANCELLED)
                     ->action(fn (Reservation $record) => $record->markCancelled()),
+                Action::make('check_in')
+                    ->icon('heroicon-m-arrow-right-circle')
+                    ->color('info')
+                    ->requiresConfirmation()
+                    ->visible(fn (Reservation $record) => in_array($record->status, [Reservation::STATUS_CONFIRMED, Reservation::STATUS_PENDING], true))
+                    ->action(fn (Reservation $record) => $record->markCheckedIn()),
+                Action::make('check_out')
+                    ->icon('heroicon-m-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->visible(fn (Reservation $record) => $record->status === Reservation::STATUS_CHECKED_IN)
+                    ->action(fn (Reservation $record) => $record->markCheckedOut()),
+                Action::make('no_show')
+                    ->icon('heroicon-m-user-x')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->visible(fn (Reservation $record) => in_array($record->status, [Reservation::STATUS_CONFIRMED, Reservation::STATUS_PENDING], true))
+                    ->action(fn (Reservation $record) => $record->markNoShow()),
                 ViewAction::make(),
                 EditAction::make(),
                 DeleteAction::make(),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
+                    \Filament\Actions\BulkAction::make('bulk_confirm')
+                        ->label('Confirm selected')
+                        ->icon('heroicon-m-check-circle')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->action(function ($records) {
+                            foreach ($records as $record) {
+                                if ($record->isPending()) {
+                                    $record->markConfirmed();
+                                }
+                            }
+                        }),
+                    \Filament\Actions\BulkAction::make('bulk_cancel')
+                        ->label('Cancel selected')
+                        ->icon('heroicon-m-x-circle')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->action(function ($records) {
+                            foreach ($records as $record) {
+                                if ($record->status !== Reservation::STATUS_CANCELLED) {
+                                    $record->markCancelled();
+                                }
+                            }
+                        }),
                     DeleteBulkAction::make(),
                 ]),
             ]);
@@ -190,7 +255,20 @@ class ReservationResource extends Resource
                         Infolists\Components\TextEntry::make('quoted_total')->money('NGN'),
                         Infolists\Components\TextEntry::make('status')->badge(),
                         Infolists\Components\TextEntry::make('confirmed_at')->dateTime()->placeholder('—'),
+                        Infolists\Components\TextEntry::make('checked_in_at')->dateTime()->placeholder('—'),
+                        Infolists\Components\TextEntry::make('checked_out_at')->dateTime()->placeholder('—'),
                     ])->columns(4),
+                Infolists\Components\Section::make('Payment')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('payment_status')->badge(),
+                        Infolists\Components\TextEntry::make('amount_paid')->money('NGN'),
+                        Infolists\Components\TextEntry::make('balance_due')
+                            ->state(fn (Reservation $record) => $record->balanceDue())
+                            ->money('NGN'),
+                        Infolists\Components\TextEntry::make('payment_method')->placeholder('—'),
+                        Infolists\Components\TextEntry::make('payment_reference')->placeholder('—'),
+                        Infolists\Components\TextEntry::make('coupon_code')->badge()->placeholder('—'),
+                    ])->columns(3),
                 Infolists\Components\Section::make('Details')
                     ->schema([
                         Infolists\Components\TextEntry::make('special_requests')

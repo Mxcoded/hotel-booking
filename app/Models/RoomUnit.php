@@ -20,6 +20,7 @@ class RoomUnit extends Model
         'unit_number',
         'floor',
         'status',
+        'housekeeping_status',
         'notes',
         'is_active',
     ];
@@ -50,6 +51,55 @@ class RoomUnit extends Model
     public function availabilities(): HasMany
     {
         return $this->hasMany(RoomAvailability::class);
+    }
+
+    public function housekeepingLogs(): HasMany
+    {
+        return $this->hasMany(HousekeepingLog::class)->latest();
+    }
+
+    // ── Housekeeping ─────────────────────────────────────────
+
+    public function isDirtyUnit(): bool
+    {
+        return $this->housekeeping_status === HousekeepingLog::STATUS_DIRTY;
+    }
+
+    public function markDirty(?string $note = null, ?int $assignedTo = null): HousekeepingLog
+    {
+        $this->update(['housekeeping_status' => HousekeepingLog::STATUS_DIRTY]);
+
+        return $this->housekeepingLogs()->create([
+            'status' => HousekeepingLog::STATUS_DIRTY,
+            'note' => $note,
+            'assigned_to' => $assignedTo,
+        ]);
+    }
+
+    public function markClean(?string $note = null, ?int $assignedTo = null): HousekeepingLog
+    {
+        $this->update([
+            'housekeeping_status' => HousekeepingLog::STATUS_CLEAN,
+            'status' => 'available',
+        ]);
+
+        return $this->housekeepingLogs()->create([
+            'status' => HousekeepingLog::STATUS_CLEAN,
+            'note' => $note,
+            'assigned_to' => $assignedTo,
+            'cleaned_at' => now(),
+        ]);
+    }
+
+    public function markInspected(?string $note = null, ?int $assignedTo = null): HousekeepingLog
+    {
+        $this->update(['housekeeping_status' => HousekeepingLog::STATUS_INSPECTED]);
+
+        return $this->housekeepingLogs()->create([
+            'status' => HousekeepingLog::STATUS_INSPECTED,
+            'note' => $note,
+            'assigned_to' => $assignedTo,
+        ]);
     }
 
     // ── Scopes ────────────────────────────────────────────────

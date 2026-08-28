@@ -119,6 +119,35 @@ class FeedbackResource extends Resource
             ])
             ->bulkActions([
                 BulkActionGroup::make([
+                    \Filament\Actions\BulkAction::make('approve')
+                        ->label('Approve')
+                        ->icon('heroicon-m-check-circle')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->action(function ($records) {
+                            \App\Models\Feedback::query()
+                                ->whereKey($records->pluck('id'))
+                                ->update(['is_approved' => true, 'is_read' => true]);
+                        }),
+                    \Filament\Actions\BulkAction::make('reject')
+                        ->label('Reject')
+                        ->icon('heroicon-m-x-circle')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->action(function ($records) {
+                            \App\Models\Feedback::query()
+                                ->whereKey($records->pluck('id'))
+                                ->update(['is_approved' => false, 'is_read' => true]);
+                        }),
+                    \Filament\Actions\BulkAction::make('mark_read')
+                        ->label('Mark as read')
+                        ->icon('heroicon-m-check-badge')
+                        ->action(function ($records) {
+                            \App\Models\Feedback::query()
+                                ->whereKey($records->pluck('id'))
+                                ->where('is_read', false)
+                                ->update(['is_read' => true]);
+                        }),
                     DeleteBulkAction::make(),
                 ]),
             ]);

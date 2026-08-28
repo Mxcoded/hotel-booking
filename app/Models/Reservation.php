@@ -14,14 +14,40 @@ class Reservation extends Model
 
     public const STATUS_PENDING = 'pending';
     public const STATUS_CONFIRMED = 'confirmed';
+    public const STATUS_CHECKED_IN = 'checked_in';
+    public const STATUS_CHECKED_OUT = 'checked_out';
+    public const STATUS_NO_SHOW = 'no_show';
     public const STATUS_CANCELLED = 'cancelled';
 
+    public const PAYMENT_UNPAID = 'unpaid';
+    public const PAYMENT_PARTIAL = 'partial';
+    public const PAYMENT_PAID = 'paid';
+    public const PAYMENT_REFUNDED = 'refunded';
+
+    public const STATUS_OPTIONS = [
+        self::STATUS_PENDING => 'Pending',
+        self::STATUS_CONFIRMED => 'Confirmed',
+        self::STATUS_CHECKED_IN => 'Checked in',
+        self::STATUS_CHECKED_OUT => 'Checked out',
+        self::STATUS_NO_SHOW => 'No show',
+        self::STATUS_CANCELLED => 'Cancelled',
+    ];
+
     protected static bool $logUnguarded = false;
+
+    protected $attributes = [
+        'payment_status' => self::PAYMENT_UNPAID,
+    ];
 
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['status', 'guest_name', 'guest_email', 'guest_phone', 'check_in', 'check_out', 'guests', 'quoted_total'])
+            ->logOnly([
+                'status', 'guest_name', 'guest_email', 'guest_phone',
+                'check_in', 'check_out', 'guests', 'quoted_total',
+                'payment_status', 'amount_paid', 'payment_method',
+                'payment_reference', 'coupon_code', 'discount_amount',
+            ])
             ->logOnlyDirty()
             ->dontLogEmptyChanges()
             ->useLogName('reservations')
@@ -42,6 +68,16 @@ class Reservation extends Model
         'special_requests',
         'source',
         'confirmed_at',
+        'checked_in_at',
+        'checked_out_at',
+        'no_show_at',
+        'payment_status',
+        'amount_paid',
+        'payment_method',
+        'payment_reference',
+        'paid_at',
+        'coupon_code',
+        'discount_amount',
     ];
 
     protected $casts = [
@@ -50,6 +86,12 @@ class Reservation extends Model
         'guests' => 'integer',
         'quoted_total' => 'decimal:2',
         'confirmed_at' => 'datetime',
+        'checked_in_at' => 'datetime',
+        'checked_out_at' => 'datetime',
+        'no_show_at' => 'datetime',
+        'amount_paid' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
+        'paid_at' => 'datetime',
     ];
 
     protected static function booted(): void
@@ -90,16 +132,82 @@ class Reservation extends Model
         return $query->where('status', self::STATUS_CANCELLED);
     }
 
+    public function scopeActiveStay($query)
+    {
+        return $query->whereIn('status', [self::STATUS_CONFIRMED, self::STATUS_CHECKED_IN]);
+    }
+
+    public function scopeCheckedIn($query)
+    {
+        return $query->where('status', self::STATUS_CHECKED_IN);
+    }
+
+    public function scopeCheckedOut($query)
+    {
+        return $query->where('status', self::STATUS_CHECKED_OUT);
+    }
+
+    public function scopeNoShow($query)
+    {
+        return $query->where('status', self::STATUS_NO_SHOW);
+    }
+
+    public function scopeArriving($query)
+    {
+        return $query->where('check_in', now()->toDateString())
+            ->whereIn('status', [self::STATUS_CONFIRMED, self::STATUS_PENDING]);
+    }
+
+    public function scopeLeaving($query)
+    {
+        return $query->where('check_out', now()->toDateString())
+            ->whereIn('status', [self::STATUS_CONFIRMED, self::STATUS_CHECKED_IN]);
+    }
+
+    public function scopeUnpaid($query)
+    {
+        return $query->whereIn('payment_status', [self::PAYMENT_UNPAID, self::PAYMENT_PARTIAL]);
+    }
+
     // ── Status Transitions ────────────────────────────────────
 
     public function markConfirmed(): bool
     {
-        $ok = $this->update([
-            'status' => self::STATUS_CONFIRMED,
-            'confirmed_at' => now(),
-        ]);
+        return DB::transaction(function () {
+            $in = $this->check_in?->copy()->startOfDay();
+            $out = $this->check_out?->copy()->startOfDay();
 
-        return $ok && $this->room_unit_id !== null;
+            if (!$in || !$out || $out->lte($in)) {
+                return false;
+            }
+
+            // Assign a unit if possible: reuse the currently assigned one when it
+            // can still hold the stay, otherwise find a fresh bookable unit. Never
+            // confirm a reservation that has no physical room to occupy.
+            $unitId = $this->usableUnitId() ?? optional($this->findBookableUnit($in, $out))->id;
+
+            if (!$unitId) {
+                return false;
+            }
+
+            $saved = $this->update([
+                'status' => self::STATUS_CONFIRMED,
+                'confirmed_at' => now(),
+                'room_unit_id' => $unitId,
+            ]);
+
+            // syncUnitBooking (see booted) marks the assigned unit's nights as booked.
+            if ($saved && filled($this->guest_email)) {
+                try {
+                    \Illuminate\Support\Facades\Mail::to($this->guest_email)
+                        ->queue(new \App\Mail\GuestBookingConfirmed($this->fresh()));
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::error('Failed to queue guest confirmation email: ' . $e->getMessage());
+                }
+            }
+
+            return (bool) $saved;
+        });
     }
 
     public function markCancelled(): bool
@@ -107,6 +215,93 @@ class Reservation extends Model
         return $this->update([
             'status' => self::STATUS_CANCELLED,
             'confirmed_at' => null,
+        ]);
+    }
+
+    /**
+     * Mark the guest as having checked in. Only valid from confirmed/pending.
+     * The assigned unit is marked occupied on the front desk.
+     */
+    public function markCheckedIn(): bool
+    {
+        $updated = $this->update([
+            'status' => self::STATUS_CHECKED_IN,
+            'checked_in_at' => now(),
+        ]);
+
+        if ($updated && $this->room_unit_id) {
+            $unit = $this->roomUnit;
+            if ($unit && $unit->is_active) {
+                $unit->markOccupied();
+            }
+        }
+
+        return (bool) $updated;
+    }
+
+    /**
+     * Mark the guest as checked out. The unit is released back to available
+     * and its booked nights kept for history.
+     */
+    public function markCheckedOut(): bool
+    {
+        $updated = $this->update([
+            'status' => self::STATUS_CHECKED_OUT,
+            'checked_out_at' => now(),
+        ]);
+
+        if ($updated && $this->room_unit_id) {
+            $unit = $this->roomUnit;
+            if ($unit && $unit->status === 'occupied') {
+                $unit->markAvailable();
+            }
+        }
+
+        return (bool) $updated;
+    }
+
+    /**
+     * Mark a confirmed guest who never arrived as a no-show.
+     */
+    public function markNoShow(): bool
+    {
+        return $this->update([
+            'status' => self::STATUS_NO_SHOW,
+            'no_show_at' => now(),
+        ]);
+    }
+
+    // ── Payment Helpers ──────────────────────────────────────
+
+    public function isPaid(): bool
+    {
+        return $this->payment_status === self::PAYMENT_PAID;
+    }
+
+    public function hasPartialPayment(): bool
+    {
+        return $this->payment_status === self::PAYMENT_PARTIAL;
+    }
+
+    public function balanceDue(): float
+    {
+        return round(max(0, (float) $this->quoted_total - (float) $this->amount_paid), 2);
+    }
+
+    /**
+     * Record a payment on this reservation. When the running total reaches
+     * or exceeds the quoted total the payment is marked fully paid.
+     */
+    public function recordPayment(float $amount, ?string $method = null, ?string $reference = null): bool
+    {
+        return $this->update([
+            'amount_paid' => round((float) $this->amount_paid + $amount, 2),
+            'payment_method' => $method ?? $this->payment_method,
+            'payment_reference' => $reference ?? $this->payment_reference,
+            'payment_status' => ($this->amount_paid + $amount) >= (float) $this->quoted_total
+                ? self::PAYMENT_PAID
+                : self::PAYMENT_PARTIAL,
+            'paid_at' => now(),
         ]);
     }
 
@@ -128,7 +323,7 @@ class Reservation extends Model
             return;
         }
 
-        if ($this->status !== self::STATUS_CONFIRMED) {
+        if (!in_array($this->status, [self::STATUS_CONFIRMED, self::STATUS_CHECKED_IN], true)) {
             $this->releaseUnitBooking();
 
             return;
@@ -261,7 +456,7 @@ class Reservation extends Model
 
         $overlap = self::query()
             ->where('room_unit_id', $unit->id)
-            ->where('status', self::STATUS_CONFIRMED)
+            ->whereIn('status', [self::STATUS_CONFIRMED, self::STATUS_CHECKED_IN])
             ->when($this->exists, fn ($q) => $q->whereKeyNot($this->getKey()))
             ->where('check_in', '<', \Illuminate\Support\Carbon::parse($out)->toDateString())
             ->where('check_out', '>', \Illuminate\Support\Carbon::parse($in)->toDateString());

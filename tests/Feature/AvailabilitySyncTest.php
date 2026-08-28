@@ -155,7 +155,7 @@ class AvailabilitySyncTest extends TestCase
         $this->assertTrue((bool) $first->markConfirmed());
         $this->assertFalse((bool) $second->markConfirmed(), 'Confirming without a free unit must fail.');
         $this->assertNull($second->fresh()->room_unit_id);
-        $this->assertEquals(Reservation::STATUS_CONFIRMED, $second->fresh()->status);
+        $this->assertEquals(Reservation::STATUS_PENDING, $second->fresh()->status, 'A failed confirmation must leave the reservation pending, not confirmed.');
 
         // The second reservation must NOT have blocked any nights
         $rows = RoomAvailability::query()

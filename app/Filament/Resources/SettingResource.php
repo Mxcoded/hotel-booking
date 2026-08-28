@@ -120,6 +120,7 @@ class SettingResource extends Resource
                             ->visible(fn (Get $get) => in_array($get('type'), ['text', 'number'])),
                         Forms\Components\FileUpload::make('file_upload')
                             ->label('File')
+                            ->disk('public')
                             ->directory('settings')
                             ->maxSize(10240)
                             ->visible(fn (Get $get) => in_array($get('type'), ['image', 'video', 'file']))

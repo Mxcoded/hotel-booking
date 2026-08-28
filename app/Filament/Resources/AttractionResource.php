@@ -57,6 +57,7 @@ class AttractionResource extends Resource
                 Forms\Components\FileUpload::make('image')
                     ->image()
                     ->imageEditor()
+                    ->disk('public')
                     ->directory('attractions')
                     ->maxSize(2048)
                     ->required(),

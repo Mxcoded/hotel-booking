@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Reservation;
 use App\Models\RoomType;
+use App\Models\RoomUnit;
 use App\Models\User;
 use App\Models\Visitor;
 use App\Models\WhatsappLead;
@@ -63,6 +64,11 @@ class BookingFunnelTest extends TestCase
         ]);
 
         if ($status === Reservation::STATUS_CONFIRMED) {
+            RoomUnit::firstOrCreate([
+                'room_type_id' => $this->roomType->id,
+                'unit_number' => 'U-' . uniqid(),
+                'status' => 'available',
+            ]);
             $reservation->markConfirmed();
         }
 

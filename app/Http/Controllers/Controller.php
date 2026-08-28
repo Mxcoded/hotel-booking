@@ -31,4 +31,21 @@ class Controller extends BaseController
             Log::error("Failed to queue {$context} notification: " . $e->getMessage());
         }
     }
+
+    /**
+     * Queue an email to a guest when an address is available.
+     * Never interrupts the guest-facing flow on failure.
+     */
+    protected function notifyGuest(object $mailable, ?string $email, string $context): void
+    {
+        if (empty($email)) {
+            return;
+        }
+
+        try {
+            Mail::to($email)->queue($mailable);
+        } catch (\Throwable $e) {
+            Log::error("Failed to queue {$context} guest email: " . $e->getMessage());
+        }
+    }
 }

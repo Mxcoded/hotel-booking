@@ -41,6 +41,7 @@ class GalleryResource extends Resource
                     ->directory('gallery')
                     ->image()
                     ->imageEditor()
+                    ->disk('public')
                     ->maxSize(5120)
                     ->required()
                     ->columnSpanFull(),

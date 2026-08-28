@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Reservation;
 use App\Models\RoomType;
+use App\Models\RoomUnit;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Activitylog\Models\Activity;
@@ -77,7 +78,14 @@ class AuditLogTest extends TestCase
 
     public function test_status_confirmation_logs_dirty_change(): void
     {
-        $reservation = $this->reservation($this->roomType());
+        $roomType = $this->roomType();
+        $reservation = $this->reservation($roomType);
+
+        RoomUnit::create([
+            'room_type_id' => $roomType->id,
+            'unit_number' => 'A-101',
+            'status' => 'available',
+        ]);
 
         $this->actingAs($this->admin);
         $reservation->markConfirmed();

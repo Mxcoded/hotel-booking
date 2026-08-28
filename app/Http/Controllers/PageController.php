@@ -7,7 +7,9 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ContactMessageReceived;
+use App\Mail\GuestBookingRequestReceived;
 use App\Mail\ReservationRequestReceived;
+use App\Models\Coupon;
 use App\Models\Gallery;
 use App\Models\Reservation;
 use App\Models\RoomType;
@@ -325,6 +327,7 @@ class PageController extends Controller
             'guest_email' => ['nullable', 'email', 'max:255'],
             'guest_phone' => ['required', 'string', 'max:32'],
             'special_requests' => ['nullable', 'string', 'max:2000'],
+            'coupon_code' => ['nullable', 'string', 'max:50'],
             'honeypot' => ['nullable', 'string', 'size:0'],
         ]);
 
@@ -377,6 +380,34 @@ class PageController extends Controller
             $subtotal += $roomType->getPriceForDate($date->toDateString());
         }
 
+        $extraGuestFee = (float) $roomType->calculateExtraGuestFee($guests);
+
+        // Optional promo code: applies a validated discount on the room subtotal.
+        $coupon = null;
+        $discountAmount = 0.0;
+        $couponError = null;
+
+        if (!empty($data['coupon_code'])) {
+            $coupon = Coupon::query()->where('code', $data['coupon_code'])->first();
+
+            if (!$coupon) {
+                $couponError = 'That promo code is not valid.';
+            } else {
+                $couponResult = $coupon->discountFor($subtotal);
+                if (!$couponResult['valid']) {
+                    $couponError = $couponResult['reason'] ?? 'That promo code is not valid.';
+                } else {
+                    $discountAmount = (float) $couponResult['discount'];
+                }
+            }
+        }
+
+        if ($couponError) {
+            return response()->json(['message' => $couponError, 'errors' => ['coupon_code' => [$couponError]]], 422);
+        }
+
+        $total = round($subtotal + $extraGuestFee - $discountAmount, 2);
+
         $reservation = Reservation::create([
             'room_type_id' => $roomType->id,
             'guest_name' => $data['guest_name'],
@@ -385,13 +416,20 @@ class PageController extends Controller
             'check_in' => $data['check_in'],
             'check_out' => $data['check_out'],
             'guests' => $guests,
-            'quoted_total' => round($subtotal + (float) $roomType->calculateExtraGuestFee($guests), 2),
+            'quoted_total' => $total,
             'status' => Reservation::STATUS_PENDING,
             'special_requests' => $data['special_requests'] ?? null,
             'source' => 'website',
+            'coupon_code' => $coupon ? $coupon->code : null,
+            'discount_amount' => $discountAmount,
         ]);
 
+        if ($coupon) {
+            $coupon->incrementUsage();
+        }
+
         $this->notifyStaff(new ReservationRequestReceived($reservation), 'reservation request');
+        $this->notifyGuest(new GuestBookingRequestReceived($reservation), $reservation->guest_email, 'reservation ack');
 
         return response()->json([
             'success' => true,

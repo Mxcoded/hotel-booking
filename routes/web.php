@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 // Public Frontend Controllers
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\LeadController;
+use App\Http\Controllers\PaymentController;
 
 // Admin Panel Controllers
 use App\Http\Controllers\FeedbackController;
@@ -58,6 +59,13 @@ Route::get('/api/availability', [PageController::class, 'availabilitySearch'])
 Route::post('/api/reservations', [PageController::class, 'storeReservation'])
     ->middleware('throttle:10,1')
     ->name('api.reservations.store');
+
+// Online payments via Paystack
+Route::get('/pay/{reservation}/pay', [PaymentController::class, 'create'])->name('pay.create');
+Route::get('/pay/callback', [PaymentController::class, 'callback'])->name('pay.callback');
+Route::post('/pay/webhook', [PaymentController::class, 'webhook'])
+    ->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class)
+    ->name('pay.webhook');
 
 // SEO
 Route::get('/sitemap.xml', [PageController::class, 'sitemap'])->name('sitemap');

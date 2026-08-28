@@ -94,6 +94,15 @@ class ContactResource extends Resource
             ])
             ->bulkActions([
                 BulkActionGroup::make([
+                    \Filament\Actions\BulkAction::make('mark_read')
+                        ->label('Mark as read')
+                        ->icon('heroicon-m-check-badge')
+                        ->action(function ($records) {
+                            \App\Models\Contact::query()
+                                ->whereKey($records->pluck('id'))
+                                ->where('is_read', false)
+                                ->update(['is_read' => true]);
+                        }),
                     DeleteBulkAction::make(),
                 ]),
             ]);

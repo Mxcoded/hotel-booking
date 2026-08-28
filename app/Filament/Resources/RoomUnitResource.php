@@ -102,6 +102,17 @@ class RoomUnitResource extends Resource
                         'info' => 'housekeeping',
                     ])
                     ->sortable(),
+                Tables\Columns\TextColumn::make('housekeeping_status')
+                    ->label('Housekeeping')
+                    ->badge()
+                    ->formatStateUsing(fn (string $state) => ucfirst($state))
+                    ->color(fn (string $state) => match ($state) {
+                        \App\Models\HousekeepingLog::STATUS_DIRTY => 'danger',
+                        \App\Models\HousekeepingLog::STATUS_CLEAN => 'success',
+                        \App\Models\HousekeepingLog::STATUS_INSPECTED => 'info',
+                        default => 'gray',
+                    })
+                    ->sortable(),
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean()
                     ->label('Active')
@@ -124,6 +135,9 @@ class RoomUnitResource extends Resource
                         'out_of_order' => 'Out of Order',
                         'housekeeping' => 'Housekeeping',
                     ]),
+                Tables\Filters\SelectFilter::make('housekeeping_status')
+                    ->options(\App\Models\HousekeepingLog::STATUS_OPTIONS)
+                    ->label('Housekeeping'),
                 Tables\Filters\SelectFilter::make('floor')
                     ->options(fn () => RoomUnit::query()->where('floor', '!=', null)->distinct()->pluck('floor', 'floor')->toArray())
                     ->label('Floor'),
@@ -134,6 +148,27 @@ class RoomUnitResource extends Resource
                     ]),
             ])
             ->actions([
+                \Filament\Actions\Action::make('mark_clean')
+                    ->label('Clean')
+                    ->icon('heroicon-m-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->visible(fn (RoomUnit $record) => $record->housekeeping_status !== \App\Models\HousekeepingLog::STATUS_CLEAN)
+                    ->action(fn (RoomUnit $record) => $record->markClean()),
+                \Filament\Actions\Action::make('mark_dirty')
+                    ->label('Dirty')
+                    ->icon('heroicon-m-x-circle')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->visible(fn (RoomUnit $record) => $record->housekeeping_status !== \App\Models\HousekeepingLog::STATUS_DIRTY)
+                    ->action(fn (RoomUnit $record) => $record->markDirty()),
+                \Filament\Actions\Action::make('mark_inspected')
+                    ->label('Inspected')
+                    ->icon('heroicon-m-clipboard-check')
+                    ->color('info')
+                    ->requiresConfirmation()
+                    ->visible(fn (RoomUnit $record) => $record->housekeeping_status !== \App\Models\HousekeepingLog::STATUS_INSPECTED)
+                    ->action(fn (RoomUnit $record) => $record->markInspected()),
                 EditAction::make(),
                 DeleteAction::make(),
             ])
