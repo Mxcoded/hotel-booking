@@ -59,7 +59,7 @@ class AttractionResource extends Resource
                     ->imageEditor()
                     ->disk('public')
                     ->directory('attractions')
-                    ->maxSize(2048)
+                    ->maxSize(5120)
                     ->required(),
             ]);
     }

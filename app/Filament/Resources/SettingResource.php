@@ -122,7 +122,7 @@ class SettingResource extends Resource
                             ->label('File')
                             ->disk('public')
                             ->directory('settings')
-                            ->maxSize(10240)
+                            ->maxSize(fn (Get $get): int => $get('type') === 'image' ? 5120 : 10240)
                             ->visible(fn (Get $get) => in_array($get('type'), ['image', 'video', 'file']))
                             ->afterStateHydrated(function (Forms\Components\FileUpload $component, $state, $record): void {
                                 if ($record && in_array($record->type, ['image', 'video', 'file']) && filled($record->value)) {
