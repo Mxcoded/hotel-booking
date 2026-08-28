@@ -162,6 +162,66 @@
                     <div id="quote-result" class="hidden mt-4 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm"></div>
                 </div>
 
+                {{-- Book Now — online booking (create reservation → checkout) --}}
+                <div class="mb-6" id="book-now-widget">
+                    <button type="button" id="book-now-btn"
+                        class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-6 rounded-lg transition duration-300 inline-flex items-center justify-center text-lg shadow-lg shadow-amber-500/30">
+                        <i class="fas fa-calendar-check mr-3"></i>Book Now
+                    </button>
+
+                    <div id="book-now-form-wrap" class="hidden mt-4 rounded-xl border border-amber-200 bg-white p-5 shadow-sm">
+                        <h3 class="font-bold text-gray-900 mb-1">Book <span class="text-amber-600">{{ $roomType->name }}</span></h3>
+                        <p class="text-sm text-gray-600" id="book-now-summary">Select your dates above to see your booking summary.</p>
+                        <form id="book-now-form" class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            @include('partials._antibot')
+                            <div>
+                                <label for="bn-name" class="block text-sm font-semibold text-gray-700 mb-1">Full name *</label>
+                                <input type="text" id="bn-name" name="guest_name" required maxlength="255"
+                                       class="w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
+                            </div>
+                            <div>
+                                <label for="bn-phone" class="block text-sm font-semibold text-gray-700 mb-1">Phone / WhatsApp *</label>
+                                <input type="tel" id="bn-phone" name="guest_phone" required maxlength="32"
+                                       class="w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
+                            </div>
+                            <div>
+                                <label for="bn-email" class="block text-sm font-semibold text-gray-700 mb-1">Email (optional)</label>
+                                <input type="email" id="bn-email" name="guest_email" maxlength="255"
+                                       class="w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
+                            </div>
+                            <div>
+                                <label for="bn-coupon" class="block text-sm font-semibold text-gray-700 mb-1">Promo code (optional)</label>
+                                <input type="text" id="bn-coupon" name="coupon_code" maxlength="50"
+                                       class="w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500"
+                                       placeholder="e.g. WELCOME10">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label for="bn-requests" class="block text-sm font-semibold text-gray-700 mb-1">Special requests (optional)</label>
+                                <textarea id="bn-requests" name="special_requests" rows="2" maxlength="2000"
+                                          class="w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500"></textarea>
+                            </div>
+                            <div class="sm:col-span-2 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                                <button type="submit" id="bn-submit"
+                                        class="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white font-bold py-3 px-8 rounded-lg transition duration-300">
+                                    <i class="fas fa-paper-plane"></i> Request Booking
+                                </button>
+                                <button type="button" id="bn-cancel" class="text-sm font-semibold text-gray-500 hover:text-gray-700 underline">Cancel</button>
+                                <span id="bn-error" class="hidden text-sm font-medium text-red-600"></span>
+                            </div>
+                        </form>
+                        <div id="bn-success" class="hidden mt-4 rounded-lg bg-green-50 border border-green-200 p-4">
+                            <p class="font-bold text-green-800"><i class="fas fa-check-circle mr-2"></i>Booking request received!</p>
+                            <p id="bn-success-details" class="mt-1 text-sm text-green-700"></p>
+                            <div class="mt-3">
+                                <a id="bn-pay-btn" href="#" target="_blank" rel="noopener noreferrer"
+                                   class="inline-flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white text-sm font-bold py-2.5 px-5 rounded-lg transition">
+                                    <i class="fas fa-credit-card"></i> Proceed to payment
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <a href="https://wa.me/{{ setting('whatsapp_number') }}?text=Hi,%20I'm%20interested%20in%20booking%20the%20{{ urlencode($roomType->name) }}." target="_blank" id="reserve-whatsapp-link" class="whatsapp-link w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-lg transition duration-300 inline-flex items-center justify-center text-lg">
                     <i class="fab fa-whatsapp mr-3"></i> Reserve This Room Type
                 </a>
@@ -393,6 +453,122 @@
                 }
             }));
         }
+    });
+</script>
+
+<script>
+    // ── Book Now — create a reservation, then route to secure checkout ──
+    document.addEventListener('DOMContentLoaded', function () {
+        const wrap = document.getElementById('book-now-form-wrap');
+        const btn = document.getElementById('book-now-btn');
+        if (!wrap || !btn) return;
+
+        const quoteWidget = document.getElementById('stay-quote-widget');
+        const roomTypeId = quoteWidget ? quoteWidget.dataset.roomTypeId : null;
+        const roomName = quoteWidget ? quoteWidget.dataset.roomName : 'this room';
+
+        const checkInEl = document.getElementById('quote-check-in');
+        const checkOutEl = document.getElementById('quote-check-out');
+        const guestsEl = document.getElementById('quote-guests');
+
+        const form = document.getElementById('book-now-form');
+        const submitBtn = document.getElementById('bn-submit');
+        const cancelBtn = document.getElementById('bn-cancel');
+        const errorEl = document.getElementById('bn-error');
+        const successEl = document.getElementById('bn-success');
+        const summaryEl = document.getElementById('book-now-summary');
+
+        const naira = (amount) => '₦' + Number(amount).toLocaleString('en-NG', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2
+        });
+
+        function fmtDate(v) {
+            const d = new Date(v + 'T00:00:00');
+            if (isNaN(d)) return v || '';
+            return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        function updateSummary() {
+            const nights = (checkInEl.value && checkOutEl.value) ?
+                Math.round((new Date(checkOutEl.value) - new Date(checkInEl.value)) / 86400000) : null;
+            if (checkInEl.value && checkOutEl.value && nights > 0) {
+                summaryEl.textContent = fmtDate(checkInEl.value) + ' – ' + fmtDate(checkOutEl.value) +
+                    ' (' + nights + ' night' + (nights > 1 ? 's' : '') + ', ' + (guestsEl.value || '1') + ' guest' + (guestsEl.value > 1 ? 's' : '') + ').';
+            } else {
+                summaryEl.textContent = 'Select your dates above to see your booking summary.';
+            }
+        }
+        [checkInEl, checkOutEl, guestsEl].forEach(el => el && el.addEventListener('change', updateSummary));
+
+        btn.addEventListener('click', function () {
+            wrap.classList.toggle('hidden');
+            successEl.classList.add('hidden');
+            errorEl.classList.add('hidden');
+            if (!wrap.classList.contains('hidden')) updateSummary();
+        });
+        cancelBtn.addEventListener('click', function () {
+            wrap.classList.add('hidden');
+        });
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            if (!roomTypeId) return;
+            errorEl.classList.add('hidden');
+            successEl.classList.add('hidden');
+
+            const fd = new FormData(form);
+            const payload = {
+                room_type_id: roomTypeId,
+                check_in: checkInEl.value,
+                check_out: checkOutEl.value,
+                guests: guestsEl.value,
+                guest_name: fd.get('guest_name'),
+                guest_phone: fd.get('guest_phone'),
+                guest_email: fd.get('guest_email') || null,
+                special_requests: fd.get('special_requests') || null,
+                coupon_code: fd.get('coupon_code') || null,
+                ...window.collectAntiBot(form),
+            };
+
+            submitBtn.disabled = true;
+            const originalHtml = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Sending…';
+
+            try {
+                const res = await fetch('/api/reservations', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    },
+                    body: JSON.stringify(payload),
+                });
+                const body = await res.json().catch(() => null);
+
+                if (res.status === 201 && body && body.success) {
+                    form.classList.add('hidden');
+                    document.getElementById('bn-success-details').textContent =
+                        'Reference ' + body.reference + ' — quoted total ' + naira(body.total) +
+                        '. We will contact you at ' + (payload.guest_phone || payload.guest_email) + ' shortly.';
+                    const payBtn = document.getElementById('bn-pay-btn');
+                    if (payBtn && body.payment_url) {
+                        payBtn.href = body.payment_url;
+                        payBtn.classList.remove('hidden');
+                    }
+                    successEl.classList.remove('hidden');
+                } else {
+                    throw new Error(body && body.message ? body.message : 'Could not submit your request. Please try again or contact us.');
+                }
+            } catch (err) {
+                errorEl.textContent = err.message || 'Something went wrong. Please try again.';
+                errorEl.classList.remove('hidden');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalHtml;
+            }
+        });
     });
 </script>
 @endsection
