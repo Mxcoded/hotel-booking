@@ -17,7 +17,8 @@ use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Section as FormSection;
+use Filament\Schemas\Components\Section as InfolistSection;
 use Filament\Tables;
 use Filament\Tables\Table;
 use UnitEnum;
@@ -42,7 +43,7 @@ class ReservationResource extends Resource
     {
         return $schema
             ->schema([
-                Section::make('Guest')
+                FormSection::make('Guest')
                     ->schema([
                         Forms\Components\TextInput::make('guest_name')
                             ->required()
@@ -54,7 +55,7 @@ class ReservationResource extends Resource
                             ->required()
                             ->maxLength(32),
                     ])->columns(3),
-                Section::make('Stay')
+                FormSection::make('Stay')
                     ->schema([
                         Forms\Components\Select::make('room_type_id')
                             ->relationship('roomType', 'name')
@@ -77,7 +78,7 @@ class ReservationResource extends Resource
                             ->options(Reservation::STATUS_OPTIONS)
                             ->required(),
                     ])->columns(3),
-                Section::make('Details')
+                FormSection::make('Details')
                     ->schema([
                         Forms\Components\Textarea::make('special_requests')
                             ->rows(3)
@@ -194,7 +195,7 @@ class ReservationResource extends Resource
                     ->visible(fn (Reservation $record) => $record->status === Reservation::STATUS_CHECKED_IN)
                     ->action(fn (Reservation $record) => $record->markCheckedOut()),
                 Action::make('no_show')
-                    ->icon('heroicon-m-user-x')
+                    ->icon('heroicon-m-user-minus')
                     ->color('danger')
                     ->requiresConfirmation()
                     ->visible(fn (Reservation $record) => in_array($record->status, [Reservation::STATUS_CONFIRMED, Reservation::STATUS_PENDING], true))
@@ -238,13 +239,13 @@ class ReservationResource extends Resource
     {
         return $schema
             ->schema([
-                Infolists\Components\Section::make('Guest')
+                InfolistSection::make('Guest')
                     ->schema([
                         Infolists\Components\TextEntry::make('guest_name'),
                         Infolists\Components\TextEntry::make('guest_email'),
                         Infolists\Components\TextEntry::make('guest_phone'),
                     ])->columns(3),
-                Infolists\Components\Section::make('Stay')
+                InfolistSection::make('Stay')
                     ->schema([
                         Infolists\Components\TextEntry::make('roomType.name'),
                         Infolists\Components\TextEntry::make('check_in')->date('D, d M Y'),
@@ -258,7 +259,7 @@ class ReservationResource extends Resource
                         Infolists\Components\TextEntry::make('checked_in_at')->dateTime()->placeholder('—'),
                         Infolists\Components\TextEntry::make('checked_out_at')->dateTime()->placeholder('—'),
                     ])->columns(4),
-                Infolists\Components\Section::make('Payment')
+                InfolistSection::make('Payment')
                     ->schema([
                         Infolists\Components\TextEntry::make('payment_status')->badge(),
                         Infolists\Components\TextEntry::make('amount_paid')->money('NGN'),
@@ -269,7 +270,7 @@ class ReservationResource extends Resource
                         Infolists\Components\TextEntry::make('payment_reference')->placeholder('—'),
                         Infolists\Components\TextEntry::make('coupon_code')->badge()->placeholder('—'),
                     ])->columns(3),
-                Infolists\Components\Section::make('Details')
+                InfolistSection::make('Details')
                     ->schema([
                         Infolists\Components\TextEntry::make('special_requests')
                             ->prose()

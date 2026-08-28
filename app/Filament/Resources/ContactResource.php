@@ -15,6 +15,7 @@ use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section as InfolistSection;
 use Filament\Tables;
 use Filament\Tables\Table;
 use UnitEnum;
@@ -112,13 +113,13 @@ class ContactResource extends Resource
     {
         return $schema
             ->schema([
-                Infolists\Components\Section::make('Contact Details')
+                InfolistSection::make('Contact Details')
                     ->schema([
                         Infolists\Components\TextEntry::make('name'),
                         Infolists\Components\TextEntry::make('email'),
                         Infolists\Components\TextEntry::make('created_at')->dateTime(),
                     ])->columns(3),
-                Infolists\Components\Section::make('Message')
+                InfolistSection::make('Message')
                     ->schema([
                         Infolists\Components\TextEntry::make('message')
                             ->columnSpanFull()

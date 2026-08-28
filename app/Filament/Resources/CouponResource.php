@@ -11,6 +11,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms;
+use Filament\Schemas\Components\Section as FormSection;
 use Filament\Forms\Components\DatePicker;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -38,7 +39,7 @@ class CouponResource extends Resource
     {
         return $schema
             ->schema([
-                Forms\Components\Section::make('Coupon')
+                FormSection::make('Coupon')
                     ->schema([
                         Forms\Components\TextInput::make('code')
                             ->required()
@@ -48,7 +49,7 @@ class CouponResource extends Resource
                         Forms\Components\TextInput::make('description')
                             ->maxLength(255),
                     ])->columns(2),
-                Forms\Components\Section::make('Discount')
+                FormSection::make('Discount')
                     ->schema([
                         Forms\Components\Select::make('discount_type')
                             ->options([
@@ -67,7 +68,7 @@ class CouponResource extends Resource
                             ->default(0)
                             ->label('Minimum booking value (₦)'),
                     ])->columns(3),
-                Forms\Components\Section::make('Validity & Usage')
+                FormSection::make('Validity & Usage')
                     ->schema([
                         DatePicker::make('valid_from'),
                         DatePicker::make('valid_until'),

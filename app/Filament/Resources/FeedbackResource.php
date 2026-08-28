@@ -16,6 +16,7 @@ use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section as InfolistSection;
 use Filament\Tables;
 use Filament\Tables\Table;
 use BackedEnum;
@@ -157,7 +158,7 @@ class FeedbackResource extends Resource
     {
         return $schema
             ->schema([
-                Infolists\Components\Section::make('Feedback Details')
+                InfolistSection::make('Feedback Details')
                     ->schema([
                         Infolists\Components\TextEntry::make('name')->default('Anonymous'),
                         Infolists\Components\TextEntry::make('email')->default('N/A'),
@@ -170,7 +171,7 @@ class FeedbackResource extends Resource
                             }),
                         Infolists\Components\TextEntry::make('created_at')->dateTime(),
                     ])->columns(4),
-                Infolists\Components\Section::make('Message')
+                InfolistSection::make('Message')
                     ->schema([
                         Infolists\Components\TextEntry::make('message')
                             ->columnSpanFull()
