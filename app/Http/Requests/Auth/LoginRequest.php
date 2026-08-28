@@ -22,7 +22,7 @@ class LoginRequest extends FormRequest
         return [
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
-            'honeypot' => ['nullable', 'string', 'size:0'],
+            'honeypot_name' => ['required', new \App\Rules\AntiBot],
         ];
     }
 

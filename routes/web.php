@@ -62,6 +62,9 @@ Route::post('/api/reservations', [PageController::class, 'storeReservation'])
 
 // Online payments via Paystack
 Route::get('/pay/{reservation}/pay', [PaymentController::class, 'create'])->name('pay.create');
+Route::post('/pay/{reservation}/pay/initiate', [PaymentController::class, 'initiate'])
+    ->middleware('throttle:10,1')
+    ->name('pay.initiate');
 Route::get('/pay/callback', [PaymentController::class, 'callback'])->name('pay.callback');
 Route::post('/pay/webhook', [PaymentController::class, 'webhook'])
     ->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class)

@@ -35,6 +35,15 @@ class CouponTest extends TestCase
         RoomUnit::create(['room_type_id' => $this->roomType->id, 'unit_number' => '401', 'floor' => 4, 'is_active' => true]);
     }
 
+    protected function antibot(): array
+    {
+        return [
+            'hp_ts' => (string) (time() - 10),
+            'honeypot_name' => 'hp_aaaaaaaaaaaa',
+            'hp_aaaaaaaaaaaa' => '',
+        ];
+    }
+
     protected function bookingPayload(array $overrides = []): array
     {
         return array_merge([
@@ -44,7 +53,7 @@ class CouponTest extends TestCase
             'guests' => 1,
             'guest_name' => 'Coupon Guest',
             'guest_phone' => '+2348088776655',
-        ], $overrides);
+        ], $this->antibot(), $overrides);
     }
 
     public function test_percent_coupon_reduces_total(): void

@@ -48,6 +48,15 @@ class ReservationApiTest extends TestCase
         return $roomType;
     }
 
+    protected function antibot(): array
+    {
+        return [
+            'hp_ts' => (string) (time() - 10),
+            'honeypot_name' => 'hp_aaaaaaaaaaaa',
+            'hp_aaaaaaaaaaaa' => '',
+        ];
+    }
+
     protected function validPayload(RoomType $roomType, array $overrides = []): array
     {
         return array_merge([
@@ -58,7 +67,7 @@ class ReservationApiTest extends TestCase
             'guest_name' => 'Ada Obi',
             'guest_phone' => '+2348012345678',
             'guest_email' => 'ada@example.com',
-        ], $overrides);
+        ], $this->antibot(), $overrides);
     }
 
     public function test_creates_pending_reservation_with_server_computed_total(): void
@@ -126,7 +135,8 @@ class ReservationApiTest extends TestCase
         Mail::fake();
         $roomType = $this->roomTypeWithUnit();
 
-        $this->postJson('/api/reservations', $this->validPayload($roomType, ['honeypot' => 'gotcha']))
+        // Filling the randomized honeypot trap must reject the submission.
+        $this->postJson('/api/reservations', $this->validPayload($roomType, ['hp_aaaaaaaaaaaa' => 'gotcha']))
             ->assertStatus(422);
 
         $this->assertDatabaseCount('reservations', 0);

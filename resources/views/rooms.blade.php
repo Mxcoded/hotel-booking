@@ -53,7 +53,7 @@
                 <h3 class="font-bold text-gray-900">Request Booking — <span id="booking-room-name" class="text-indigo-600"></span></h3>
                 <p class="mt-1 text-sm text-gray-600">No payment needed now. Our team will confirm availability and get back to you.</p>
                 <form id="booking-form" class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <input type="text" name="honeypot" value="" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true">
+                    @include('partials._antibot')
                     <div>
                         <label for="bk-name" class="block text-sm font-semibold text-gray-700 mb-1">Full name *</label>
                         <input type="text" id="bk-name" name="guest_name" required maxlength="255"
@@ -79,6 +79,12 @@
                         <textarea id="bk-requests" name="special_requests" rows="2" maxlength="2000"
                                   class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
                     </div>
+                    <div class="sm:col-span-1">
+                        <label for="bk-coupon" class="block text-sm font-semibold text-gray-700 mb-1">Promo code (optional)</label>
+                        <input type="text" id="bk-coupon" name="coupon_code" maxlength="50"
+                               class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                               placeholder="e.g. WELCOME10">
+                    </div>
                     <div class="sm:col-span-2 flex flex-col sm:flex-row items-start sm:items-center gap-3">
                         <button type="submit" id="booking-submit"
                                 class="bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white font-bold py-3 px-8 rounded-lg transition duration-300">
@@ -93,6 +99,12 @@
                 <div id="booking-success" class="hidden mt-2 rounded-lg bg-green-50 border border-green-200 p-4">
                     <p class="font-bold text-green-800"><i class="fas fa-check-circle mr-2"></i>Booking request received!</p>
                     <p id="booking-success-details" class="mt-1 text-sm text-green-700"></p>
+                    <div class="mt-3">
+                        <a id="booking-pay-btn" href="#" target="_blank" rel="noopener noreferrer"
+                           class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold py-2 px-4 rounded-lg transition">
+                            <i class="fas fa-credit-card"></i> Proceed to payment
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -438,7 +450,8 @@
             guest_phone: fd.get('guest_phone'),
             guest_email: fd.get('guest_email') || null,
             special_requests: fd.get('special_requests') || null,
-            honeypot: fd.get('honeypot') || '',
+            coupon_code: fd.get('coupon_code') || null,
+            ...window.collectAntiBot(this),
         };
 
         bookingSubmitBtn.disabled = true;
@@ -462,6 +475,11 @@
                 document.getElementById('booking-success-details').textContent =
                     'Reference ' + body.reference + ' — quoted total ₦' + Number(body.total).toLocaleString() +
                     '. We will contact you at ' + (payload.guest_phone || payload.guest_email) + ' shortly.';
+                const payBtn = document.getElementById('booking-pay-btn');
+                if (payBtn && body.payment_url) {
+                    payBtn.href = body.payment_url;
+                    payBtn.classList.remove('hidden');
+                }
                 bookingSuccess.classList.remove('hidden');
                 selectedRoom = null;
             } else {

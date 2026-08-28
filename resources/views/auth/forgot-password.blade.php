@@ -84,7 +84,7 @@
                     <span>Send reset link</span>
                 </button>
 
-                <input type="hidden" name="honeypot" value="" tabindex="-1" autocomplete="off" aria-hidden="true">
+                @include('partials._antibot')
             </form>
 
             <div class="mt-6 text-center">

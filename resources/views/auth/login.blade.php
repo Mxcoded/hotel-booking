@@ -135,7 +135,7 @@
                     <span>Log in</span>
                 </button>
 
-                <input type="hidden" name="honeypot" value="" tabindex="-1" autocomplete="off" aria-hidden="true">
+                @include('partials._antibot')
             </form>
 
             <div class="auth-divider"><span>or</span></div>

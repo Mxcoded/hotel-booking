@@ -7,8 +7,8 @@
         <h3 class="text-2xl font-bold text-center mb-2">Chat on WhatsApp</h3>
         <p class="text-center text-gray-600 mb-6">Just enter your details below and we'll redirect you instantly.
         </p>
-        <form id="whatsapp-lead-form">
-            <input type="hidden" name="honeypot" value="" tabindex="-1" autocomplete="off">
+        <form id="whatsapp-lead-form" onsubmit="return false;">
+            @include('partials._antibot')
             <div class="mb-4">
                 <label for="lead-name" class="block text-sm font-medium text-gray-700">Name</label>
                 <input type="text" id="lead-name" name="name" required
@@ -35,6 +35,22 @@
 
 
 <script>
+    // Collect the anti-bot fields (randomized honeypot, honeypot_name, hp_ts,
+    // turnstile_token) from a form so AJAX handlers can forward them unchanged.
+    window.collectAntiBot = function(form) {
+        const out = {};
+        const formData = new FormData(form);
+        const honeypotName = formData.get('honeypot_name');
+        if (formData.get('honeypot_name')) {
+            out.honeypot_name = formData.get('honeypot_name');
+            if (honeypotName) { out[honeypotName] = formData.get(honeypotName) || ''; }
+        }
+        const ts = formData.get('hp_ts');
+        if (ts) { out.hp_ts = ts; }
+        const tsToken = formData.get('turnstile_token');
+        if (tsToken) { out.turnstile_token = tsToken; }
+        return out;
+    };
     document.getElementById('mobile-menu-button').addEventListener('click', function() {
         document.getElementById('mobile-menu').classList.toggle('hidden');
     });
@@ -69,7 +85,7 @@
                 const leadData = {
                     name: formData.get('name'),
                     phone: formData.get('phone'),
-                    honeypot: formData.get('honeypot')
+                    ...window.collectAntiBot(this)
                 };
                 fetch("{{ route('whatsapp.lead.store') }}", {
                         method: 'POST',

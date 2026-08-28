@@ -27,7 +27,7 @@ class NewPasswordController extends Controller
             'token' => ['required'],
             'email' => ['required', 'email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'honeypot' => ['nullable', 'string', 'size:0'],
+            'honeypot_name' => ['required', new \App\Rules\AntiBot],
         ]);
 
         $status = Password::reset(

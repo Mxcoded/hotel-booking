@@ -95,11 +95,15 @@ class PageController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'message' => 'required|string',
-            'honeypot' => 'nullable|string|size:0',
+            'honeypot_name' => ['required', new \App\Rules\AntiBot],
         ]);
 
         // Store the message in the database
-        $contact = Contact::create($validatedData);
+        $contact = Contact::create([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'message' => $validatedData['message'],
+        ]);
 
         $this->notifyStaff(new ContactMessageReceived($contact), 'contact message');
 
@@ -328,7 +332,7 @@ class PageController extends Controller
             'guest_phone' => ['required', 'string', 'max:32'],
             'special_requests' => ['nullable', 'string', 'max:2000'],
             'coupon_code' => ['nullable', 'string', 'max:50'],
-            'honeypot' => ['nullable', 'string', 'size:0'],
+            'honeypot_name' => ['required', new \App\Rules\AntiBot],
         ]);
 
         $data['guest_email'] = $data['guest_email'] ?? null;
@@ -436,6 +440,7 @@ class PageController extends Controller
             'message' => 'Booking request received! Our team will confirm shortly.',
             'reference' => 'BR-' . str_pad((string) $reservation->id, 5, '0', STR_PAD_LEFT),
             'total' => (float) $reservation->quoted_total,
+            'payment_url' => route('pay.create', $reservation),
         ], 201);
     }
 

@@ -42,6 +42,15 @@ class GuestEmailNotificationsTest extends TestCase
         ]);
     }
 
+    protected function antibot(): array
+    {
+        return [
+            'hp_ts' => (string) (time() - 10),
+            'honeypot_name' => 'hp_aaaaaaaaaaaa',
+            'hp_aaaaaaaaaaaa' => '',
+        ];
+    }
+
     public function test_store_reservation_queues_acknowledgement_to_guest(): void
     {
         Mail::fake();
@@ -57,7 +66,7 @@ class GuestEmailNotificationsTest extends TestCase
             'guest_name' => 'Ada Guest',
             'guest_phone' => '+2348011223344',
             'guest_email' => 'ada@example.com',
-        ]);
+        ] + $this->antibot());
 
         $response->assertStatus(201);
 
@@ -77,7 +86,7 @@ class GuestEmailNotificationsTest extends TestCase
             'guests' => 1,
             'guest_name' => 'No Email Guest',
             'guest_phone' => '+2348011223344',
-        ]);
+        ] + $this->antibot());
 
         $response->assertStatus(201);
 

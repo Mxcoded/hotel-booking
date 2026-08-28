@@ -24,6 +24,15 @@ class EmailNotificationsTest extends TestCase
         Setting::create(['key' => 'email', 'value' => 'staff@brickspoint.test', 'type' => 'text']);
     }
 
+    protected function antibot(): array
+    {
+        return [
+            'hp_ts' => (string) (time() - 10),
+            'honeypot_name' => 'hp_aaaaaaaaaaaa',
+            'hp_aaaaaaaaaaaa' => '',
+        ];
+    }
+
     public function test_contact_submission_queues_staff_notification(): void
     {
         Mail::fake();
@@ -32,7 +41,7 @@ class EmailNotificationsTest extends TestCase
             'name' => 'John Guest',
             'email' => 'john@example.com',
             'message' => 'Do you have airport pickup?',
-        ]);
+        ] + $this->antibot());
 
         $response->assertRedirect('/#contact');
 
@@ -52,7 +61,7 @@ class EmailNotificationsTest extends TestCase
             'email' => 'jane@example.com',
             'rating' => 5,
             'message' => 'Wonderful stay!',
-        ]);
+        ] + $this->antibot());
 
         $response->assertOk()
             ->assertJsonPath('success', true);
@@ -73,7 +82,7 @@ class EmailNotificationsTest extends TestCase
             'name' => 'No Setting',
             'email' => 'guest@example.com',
             'message' => 'Hello there',
-        ])->assertRedirect('/#contact');
+        ] + $this->antibot())->assertRedirect('/#contact');
 
         Mail::assertQueued(ContactMessageReceived::class, function (ContactMessageReceived $mail) {
             return $mail->hasTo('fallback@example.test');
@@ -84,18 +93,20 @@ class EmailNotificationsTest extends TestCase
     {
         Mail::fake();
 
+        // The `+` operator keeps left-hand values; placing the filled trap on the
+        // left ensures the honeypot is populated so the AntiBot rule blocks it.
         $this->post('/contact', [
             'name' => 'Bot',
             'email' => 'bot@example.com',
             'message' => 'spam',
-            'honeypot' => 'gotcha',
-        ])->assertStatus(302);
+            'hp_aaaaaaaaaaaa' => 'gotcha',
+        ] + $this->antibot())->assertSessionHasErrors();
 
         $this->postJson('/feedback', [
             'rating' => 1,
             'message' => 'spam',
-            'honeypot' => 'gotcha',
-        ])->assertStatus(422);
+            'hp_aaaaaaaaaaaa' => 'gotcha',
+        ] + $this->antibot())->assertStatus(422);
 
         Mail::assertNothingQueued();
     }

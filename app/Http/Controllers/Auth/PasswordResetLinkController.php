@@ -20,7 +20,7 @@ class PasswordResetLinkController extends Controller
     {
         $request->validate([
             'email' => ['required', 'email'],
-            'honeypot' => ['nullable', 'string', 'size:0'],
+            'honeypot_name' => ['required', new \App\Rules\AntiBot],
         ]);
 
         $status = Password::sendResetLink(

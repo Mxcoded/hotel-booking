@@ -24,10 +24,15 @@ class FeedbackController extends Controller
             'email' => 'nullable|email|max:255',
             'rating' => 'required|integer|min:1|max:5',
             'message' => 'required|string',
-            'honeypot' => 'nullable|string|size:0',
+            'honeypot_name' => ['required', new \App\Rules\AntiBot],
         ]);
 
-        $feedback = Feedback::create($validated);
+        $feedback = Feedback::create([
+            'name' => $validated['name'] ?? null,
+            'email' => $validated['email'] ?? null,
+            'rating' => $validated['rating'],
+            'message' => $validated['message'],
+        ]);
 
         $this->notifyStaff(new FeedbackSubmitted($feedback), 'feedback');
 

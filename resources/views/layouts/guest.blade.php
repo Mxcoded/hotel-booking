@@ -6,6 +6,16 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'Brickspoint Hotel') }} — Admin Portal</title>
 
+    @if(app(\App\Services\Turnstile::class)->enabled())
+        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad" defer></script>
+        <script>
+            function onTurnstileLoad() { window.turnstileLoaded = true; }
+            function onTurnstileSuccess(token) {
+                document.querySelectorAll('input[name="turnstile_token"]').forEach(function (f) { f.value = token; });
+            }
+        </script>
+    @endif
+
     @if (setting('favicon'))
         <link rel="icon" type="image/x-icon" href="{{ asset('storage/' . setting('favicon')) }}">
     @endif

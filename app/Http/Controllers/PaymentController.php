@@ -10,10 +10,8 @@ use Illuminate\Support\Facades\Log;
 class PaymentController extends Controller
 {
     /**
-     * Optional PaymentSettings allows a custom amount to be entered; by default we
-     * charge the full quoted total so the reservation is settled in one go.
-     *
-     * GET /pay/{reservation}/pay
+     * GET /pay/{reservation}/pay — renders the guest checkout page with an
+     * order summary and a "Pay with Paystack" button.
      */
     public function create(Request $request, Reservation $reservation, Paystack $paystack)
     {
@@ -25,25 +23,48 @@ class PaymentController extends Controller
             return redirect()->route('home')->with('error', 'This booking can no longer be paid for online.');
         }
 
-        $alreadyPaid = $reservation->balanceDue();
-        $amount = max(0, $alreadyPaid);
+        $balance = $reservation->balanceDue();
 
-        if ($amount <= 0) {
+        if ($balance <= 0) {
             return redirect()->route('home')->with('success', 'This booking is already fully paid.');
         }
 
-        $amountToCharge = filter_var($request->query('amount', $amount), FILTER_VALIDATE_FLOAT);
-        $amountToCharge = min(max(0, (float) $amountToCharge), $amount);
+        return view('payments.checkout', [
+            'reservation' => $reservation,
+            'balance' => max(0, $balance),
+            'publicKey' => $paystack->publicKey(),
+        ]);
+    }
 
-        if ($amountToCharge <= 0) {
-            return redirect()->route('home')->with('error', 'This booking balance cannot be paid online.');
+    /**
+     * POST /pay/{reservation}/pay/initiate — starts the hosted Paystack checkout
+     * for the outstanding balance.
+     */
+    public function initiate(Request $request, Reservation $reservation, Paystack $paystack)
+    {
+        $request->validate([
+            'honeypot_name' => ['required', new \App\Rules\AntiBot],
+        ]);
+
+        if (!$paystack->enabled()) {
+            return redirect()->route('home')->with('error', 'Online payments are currently unavailable. Please contact us to complete your booking.');
+        }
+
+        if (!in_array($reservation->status, [Reservation::STATUS_PENDING, Reservation::STATUS_CONFIRMED], true)) {
+            return redirect()->route('home')->with('error', 'This booking can no longer be paid for online.');
+        }
+
+        $amount = $reservation->balanceDue();
+
+        if ($amount <= 0) {
+            return redirect()->route('home')->with('success', 'This booking is already fully paid.');
         }
 
         $callback = url('/pay/callback');
 
         $result = $paystack->initialize([
             'email' => $reservation->guest_email ?: setting('email'),
-            'amount' => $amountToCharge,
+            'amount' => $amount,
             'reference' => 'BR-' . str_pad((string) $reservation->id, 5, '0', STR_PAD_LEFT) . '-' . now()->format('His') . '-' . random_int(1000, 9999),
             'callback_url' => $callback,
             'metadata' => json_encode(['reservation_id' => $reservation->id]),

@@ -27,7 +27,7 @@ class LoginTest extends TestCase
     public function test_login_page_has_honeypot_field(): void
     {
         $this->get('/login')
-            ->assertSee('name="honeypot"', false)
+            ->assertSee('name="honeypot_name"', false)
             ->assertSee('tabindex="-1"', false);
     }
 
@@ -211,7 +211,7 @@ class LoginTest extends TestCase
         $this->postLogin([
             'email' => $user->email,
             'password' => 'password',
-            'honeypot' => 'bot-filled-this',
+            'hp_aaaaaaaaaaaa' => 'bot-filled-this',
         ])
             ->assertSessionHasErrors();
     }
@@ -232,12 +232,21 @@ class LoginTest extends TestCase
             ->assertSee('auth-input-group', false);
     }
 
+    protected function antibot(): array
+    {
+        return [
+            'hp_ts' => (string) (time() - 10),
+            'honeypot_name' => 'hp_aaaaaaaaaaaa',
+            'hp_aaaaaaaaaaaa' => '',
+        ];
+    }
+
     private function postLogin(array $data)
     {
         $this->get('/login');
 
         return $this->post('/login', array_merge([
             '_token' => $this->app['session.store']->token(),
-        ], $data));
+        ], $this->antibot(), $data));
     }
 }
