@@ -10,7 +10,7 @@
     </div>
     <div class="relative mx-auto max-w-7xl text-center">
         <h1 class="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">Explore Wuse II</h1>
-        <p class="mt-6 max-w-3xl mx-auto text-xl text-indigo-100">Discover the best places to eat, shop, and visit, all curated by your hosts at Brickspoint.</p>
+        <p class="mt-6 max-w-3xl mx-auto text-xl text-amber-50/90">Discover the best places to eat, shop, and visit, all curated by your hosts at Brickspoint.</p>
     </div>
 </div>
 

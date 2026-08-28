@@ -12,7 +12,7 @@
     </div>
     <div class="relative mx-auto max-w-7xl text-center">
         <h1 class="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">My Favorite Rooms</h1>
-        <p class="mt-6 max-w-3xl mx-auto text-xl text-indigo-100">Here are the rooms you've saved. Compare your top choices and get ready to book!</p>
+        <p class="mt-6 max-w-3xl mx-auto text-xl text-amber-50/90">Here are the rooms you've saved. Compare your top choices and get ready to book!</p>
     </div>
 </div>
 

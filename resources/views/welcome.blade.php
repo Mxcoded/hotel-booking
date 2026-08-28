@@ -21,7 +21,7 @@
 @section('content')
 
     {{-- Dynamic Hero Section --}}
-    <section class="hero-section h-screen flex items-center justify-center text-white relative -mt-20">
+    <section class="hero-section relative min-h-screen flex items-center justify-center text-white overflow-hidden -mt-20">
         @php
             $heroMedia = setting('hero_media');
         @endphp
@@ -40,35 +40,53 @@
             </div>
         @endif
 
-        <div class="absolute inset-0 bg-black opacity-50"></div>
-        <div class="text-center z-10 p-4">
-            <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-4 font-brownsugar">
-                {{ setting('hero_title', 'Welcome To') }}</h1>
+        <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/55 to-black/70"></div>
 
-            <!-- Updated Hero Content with Branded Fonts -->
-            <div class="text-center z-10 p-4 flex flex-col items-center">
-                <h1 class="font-brownsugar text-8xl md:text-9xl text-gray-380 -mb-4">B</h1>
-                <h2 class="font-brownsugar text-6xl md:text-7xl">Brickspoint</h2>
-                <p class="font-gotham text-base md:text-lg tracking-widest uppercase mt-2">Boutique Aparthotel</p>
-                <p class="font-gotham text-base md:text-lg tracking-widest uppercase">Wuse II</p>
-            </div>
-            <p class="text-lg md:text-2xl mb-8 font-gotham">{{ setting('slogan', 'Your Home Away From Home...') }}</p>
-            <p class="text-lg md:text-2xl mb-8 font-light">
+        <div class="relative z-10 text-center px-4 py-24 max-w-4xl mx-auto">
+            <span class="inline-flex items-center gap-2 bg-white/10 backdrop-blur border border-white/20 text-amber-300 text-xs md:text-sm font-gotham uppercase tracking-[0.3em] px-4 py-2 rounded-full mb-6">
+                <i class="fas fa-star text-amber-400"></i> Boutique Aparthotel &bull; Wuse II, Abuja
+            </span>
+
+            <h1 class="font-brownsugar text-6xl md:text-8xl leading-none">
+                <span class="block text-amber-400">{{ setting('hero_title', 'Welcome To') }}</span>
+                <span class="block mt-2">Brickspoint</span>
+            </h1>
+
+            <p class="font-gotham text-lg md:text-2xl tracking-[0.35em] uppercase mt-4 text-gray-100">
+                {{ setting('slogan', 'Your Home Away From Home...') }}</p>
+
+            <p class="text-base md:text-xl font-light text-gray-200 mt-4 max-w-2xl mx-auto">
                 {{ setting('hero_subtitle', 'No forms. No hassle. Just message us on WhatsApp to reserve your stay.') }}</p>
-            <a href="https://wa.me/{{ setting('whatsapp_number', '+2348099999620') }}?text=Hi,%20I'd%20like%20to%20book%20a%20room."
-                target="_blank"
-                class="whatsapp-link bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-full text-lg transition duration-300 ease-in-out transform hover:scale-105 inline-flex items-center">
-                <i class="fab fa-whatsapp mr-3 text-2xl"></i> Book Now on WhatsApp
-            </a>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
+                <a href="https://wa.me/{{ setting('whatsapp_number', '+2348099999620') }}?text=Hi,%20I'd%20like%20to%20book%20a%20room."
+                    target="_blank"
+                    class="whatsapp-link bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-full text-lg transition duration-300 ease-in-out transform hover:scale-105 inline-flex items-center gap-3 shadow-xl shadow-green-900/30">
+                    <i class="fab fa-whatsapp text-2xl"></i> Book Now on WhatsApp
+                </a>
+                <a href="#rooms"
+                    class="bg-white/10 hover:bg-white/20 backdrop-blur border border-white/25 text-white font-semibold py-4 px-8 rounded-full text-lg transition duration-300 ease-in-out inline-flex items-center gap-3">
+                    <i class="fas fa-bed text-amber-300"></i> View Rooms &amp; Suites
+                </a>
+            </div>
+        </div>
+
+        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 animate-bounce text-gray-300">
+            <i class="fas fa-chevron-down text-2xl"></i>
         </div>
     </section>
 
     <!-- Featured Rooms Section -->
     <section id="rooms" class="py-20 bg-white">
         <div class="container mx-auto px-6">
-            <h2 class="text-4xl font-bold text-center mb-4">Featured Rooms & Suites</h2>
-            <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">Discover our curated selection of rooms, each
-                designed for ultimate comfort and relaxation.</p>
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="inline-flex items-center gap-2 text-amber-600 font-semibold uppercase tracking-[0.25em] text-sm mb-3">
+                    <i class="fas fa-bed"></i> Stay with us
+                </span>
+                <h2 class="text-4xl font-bold">Featured Rooms &amp; Suites</h2>
+                <p class="text-gray-600 mt-3">Discover our curated selection of rooms, each
+                    designed for ultimate comfort and relaxation.</p>
+            </div>
 
             @if ($featuredRoomTypes->count() > 0)
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -77,30 +95,32 @@
                     @endphp
 
                     @foreach ($featuredRoomTypes as $roomType)
-                        <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden group relative">
+                        <div class="bg-white rounded-xl shadow-lg overflow-hidden group relative border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
                             <!-- Favorite Button -->
                             <button onclick="toggleFavorite('roomtype-{{ $roomType->id }}')"
-                                class="favorite-btn absolute top-4 right-4 bg-white/80 rounded-full p-2 z-10 transition-transform duration-200 hover:scale-110"
+                                class="favorite-btn absolute top-4 right-4 bg-white/90 backdrop-blur rounded-full p-2.5 z-10 shadow transition-transform duration-200 hover:scale-110"
                                 data-room-id="roomtype-{{ $roomType->id }}">
                                 <i class="far fa-heart text-gray-700 text-xl"></i>
                             </button>
-                            <a href="{{ route('rooms.show', $roomType) }}">
+                            <a href="{{ route('rooms.show', $roomType) }}" class="block overflow-hidden">
                                 <img src="{{ thumbnail_url($roomType->image, 'card') }}" alt="{{ $roomType->name }}"
-                                    class="w-full h-64 object-cover">
+                                    class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500">
                             </a>
                             <div class="p-6">
                                 <h3 class="text-2xl font-bold mb-2">{{ $roomType->name }}</h3>
-                                <div class="text-gray-600 mb-4">
-                                    <p class="font-bold text-xl text-gray-900">From ₦{{ number_format($roomType->price, 2) }} /
-                                        night</p>
+                                <div class="flex items-end justify-between mb-4 pb-4 border-b border-gray-100">
+                                    <div>
+                                        <p class="font-bold text-2xl text-amber-600">₦{{ number_format($roomType->price, 2) }}</p>
+                                        <p class="text-xs text-gray-500 uppercase tracking-wide">per night</p>
+                                    </div>
                                     @if ($usd_rate > 0)
-                                        <p class="text-sm">Approx. ${{ number_format($roomType->price / $usd_rate, 2) }}</p>
+                                        <p class="text-sm text-gray-500">~ ${{ number_format($roomType->price / $usd_rate, 2) }}</p>
                                     @endif
                                 </div>
                                 <a href="https://wa.me/{{ setting('whatsapp_number', '+2348099999620') }}?text=Hi,%20I'm%20interested%20in%20the%20{{ urlencode($roomType->name) }}."
                                     target="_blank"
-                                    class="whatsapp-link bg-gray-800 hover:bg-black text-white font-semibold py-2 px-4 rounded-lg w-full flex items-center justify-center">
-                                    <i class="fab fa-whatsapp mr-2"></i> Reserve via WhatsApp
+                                    class="whatsapp-link w-full inline-flex items-center justify-center gap-2 bg-gray-800 hover:bg-amber-600 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-300">
+                                    <i class="fab fa-whatsapp"></i> Reserve via WhatsApp
                                 </a>
                             </div>
                         </div>
@@ -108,8 +128,9 @@
                 </div>
                 <div class="text-center mt-12">
                     <a href="{{ route('rooms') }}"
-                        class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-lg transition duration-300">View
-                        All Rooms</a>
+                        class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3.5 px-9 rounded-lg transition duration-300 shadow-lg shadow-amber-500/30">
+                        View All Rooms <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
             @else
                 <p class="text-center text-gray-600">Our rooms are currently being prepared. Please check back soon!</p>
@@ -122,7 +143,10 @@
     <!-- Why Choose Us Section -->
     <section class="py-20 bg-gray-50">
         <div class="container mx-auto px-6 text-center">
-            <h2 class="text-4xl font-bold mb-12">Why Stay With Us?</h2>
+            <div class="text-center mb-12">
+                <span class="inline-flex items-center gap-2 text-amber-600 font-semibold uppercase tracking-[0.25em] text-sm mb-3"><i class="fas fa-gem"></i> Experience</span>
+                <h2 class="text-4xl font-bold">Why Stay With Us?</h2>
+            </div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
                 <div class="flex flex-col items-center">
                     <div class="bg-amber-500 text-white rounded-full p-4 mb-4">
@@ -159,24 +183,30 @@
     <!-- Testimonials Section -->
     <section class="py-20 bg-white">
         <div class="container mx-auto px-6">
-            <h2 class="text-4xl font-bold text-center mb-12">What Our Guests Say</h2>
+            <div class="text-center mb-12">
+                <span class="inline-flex items-center gap-2 text-amber-600 font-semibold uppercase tracking-[0.25em] text-sm mb-3"><i class="fas fa-comments"></i> Reviews</span>
+                <h2 class="text-4xl font-bold">What Our Guests Say</h2>
+            </div>
 
             @if ($testimonials->count() > 0)
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     @foreach ($testimonials as $testimonial)
-                        <div class="bg-amber-50 p-6 rounded-lg shadow-md">
-                            <div class="flex items-center mb-4">
+                        <div class="bg-white border border-gray-100 rounded-xl shadow-lg p-7 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+                            <i class="fas fa-quote-left text-amber-500/40 text-4xl mb-3"></i>
+                            <div class="flex items-center gap-1 mb-4">
                                 @for ($i = 0; $i < 5; $i++)
                                     @if ($i < $testimonial->rating)
-                                        <i class="fas fa-star text-yellow-400"></i>
+                                        <i class="fas fa-star text-amber-400"></i>
                                     @else
                                         <i class="far fa-star text-gray-300"></i>
                                     @endif
                                 @endfor
                             </div>
-                            <p class="text-gray-600 italic mb-4">"{{ $testimonial->message }}"</p>
-                            <p class="font-bold text-right text-gray-800">- {{ $testimonial->name ?? 'Anonymous' }}</p>
-                            <p class="text-sm text-gray-500">{{ $testimonial->created_at->diffForHumans() }}</p>
+                            <p class="text-gray-600 italic mb-5">"{{ $testimonial->message }}"</p>
+                            <div class="flex items-center justify-between border-t border-gray-100 pt-4">
+                                <p class="font-bold text-gray-800">- {{ $testimonial->name ?? 'Anonymous' }}</p>
+                                <p class="text-xs text-gray-500">{{ $testimonial->created_at->diffForHumans() }}</p>
+                            </div>
                         </div>
                     @endforeach
                 </div>
@@ -201,7 +231,8 @@
     <section id="contact" class="py-20 bg-gray-50">
         <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
             <div>
-                <h2 class="text-4xl font-bold mb-6">Contact & Location</h2>
+                <span class="inline-flex items-center gap-2 text-amber-600 font-semibold uppercase tracking-[0.25em] text-sm mb-3"><i class="fas fa-location-dot"></i> Find Us</span>
+                <h2 class="text-4xl font-bold mb-6">Contact &amp; Location</h2>
                 <p class="text-gray-600 mb-4">{{ $address }}</p>
                 <p class="text-gray-600 mb-4">Email: {{ $email }}</p>
                 <p class="text-gray-600 mb-8">Phone: {{ $phone }}</p>
@@ -227,21 +258,22 @@
                     <div>
                         <label for="name" class="block mb-1 font-medium">Full Name</label>
                         <input type="text" id="name" name="name"
-                            class="w-full p-2 border border-gray-300 rounded-lg" required>
+                            class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition bg-white" required>
                     </div>
                     <div>
                         <label for="email" class="block mb-1 font-medium">Email Address</label>
                         <input type="email" id="email" name="email"
-                            class="w-full p-2 border border-gray-300 rounded-lg" required>
+                            class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition bg-white" required>
                     </div>
                     <div>
                         <label for="message" class="block mb-1 font-medium">Message</label>
-                        <textarea id="message" name="message" rows="4" class="w-full p-2 border border-gray-300 rounded-lg"
+                        <textarea id="message" name="message" rows="4" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition bg-white"
                             required></textarea>
                     </div>
                     <button type="submit"
-                        class="bg-gray-800 hover:bg-black text-white font-bold py-3 px-6 rounded-lg transition duration-300">Send
-                        Message</button>
+                        class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-7 rounded-lg transition duration-300 shadow-md shadow-amber-500/30">
+                        Send Message <i class="fas fa-paper-plane"></i>
+                    </button>
                 </form>
             </div>
             <div>

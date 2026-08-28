@@ -7,8 +7,9 @@
     <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         {{-- Page header --}}
         <div class="mb-8 text-center">
-            <h1 class="text-3xl font-bold text-gray-900">Secure Checkout</h1>
-            <p class="mt-2 text-gray-600">Complete your payment to confirm your stay at Brickspoint Boutique Aparthotel.</p>
+            <span class="inline-flex items-center gap-2 rounded-full bg-amber-100 px-4 py-1.5 text-sm font-semibold uppercase tracking-[0.2em] text-amber-700 mb-4"><i class="fas fa-lock"></i> Secure Payment</span>
+            <h1 class="text-3xl font-bold text-gray-900">Complete Your Checkout</h1>
+            <p class="mt-2 text-gray-600">Pay the balance to confirm your stay at Brickspoint Boutique Aparthotel.</p>
         </div>
 
         {{-- Order summary --}}
@@ -16,7 +17,7 @@
             <div class="border-b border-gray-200 px-6 py-4">
                 <h2 class="text-lg font-semibold text-gray-900">Booking Summary</h2>
                 <p class="text-sm text-gray-500">Reference
-                    <span class="font-mono font-semibold text-indigo-600">BR-{{ str_pad((string) $reservation->id, 5, '0', STR_PAD_LEFT) }}</span>
+                    <span class="font-mono font-semibold text-amber-600">BR-{{ str_pad((string) $reservation->id, 5, '0', STR_PAD_LEFT) }}</span>
                 </p>
             </div>
 
@@ -63,7 +64,7 @@
                     @endif
                     <div class="flex items-center justify-between border-t border-gray-200 pt-3 text-base">
                         <dt class="font-semibold text-gray-900">Balance due</dt>
-                        <dd class="font-bold text-indigo-700">&#8358;{{ number_format($balance, 2) }}</dd>
+                        <dd class="font-bold text-amber-700">&#8358;{{ number_format($balance, 2) }}</dd>
                     </div>
                 </div>
             </div>
@@ -74,7 +75,7 @@
             @csrf
             @include('partials._antibot')
             <button type="submit"
-                class="flex w-full items-center justify-center gap-3 rounded-xl bg-indigo-600 px-6 py-4 text-lg font-bold text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-200">
+                class="flex w-full items-center justify-center gap-3 rounded-xl bg-amber-600 px-6 py-4 text-lg font-bold text-white shadow-sm transition hover:bg-amber-700 focus:outline-none focus:ring-4 focus:ring-amber-200">
                 <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h2m4 0h4M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                 Pay &#8358;{{ number_format($balance, 2) }} securely
             </button>
@@ -84,7 +85,7 @@
         </form>
 
         <div class="mt-6 text-center">
-            <a href="{{ route('rooms') }}" class="text-sm font-medium text-indigo-600 hover:text-indigo-800">&larr; Continue browsing rooms</a>
+            <a href="{{ route('rooms') }}" class="text-sm font-medium text-amber-600 hover:text-amber-800">&larr; Continue browsing rooms</a>
         </div>
     </div>
 </div>

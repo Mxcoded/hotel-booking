@@ -10,7 +10,7 @@
     </div>
     <div class="relative mx-auto max-w-7xl text-center">
         <h1 class="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">Our Gallery</h1>
-        <p class="mt-6 max-w-3xl mx-auto text-xl text-indigo-100">A glimpse into the comfort and luxury that awaits you at Brickspoint Hotel.</p>
+        <p class="mt-6 max-w-3xl mx-auto text-xl text-amber-50/90">A glimpse into the comfort and luxury that awaits you at Brickspoint Hotel.</p>
     </div>
 </div>
 

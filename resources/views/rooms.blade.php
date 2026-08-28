@@ -9,36 +9,38 @@
         <div class="absolute inset-0 bg-gray-800 mix-blend-multiply" aria-hidden="true"></div>
     </div>
     <div class="relative mx-auto max-w-7xl text-center">
+        <span class="inline-flex items-center gap-2 rounded-full bg-amber-500/90 px-4 py-1.5 text-sm font-semibold uppercase tracking-[0.2em] text-white mb-4"><i class="fas fa-hotel"></i> Stay With Us</span>
         <h1 class="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">Our Rooms & Suites</h1>
-        <p class="mt-6 max-w-3xl mx-auto text-xl text-indigo-100">Find the perfect space for your stay. Each room type offers multiple units designed with your comfort in mind.</p>
+        <p class="mt-6 max-w-3xl mx-auto text-xl text-amber-50/90">Find the perfect space for your stay. Each room type offers multiple units designed with your comfort in mind.</p>
     </div>
 </div>
 
 {{-- Availability Search --}}
-<div class="bg-indigo-50 border-b border-indigo-100">
+<div class="bg-amber-50/60 border-b border-amber-100">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+        <h2 class="text-lg font-bold text-gray-800 mb-4"><span class="text-amber-600"><i class="fas fa-calendar-check mr-2"></i></span>Check Availability &amp; Book Online</h2>
         <form id="availability-form" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:items-end">
             <div>
                 <label for="avail-check-in" class="block text-sm font-semibold text-gray-700 mb-1">Check-in</label>
                 <input type="date" id="avail-check-in" name="check_in" required
-                       class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                       class="w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
             </div>
             <div>
                 <label for="avail-check-out" class="block text-sm font-semibold text-gray-700 mb-1">Check-out</label>
                 <input type="date" id="avail-check-out" name="check_out" required
-                       class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                       class="w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
             </div>
             <div>
                 <label for="avail-guests" class="block text-sm font-semibold text-gray-700 mb-1">Guests</label>
                 <select id="avail-guests" name="guests"
-                        class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        class="w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
                     @for ($i = 1; $i <= 6; $i++)
                         <option value="{{ $i }}">{{ $i }} {{ $i === 1 ? 'Guest' : 'Guests' }}</option>
                     @endfor
                 </select>
             </div>
             <button type="submit" id="avail-submit"
-                    class="bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-bold py-3 px-6 rounded-lg transition duration-300 inline-flex items-center justify-center">
+                    class="bg-amber-600 hover:bg-amber-700 disabled:bg-amber-400 text-white font-bold py-3 px-6 rounded-lg transition duration-300 inline-flex items-center justify-center">
                 <i class="fas fa-magnifying-glass mr-2"></i> Check Availability
             </button>
         </form>
@@ -50,24 +52,24 @@
         {{-- Inline booking request form --}}
         <div id="booking-section" class="mt-6 hidden">
             <div class="rounded-lg border border-green-200 bg-white p-5 shadow-sm">
-                <h3 class="font-bold text-gray-900">Request Booking — <span id="booking-room-name" class="text-indigo-600"></span></h3>
+                <h3 class="font-bold text-gray-900">Request Booking — <span id="booking-room-name" class="text-amber-600"></span></h3>
                 <p class="mt-1 text-sm text-gray-600">No payment needed now. Our team will confirm availability and get back to you.</p>
                 <form id="booking-form" class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                     @include('partials._antibot')
                     <div>
                         <label for="bk-name" class="block text-sm font-semibold text-gray-700 mb-1">Full name *</label>
                         <input type="text" id="bk-name" name="guest_name" required maxlength="255"
-                               class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                               class="w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
                     </div>
                     <div>
                         <label for="bk-phone" class="block text-sm font-semibold text-gray-700 mb-1">Phone / WhatsApp *</label>
                         <input type="tel" id="bk-phone" name="guest_phone" required maxlength="32"
-                               class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                               class="w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
                     </div>
                     <div>
                         <label for="bk-email" class="block text-sm font-semibold text-gray-700 mb-1">Email (optional)</label>
                         <input type="email" id="bk-email" name="guest_email" maxlength="255"
-                               class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                               class="w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
                     </div>
                     <div>
                         <label for="bk-guests-display" class="block text-sm font-semibold text-gray-700 mb-1">Guests</label>
@@ -77,12 +79,12 @@
                     <div class="sm:col-span-2">
                         <label for="bk-requests" class="block text-sm font-semibold text-gray-700 mb-1">Special requests (optional)</label>
                         <textarea id="bk-requests" name="special_requests" rows="2" maxlength="2000"
-                                  class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+                                  class="w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500"></textarea>
                     </div>
                     <div class="sm:col-span-1">
                         <label for="bk-coupon" class="block text-sm font-semibold text-gray-700 mb-1">Promo code (optional)</label>
                         <input type="text" id="bk-coupon" name="coupon_code" maxlength="50"
-                               class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                               class="w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500"
                                placeholder="e.g. WELCOME10">
                     </div>
                     <div class="sm:col-span-2 flex flex-col sm:flex-row items-start sm:items-center gap-3">
@@ -101,7 +103,7 @@
                     <p id="booking-success-details" class="mt-1 text-sm text-green-700"></p>
                     <div class="mt-3">
                         <a id="booking-pay-btn" href="#" target="_blank" rel="noopener noreferrer"
-                           class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold py-2 px-4 rounded-lg transition">
+                           class="inline-flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white text-sm font-bold py-2 px-4 rounded-lg transition">
                             <i class="fas fa-credit-card"></i> Proceed to payment
                         </a>
                     </div>
@@ -114,7 +116,11 @@
 {{-- Rooms Listing Section --}}
 <div class="bg-white">
     <div class="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-        <h2 class="sr-only">Our Room Types</h2>
+        <div class="text-center mb-12">
+            <span class="inline-flex items-center gap-2 text-amber-600 font-semibold uppercase tracking-[0.25em] text-sm mb-3"><i class="fas fa-bed"></i> Accommodations</span>
+            <h2 class="text-4xl font-bold text-gray-900">Choose Your Room</h2>
+            <p class="mt-3 mx-auto max-w-2xl text-lg text-gray-600">Every room is thoughtfully designed with premium bedding, en-suite facilities, and modern comforts to help you feel right at home in Abuja.</p>
+        </div>
 
         @if($roomTypes->count() > 0)
             <div class="grid grid-cols-1 gap-y-10 gap-x-6 lg:grid-cols-2 xl:gap-x-8">
@@ -127,17 +133,17 @@
                         $availableUnits = $roomType->activeUnits()->count();
                         $basePrice = $roomType->price;
                     @endphp
-                    <div class="group relative rounded-lg border border-gray-200 p-4 sm:p-6 flex flex-col">
+                    <div class="group relative rounded-xl border border-gray-200 bg-white p-4 sm:p-6 flex flex-col shadow-sm transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
                         <!-- Favorite Button -->
-                        <button onclick="toggleFavorite('roomtype-{{ $roomType->id }}')" class="favorite-btn absolute top-6 right-6 bg-white/80 rounded-full p-2 z-10 transition-transform duration-200 hover:scale-110" data-room-id="roomtype-{{ $roomType->id }}">
+                        <button onclick="toggleFavorite('roomtype-{{ $roomType->id }}')" class="favorite-btn absolute top-6 right-6 bg-white/90 rounded-full p-2 z-10 shadow transition-transform duration-200 hover:scale-110" data-room-id="roomtype-{{ $roomType->id }}">
                             <i class="far fa-heart text-gray-700 text-xl"></i>
                         </button>
-                        <div class="aspect-w-3 aspect-h-2 overflow-hidden rounded-lg bg-gray-200 group-hover:opacity-75">
-                            <a href="{{ route('rooms.show', $roomType) }}">
+                        <div class="aspect-w-3 aspect-h-2 overflow-hidden rounded-lg bg-gray-200">
+                            <a href="{{ route('rooms.show', $roomType) }}" class="block h-full w-full overflow-hidden">
                                 @if($roomType->image)
-                                    <img src="{{ thumbnail_url($roomType->image, 'card') }}" alt="{{ $roomType->name }}" class="h-full w-full object-cover object-center">
+                                    <img src="{{ thumbnail_url($roomType->image, 'card') }}" alt="{{ $roomType->name }}" class="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105">
                                 @else
-                                    <img src="https://placehold.co/800x533/333333/FFFFFF?text={{ urlencode($roomType->name) }}" alt="{{ $roomType->name }}" class="h-full w-full object-cover object-center">
+                                    <img src="https://placehold.co/800x533/333333/FFFFFF?text={{ urlencode($roomType->name) }}" alt="{{ $roomType->name }}" class="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105">
                                 @endif
                             </a>
                         </div>
@@ -168,26 +174,37 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="flex flex-col items-center mt-4">
-                            <div class="text-gray-600 mb-4">
-                                <p class="font-bold text-xl text-gray-900">From ₦{{ number_format($basePrice, 2) }} / night</p>
-                                @if($roomType->weekend_price)
-                                    <p class="text-xs text-amber-600 mt-1"><i class="fas fa-calendar-day mr-1"></i>₦{{ number_format($roomType->weekend_price, 0) }} on Fri &amp; Sat</p>
-                                @endif
-                                @if($usd_rate > 0)
-                                    <p class="text-sm">Approx. ${{ number_format($basePrice / $usd_rate, 2) }}</p>
-                                @endif
-                            </div>
-                                <a href="https://wa.me/{{ setting('whatsapp_number', '+2348099999620') }}?text=Hi,%20I'm%20interested%20in%20booking%20the%20{{ urlencode($roomType->name) }}." target="_blank" class="whatsapp-link mt-auto w-full max-w-xs bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 inline-flex items-center justify-center">
-                                    <i class="fab fa-whatsapp mr-2"></i> Reserve via WhatsApp
-                                </a>
+                            <div class="flex flex-col items-center mt-4 gap-4">
+                                <div class="w-full border-t border-gray-100 pt-4 text-center">
+                                    <p class="font-bold text-2xl text-amber-600">From ₦{{ number_format($basePrice, 0) }}<span class="text-sm font-medium text-gray-500"> / night</span></p>
+                                    @if($roomType->weekend_price)
+                                        <p class="text-xs text-gray-500 mt-1"><i class="fas fa-calendar-day mr-1"></i>₦{{ number_format($roomType->weekend_price, 0) }} on Fri &amp; Sat</p>
+                                    @endif
+                                    @if($usd_rate > 0)
+                                        <p class="text-sm text-gray-500">Approx. ${{ number_format($basePrice / $usd_rate, 2) }}</p>
+                                    @endif
+                                </div>
+                                <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto sm:max-w-xs justify-center">
+                                    <a href="{{ route('rooms.show', $roomType) }}" class="flex-1 text-center bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-md shadow-amber-500/30 inline-flex items-center justify-center">
+                                        View Details
+                                    </a>
+                                    <a href="https://wa.me/{{ setting('whatsapp_number', '+2348099999620') }}?text=Hi,%20I'm%20interested%20in%20booking%20the%20{{ urlencode($roomType->name) }}." target="_blank" class="whatsapp-link flex-1 text-center bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 inline-flex items-center justify-center">
+                                        <i class="fab fa-whatsapp mr-2"></i> WhatsApp
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 @endforeach
             </div>
         @else
-            <p class="text-center text-gray-600 text-xl">We are currently updating our room listings. Please check back soon for our beautiful accommodations!</p>
+            <div class="mx-auto max-w-xl text-center">
+                <i class="fas fa-bed text-amber-300 text-5xl mb-4"></i>
+                <p class="text-gray-600 text-xl">We are currently updating our room listings. Please check back soon for our beautiful accommodations!</p>
+                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', setting('whatsapp_number', '+2348099999620')) }}" target="_blank" class="whatsapp-link inline-flex items-center gap-2 mt-6 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition">
+                    <i class="fab fa-whatsapp"></i> Enquire on WhatsApp
+                </a>
+            </div>
         @endif
     </div>
 </div>
@@ -252,7 +269,7 @@
     }
 
     function skeleton() {
-        const card = () => '<div class="flex flex-col sm:flex-row sm:items-center gap-4 rounded-lg border border-indigo-100 bg-white p-4 shadow-sm">' +
+        const card = () => '<div class="flex flex-col sm:flex-row sm:items-center gap-4 rounded-lg border border-amber-100 bg-white p-4 shadow-sm">' +
             '<div class="h-24 w-full sm:w-36 animate-pulse rounded-md bg-gray-200"></div>' +
             '<div class="flex-grow space-y-2">' +
                 '<div class="h-4 w-28 animate-pulse rounded bg-gray-200"></div>' +
@@ -281,7 +298,7 @@
 
         data.results.forEach(r => {
             const card = document.createElement('div');
-            card.className = 'flex flex-col sm:flex-row sm:items-center gap-4 rounded-lg border border-indigo-100 bg-white p-4 shadow-sm transition-shadow hover:shadow-md';
+            card.className = 'flex flex-col sm:flex-row sm:items-center gap-4 rounded-lg border border-amber-100 bg-white p-4 shadow-sm transition-shadow hover:shadow-md';
             const img = r.image_url
                 ? '<img src="' + esc(r.image_url) + '" alt="' + esc(r.name) + '" loading="lazy" class="h-24 w-full sm:w-36 object-cover rounded-md">'
                 : '<div class="h-24 w-full sm:w-36 rounded-md bg-gray-200 flex items-center justify-center"><i class="fas fa-bed text-gray-400 text-2xl"></i></div>';
@@ -305,7 +322,7 @@
                 '<div class="flex flex-row sm:flex-col gap-2 shrink-0">' +
                     '<a href="' + esc(r.url) + '" class="flex-1 text-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg text-sm">View</a>' +
                     (r.status === 'available'
-                        ? '<button type="button" data-request-id="' + r.id + '" class="request-btn flex-1 text-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg text-sm"><i class="fas fa-calendar-check mr-1"></i>Request</button>'
+                        ? '<button type="button" data-request-id="' + r.id + '" class="request-btn flex-1 text-center bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2 px-4 rounded-lg text-sm"><i class="fas fa-calendar-check mr-1"></i>Request</button>'
                         : '') +
                     '<a href="https://wa.me/' + waNumber + '?text=' + encodeURIComponent(waLink(r)) + '" target="_blank" class="whatsapp-link flex-1 text-center bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg text-sm"><i class="fab fa-whatsapp mr-1"></i>Book</a>' +
                 '</div>';

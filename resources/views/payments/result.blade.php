@@ -14,7 +14,7 @@
         @if($success && isset($reservation) && $reservation)
             <p class="mt-4 text-sm text-gray-500">
                 Booking Reference:
-                <span class="font-mono font-semibold text-indigo-600">BR-{{ str_pad((string) $reservation->id, 5, '0', STR_PAD_LEFT) }}</span>
+                <span class="font-mono font-semibold text-amber-600">BR-{{ str_pad((string) $reservation->id, 5, '0', STR_PAD_LEFT) }}</span>
             </p>
             @if((float) $reservation->amount_paid > 0)
                 <p class="mt-1 text-sm text-gray-500">
@@ -28,8 +28,8 @@
             Paystack Transaction Ref: <strong class="break-all">{{ $reference }}</strong>
         </div>
 
-        <a href="{{ route('home') }}" class="mt-6 inline-block w-full rounded-xl bg-gray-900 px-6 py-3 text-sm font-bold text-white transition hover:bg-black">
-            Back to Brickspoint Hotel
+        <a href="{{ route('home') }}" class="mt-6 inline-block w-full rounded-xl bg-amber-600 px-6 py-3 text-sm font-bold text-white transition hover:bg-amber-700 shadow-md shadow-amber-500/30">
+            <i class="fas fa-hotel mr-2"></i>Back to Brickspoint Hotel
         </a>
     </div>
 </div>
