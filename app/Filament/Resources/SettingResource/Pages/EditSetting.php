@@ -34,7 +34,7 @@ class EditSetting extends EditRecord
         }
 
         $fileState = $this->form
-            ->getComponent(fn ($component) => $component->getName() === 'file_upload')
+            ->getComponent(fn ($component) => method_exists($component, 'getName') && $component->getName() === 'file_upload')
             ?->getState();
 
         if (! filled($fileState)) {

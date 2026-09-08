@@ -7,6 +7,7 @@ use App\Models\User;
 use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class UserResourceTest extends TestCase
@@ -22,19 +23,20 @@ class UserResourceTest extends TestCase
         $this->user = User::where('email', 'admin@brickspoint.ng')->first();
     }
 
-    public function test_user_resource_create_form_renders_with_grouped_permissions(): void
+    public function test_user_resource_create_form_renders(): void
     {
         Livewire::actingAs($this->user)
             ->test(UserResource\Pages\CreateUser::class)
             ->assertSuccessful()
             ->assertFormFieldExists('name')
             ->assertFormFieldExists('email')
-            ->assertFormFieldExists('roles');
+            ->assertFormFieldExists('roles')
+            ->assertFormFieldDoesNotExist('perm_contact_messages');
     }
 
-    public function test_creating_user_syncs_grouped_permissions(): void
+    public function test_creating_user_assigns_role_without_direct_permissions(): void
     {
-        $contactPermIds = \Spatie\Permission\Models\Permission::where('name', 'like', '%contact%')->pluck('id');
+        $adminRole = Role::where('name', 'admin')->first();
 
         Livewire::actingAs($this->user)
             ->test(UserResource\Pages\CreateUser::class)
@@ -42,45 +44,34 @@ class UserResourceTest extends TestCase
                 'name' => 'New Staff',
                 'email' => 'staff@brickspoint.ng',
                 'password' => 'secret123',
-                'perm_contact-messages' => $contactPermIds,
+                'roles' => [$adminRole->id],
             ])
             ->call('create')
             ->assertHasNoFormErrors();
 
         $staff = User::where('email', 'staff@brickspoint.ng')->first();
         $this->assertNotNull($staff);
-        $this->assertSameSize($contactPermIds, $staff->permissions()->where('name', 'like', '%contact%')->get());
+        $this->assertTrue($staff->hasRole('admin'));
+        $this->assertSame(0, $staff->getDirectPermissions()->count());
     }
 
-    public function test_editing_user_hydrates_and_persists_grouped_permissions(): void
+    public function test_editing_user_changes_role(): void
     {
-        $contactPermIds = \Spatie\Permission\Models\Permission::where('name', 'like', '%contact%')->pluck('id');
-
         $staff = User::factory()->create(['email' => 'staff2@brickspoint.ng']);
-        $staff->syncPermissions(
-            \Spatie\Permission\Models\Permission::whereIn('id', $contactPermIds)->pluck('name')->all()
-        );
+        $staff->assignRole('admin');
 
-        $feedbackPermIds = \Spatie\Permission\Models\Permission::where('name', 'like', '%feedback%')->pluck('id');
+        $receptionistRole = Role::where('name', 'receptionist')->first();
 
         Livewire::actingAs($this->user)
             ->test(UserResource\Pages\EditUser::class, ['record' => $staff->getKey()])
             ->fillForm([
-                'perm_contact-messages' => $contactPermIds,
-                'perm_guest-feedback' => $feedbackPermIds,
+                'roles' => [$receptionistRole->id],
             ])
             ->call('save')
             ->assertHasNoFormErrors();
 
         $staff->refresh();
-        $this->assertSame(
-            $feedbackPermIds->count(),
-            $staff->permissions()->whereIn('id', $feedbackPermIds)->count()
-        );
-
-        $this->assertSame(
-            $contactPermIds->count(),
-            $staff->permissions()->whereIn('id', $contactPermIds)->count()
-        );
+        $this->assertTrue($staff->hasRole('receptionist'));
+        $this->assertFalse($staff->hasRole('admin'));
     }
 }

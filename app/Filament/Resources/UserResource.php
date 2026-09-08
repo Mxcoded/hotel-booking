@@ -5,7 +5,6 @@ namespace App\Filament\Resources;
 use App\Enums\NavigationGroupEnum;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
-use App\Support\PermissionGroups;
 use BackedEnum;
 use Filament\Actions\ViewAction;
 use Filament\Actions\EditAction;
@@ -21,7 +20,6 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
 
 use UnitEnum;
 
@@ -48,8 +46,6 @@ class UserResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        $permissionGroups = PermissionGroups::groupedPermissionOptions();
-
         $fields = [
             FormSection::make('Account Details')
                 ->columns(2)
@@ -70,35 +66,21 @@ class UserResource extends Resource
                         ->maxLength(255),
                     Forms\Components\Toggle::make('email_verified_at')
                         ->label('Email Verified')
-                        ->dehydrated(fn (bool $state): ?\Illuminate\Support\Carbon => $state ? now() : null),
+                        ->dehydrated()
+                        ->mutateDehydratedStateUsing(fn (bool $state): ?\Illuminate\Support\Carbon => $state ? now() : null),
                 ]),
         ];
 
-        $fields[] = FormSection::make('Roles')
+        $fields[] = FormSection::make('Role')
             ->schema([
                 CheckboxList::make('roles')
                     ->relationship('roles', 'name')
-                    ->label('Assign Role(s)')
+                    ->label('Assign Role')
                     ->options(fn (): array => \Spatie\Permission\Models\Role::orderBy('name')->pluck('name', 'id')->all())
                     ->columns(3)
                     ->bulkToggleable()
                     ->searchable(),
             ]);
-
-        // One labelled group per module
-        foreach ($permissionGroups as $label => $options) {
-            $fields[] = FormSection::make($label)
-                ->collapsible()
-                ->collapsed()
-                ->schema([
-                    CheckboxList::make('perm_' . Str::slug($label))
-                        ->label(fn (): string => '')
-                        ->options($options)
-                        ->columns(3)
-                        ->bulkToggleable()
-                        ->searchable(),
-                ]);
-        }
 
         return $schema
             ->schema($fields);
@@ -164,14 +146,11 @@ class UserResource extends Resource
                             ->formatStateUsing(fn ($state): string => $state ? 'Yes' : 'No'),
                         TextEntry::make('created_at')->dateTime(),
                     ])->columns(2),
-                InfolistSection::make('Roles & Permissions')
+                InfolistSection::make('Roles')
                     ->schema([
                         TextEntry::make('roles.name')
                             ->badge()
                             ->label('Roles'),
-                        TextEntry::make('permissions.name')
-                            ->badge()
-                            ->label('Direct Permissions'),
                     ])->columns(2),
             ]);
     }
