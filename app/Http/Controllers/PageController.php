@@ -40,6 +40,8 @@ class PageController extends Controller
             ->take(6)
             ->get();
 
+        // A few gallery shots for the "about" + Instagram-style strip on the landing page
+        $galleryImages = Gallery::latest()->take(5)->get();
 
         $contactDetails = [
             'address' => '11 Adzope Crescent, off Kumasi Crescent, Wuse, Abuja 900288, Federal Capital Territory',
@@ -54,6 +56,7 @@ class PageController extends Controller
             'email' => $contactDetails['email'],
             'phone' => $contactDetails['phone'],
             'testimonials' => $testimonials,
+            'galleryImages' => $galleryImages,
         ]);
     }
 

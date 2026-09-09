@@ -62,14 +62,13 @@
 
 @section('content')
 
-{{-- Page Header --}}
-<div class="bg-stone-900 py-8 md:py-12 px-4 text-center">
-    <p class="text-xs font-semibold uppercase tracking-widest text-orange-400 mb-2">Brickspoint Restaurant</p>
-    <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-white">Our Food Menu</h1>
-    <p class="mt-2 max-w-lg mx-auto text-stone-400 text-sm md:text-base">
-        Explore our freshly prepared selection of dishes and beverages.
-    </p>
-</div>
+@include('partials._page_header', [
+    'title' => 'Our Food Menu',
+    'eyebrow' => 'Brickspoint Restaurant',
+    'icon' => 'fa-utensils',
+    'imageUrl' => null,
+    'subtitle' => 'Explore our freshly prepared selection of dishes and beverages.',
+])
 
 {{-- Book Viewer --}}
 <section id="book-section" class="py-6 md:py-10 min-h-screen">

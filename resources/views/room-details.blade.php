@@ -3,232 +3,281 @@
 @section('title', $roomType->name . ' - Brickspoint Hotel')
 
 @section('content')
-<div class="bg-white">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            
-            {{-- Media Gallery Section --}}
-            <div>
-                {{-- Main Media Display --}}
-                <div id="main-media-display" class="mb-4 rounded-lg overflow-hidden shadow-lg aspect-w-16 aspect-h-9 bg-gray-200">
-                    @php
-                        $mainMedia = $roomType->media()->where('type', 'image')->first();
-                    @endphp
-                    @if($mainMedia)
-                        <img id="main-image" src="{{ asset('storage/' . $mainMedia->file_path) }}" alt="{{ $roomType->name }}" class="w-full h-full object-cover">
-                    @else
-                        <img id="main-image" src="https://placehold.co/800x533/333333/FFFFFF?text={{ urlencode($roomType->name) }}" alt="{{ $roomType->name }}" class="w-full h-full object-cover">
-                    @endif
-                </div>
+    @php $mainMedia = $roomType->media()->where('type', 'image')->first(); @endphp
 
-                {{-- Thumbnails --}}
-                <div class="grid grid-cols-4 sm:grid-cols-5 gap-2 mt-4">
-                    @php
-                        $allMedia = $roomType->media;
-                    @endphp
-                    @foreach($allMedia as $index => $media)
-                        <div class="relative group cursor-pointer border-2 border-transparent hover:border-amber-500 rounded p-1 thumbnail-item">
-                            @if ($media->type === 'image')
-                                <img src="{{ thumbnail_url($media->file_path, 'thumb') }}" alt="Room media thumbnail" class="w-full h-20 object-cover rounded" data-type="image" data-src="{{ asset('storage/' . $media->file_path) }}">
-                            @else
-                                <div class="w-full h-20 bg-gray-800 rounded flex items-center justify-center" data-type="video" data-src="{{ asset('storage/' . $media->file_path) }}">
-                                    <i class="fas fa-play text-white text-2xl"></i>
+    @include('partials._page_header', [
+        'title' => $roomType->name,
+        'eyebrow' => 'Room Details',
+        'icon' => 'fa-bed',
+        'imageUrl' => $mainMedia ? asset('storage/' . $mainMedia->file_path) : null,
+        'subtitle' => $roomType->description,
+    ])
+
+    <div class="bg-white">
+        <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
+            <nav class="mb-8 text-sm text-gray-500">
+                <a href="{{ url('/') }}" class="hover:text-amber-600"><i class="fas fa-home mr-1"></i>Home</a>
+                <i class="fas fa-chevron-right mx-2 text-xs text-gray-300"></i>
+                <a href="{{ route('rooms') }}" class="hover:text-amber-600">Rooms</a>
+                <i class="fas fa-chevron-right mx-2 text-xs text-gray-300"></i>
+                <span class="font-semibold text-gray-800">{{ $roomType->name }}</span>
+            </nav>
+
+            <div class="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-14">
+                {{-- Media Gallery Section --}}
+                <div>
+                    <div id="main-media-display" class="mb-4 aspect-[16/9] overflow-hidden rounded-3xl bg-gray-200 shadow-lift">
+                        @if($mainMedia)
+                            <img id="main-image" src="{{ asset('storage/' . $mainMedia->file_path) }}" alt="{{ $roomType->name }}" class="h-full w-full object-cover">
+                        @else
+                            <img id="main-image" src="https://placehold.co/800x533/333333/FFFFFF?text={{ urlencode($roomType->name) }}" alt="{{ $roomType->name }}" class="h-full w-full object-cover">
+                        @endif
+                    </div>
+
+                    @php $allMedia = $roomType->media; @endphp
+                    @if($allMedia->count() > 1)
+                        <div class="grid grid-cols-4 gap-2 sm:grid-cols-5 sm:gap-3">
+                            @foreach($allMedia as $index => $media)
+                                <div class="thumbnail-item group relative cursor-pointer overflow-hidden rounded-xl border-2 border-transparent transition-all hover:border-amber-500 {{ $index === 0 ? 'border-amber-500' : '' }}">
+                                    @if ($media->type === 'image')
+                                        <img src="{{ thumbnail_url($media->file_path, 'thumb') }}" alt="Room media thumbnail" loading="lazy" class="h-20 w-full object-cover" data-type="image" data-src="{{ asset('storage/' . $media->file_path) }}">
+                                    @else
+                                        <div class="flex h-20 w-full items-center justify-center bg-gray-800" data-type="video" data-src="{{ asset('storage/' . $media->file_path) }}">
+                                            <i class="fas fa-play text-2xl text-white/90 transition group-hover:scale-110"></i>
+                                        </div>
+                                    @endif
                                 </div>
-                            @endif
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-
-            {{-- Room Details Section --}}
-            <div>
-                <h1 class="text-4xl font-extrabold text-gray-900 mb-2">{{ $roomType->name }}</h1>
-                <p class="text-2xl font-semibold text-gray-800 mb-1">
-                    From ₦{{ number_format($roomType->price, 2) }} / night
-                    @php $usd_rate = (float) setting('usd_exchange_rate', 0); @endphp
-                    @if($usd_rate > 0)
-                        <span class="text-sm text-gray-500 font-normal"> (Approx. ${{ number_format($roomType->price / $usd_rate, 2) }})</span>
-                    @endif
-                </p>
-                @if($roomType->weekend_price || $roomType->holiday_price)
-                    <p class="text-sm text-amber-600 mb-4">
-                        <i class="fas fa-calendar-day mr-1"></i>
-                        @if($roomType->weekend_price)
-                            ₦{{ number_format($roomType->weekend_price, 0) }} on Fri &amp; Sat
-                        @endif
-                        @if($roomType->weekend_price && $roomType->holiday_price)
-                            &middot;
-                        @endif
-                        @if($roomType->holiday_price)
-                            ₦{{ number_format($roomType->holiday_price, 0) }} on public holidays
-                        @endif
-                    </p>
-                @else
-                    <div class="mb-4"></div>
-                @endif
-                
-                <p class="text-gray-600 mb-6">{{ $roomType->description }}</p>
-
-                <div class="mb-6 border-t pt-6">
-                    <h3 class="text-xl font-semibold mb-4">Room Type Features</h3>
-                    <div class="grid grid-cols-2 gap-4 text-gray-700 mb-6">
-                        @if(is_array($roomType->features))
-                            @foreach($roomType->features as $feature)
-                                @if(is_array($feature))
-                                    <div class="flex items-center">
-                                        <i class="fas {{ $feature['icon'] ?? '' }} text-amber-500 mr-3"></i>
-                                        <span>{{ $feature['name'] ?? '' }}</span>
-                                    </div>
-                                @elseif(is_string($feature))
-                                    <div class="flex items-center">
-                                        <i class="fas fa-check text-amber-500 mr-3"></i>
-                                        <span>{{ $feature }}</span>
-                                    </div>
-                                @endif
                             @endforeach
+                        </div>
+                    @endif
+                </div>
+
+                {{-- Room Details Section --}}
+                <div class="lg:sticky lg:top-24 lg:self-start">
+                    <span class="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.25em] text-amber-600"><i class="fas fa-hotel"></i> Brickspoint Hotel</span>
+                    <h1 class="mt-2 text-4xl font-extrabold text-gray-900">{{ $roomType->name }}</h1>
+
+                    <div class="mt-4 flex flex-wrap items-center gap-3">
+                        <span class="rounded-full bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-2 text-lg font-bold text-white shadow-glow">
+                            ₦{{ number_format($roomType->price, 0) }}<span class="text-xs font-medium"> / night</span>
+                        </span>
+                        @php $usd_rate = (float) setting('usd_exchange_rate', 0); @endphp
+                        @if($usd_rate > 0)
+                            <span class="text-sm text-gray-500">Approx. ${{ number_format($roomType->price / $usd_rate, 2) }}</span>
                         @endif
-                        <div class="flex items-center">
-                            <i class="fas fa-users text-amber-500 mr-3"></i>
-                            <span>Base: {{ $roomType->base_guests }} Guest(s)</span>
+                    </div>
+
+                    @if($roomType->weekend_price || $roomType->holiday_price)
+                        <p class="mt-3 text-sm text-amber-600">
+                            <i class="fas fa-calendar-day mr-1"></i>
+                            @if($roomType->weekend_price)
+                                ₦{{ number_format($roomType->weekend_price, 0) }} on Fri &amp; Sat
+                            @endif
+                            @if($roomType->weekend_price && $roomType->holiday_price)
+                                &middot;
+                            @endif
+                            @if($roomType->holiday_price)
+                                ₦{{ number_format($roomType->holiday_price, 0) }} on public holidays
+                            @endif
+                        </p>
+                    @endif
+
+                    <p class="mt-5 leading-relaxed text-gray-600">{{ $roomType->description }}</p>
+
+                    {{-- Room Type Facts --}}
+                    <div class="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                        <div class="rounded-2xl border border-gray-100 bg-gray-50 p-4 text-center">
+                            <i class="fas fa-users text-xl text-amber-500"></i>
+                            <p class="mt-1 text-sm font-bold text-gray-900">{{ $roomType->base_guests }} Guest</p>
+                            <p class="text-xs text-gray-500">Base</p>
                         </div>
                         @if($roomType->max_guests && $roomType->max_guests > $roomType->base_guests)
-                            <div class="flex items-center">
-                                <i class="fas fa-user-plus text-amber-500 mr-3"></i>
-                                <span>Max: {{ $roomType->max_guests }} Guest(s)</span>
+                            <div class="rounded-2xl border border-gray-100 bg-gray-50 p-4 text-center">
+                                <i class="fas fa-user-plus text-xl text-amber-500"></i>
+                                <p class="mt-1 text-sm font-bold text-gray-900">{{ $roomType->max_guests }} Guests</p>
+                                <p class="text-xs text-gray-500">Max</p>
                             </div>
                         @endif
                         @if($roomType->room_size)
-                            <div class="flex items-center">
-                                <i class="fas fa-ruler-combined text-amber-500 mr-3"></i>
-                                <span>{{ $roomType->room_size }} m²</span>
+                            <div class="rounded-2xl border border-gray-100 bg-gray-50 p-4 text-center">
+                                <i class="fas fa-ruler-combined text-xl text-amber-500"></i>
+                                <p class="mt-1 text-sm font-bold text-gray-900">{{ $roomType->room_size }} m²</p>
+                                <p class="text-xs text-gray-500">Size</p>
                             </div>
                         @endif
                         @if($roomType->bed_type)
-                            <div class="flex items-center">
-                                <i class="fas fa-bed text-amber-500 mr-3"></i>
-                                <span>{{ ucfirst($roomType->bed_type) }} Bed</span>
+                            <div class="rounded-2xl border border-gray-100 bg-gray-50 p-4 text-center">
+                                <i class="fas fa-bed text-xl text-amber-500"></i>
+                                <p class="mt-1 text-sm font-bold text-gray-900 capitalize">{{ $roomType->bed_type }}</p>
+                                <p class="text-xs text-gray-500">Bed</p>
                             </div>
                         @endif
                     </div>
-                    
-                    {{-- Available Units --}}
-                    @php
-                        $availableUnits = $roomType->activeUnits;
-                        $unitCount = $availableUnits->count();
-                    @endphp
-                    @if($unitCount > 0)
-                        <div class="mb-6 border-t pt-6">
-                            <h3 class="text-xl font-semibold mb-4">Available Units ({{ $unitCount }})</h3>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                @foreach($availableUnits as $unit)
-                                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                                        <div class="flex justify-between items-center">
-                                            <span class="font-medium text-gray-900">Unit {{ $unit->unit_number }}</span>
-                                            @if($unit->floor)
-                                                <span class="text-sm text-gray-500">Floor {{ $unit->floor }}</span>
-                                            @endif
+
+                    {{-- Room Type Features --}}
+                    <div class="mt-7">
+                        <h3 class="text-xl font-bold text-gray-900">Room Features</h3>
+                        <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                            @if(is_array($roomType->features))
+                                @foreach($roomType->features as $feature)
+                                    @if(is_array($feature))
+                                        <div class="flex items-center gap-3 rounded-xl border border-gray-100 bg-white px-4 py-3 shadow-sm">
+                                            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-50 text-amber-600"><i class="fas {{ $feature['icon'] ?? 'fa-check' }}"></i></span>
+                                            <span class="text-sm font-medium text-gray-700">{{ $feature['name'] ?? '' }}</span>
                                         </div>
+                                    @elseif(is_string($feature))
+                                        <div class="flex items-center gap-3 rounded-xl border border-gray-100 bg-white px-4 py-3 shadow-sm">
+                                            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-50 text-amber-600"><i class="fas fa-check"></i></span>
+                                            <span class="text-sm font-medium text-gray-700">{{ $feature }}</span>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            @endif
+                        </div>
+                    </div>
+
+                    {{-- Available Units --}}
+                    @php $availableUnits = $roomType->activeUnits; @endphp
+                    @if($availableUnits->count() > 0)
+                        <div class="mt-7">
+                            <h3 class="text-xl font-bold text-gray-900">Available Units ({{ $availableUnits->count() }})</h3>
+                            <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                @foreach($availableUnits as $unit)
+                                    <div class="flex items-center justify-between rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
+                                        <span class="font-medium text-gray-900"><i class="fas fa-door-open mr-2 text-amber-500"></i>Unit {{ $unit->unit_number }}</span>
+                                        @if($unit->floor)
+                                            <span class="text-sm text-gray-500">Floor {{ $unit->floor }}</span>
+                                        @endif
                                     </div>
                                 @endforeach
                             </div>
                         </div>
                     @endif
-                </div>
 
-                {{-- Stay Quote Widget --}}
-                <div class="mb-6 border-t pt-6" id="stay-quote-widget"
-                    data-room-type-id="{{ $roomType->id }}"
-                    data-base-guests="{{ $roomType->base_guests }}"
-                    data-max-guests="{{ $roomType->getMaxOccupancy() }}"
-                    data-room-name="{{ $roomType->name }}">
-                    <h3 class="text-xl font-semibold mb-4">Plan Your Stay</h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
-                        <div>
-                            <label for="quote-check-in" class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Check-in</label>
-                            <input type="date" id="quote-check-in" class="w-full rounded-lg border-gray-300 focus:border-amber-500 focus:ring-amber-500 text-sm">
+                    {{-- Stay Quote Widget --}}
+                    <div class="mt-8 rounded-3xl border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50/40 p-6 sm:p-7" id="stay-quote-widget"
+                        data-room-type-id="{{ $roomType->id }}"
+                        data-base-guests="{{ $roomType->base_guests }}"
+                        data-max-guests="{{ $roomType->getMaxOccupancy() }}"
+                        data-room-name="{{ $roomType->name }}">
+                        <h3 class="flex items-center gap-2 text-xl font-bold text-gray-900"><i class="fas fa-calculator text-amber-500"></i> Plan Your Stay</h3>
+                        <p class="mt-1 text-sm text-gray-600">Select your dates to get an instant quote and live availability.</p>
+                        <div class="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                            <div>
+                                <label for="quote-check-in" class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">Check-in</label>
+                                <input type="date" id="quote-check-in" class="w-full rounded-lg border-gray-300 focus:border-amber-500 focus:ring-amber-500">
+                            </div>
+                            <div>
+                                <label for="quote-check-out" class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">Check-out</label>
+                                <input type="date" id="quote-check-out" class="w-full rounded-lg border-gray-300 focus:border-amber-500 focus:ring-amber-500">
+                            </div>
+                            <div>
+                                <label for="quote-guests" class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">Guests</label>
+                                <select id="quote-guests" class="w-full rounded-lg border-gray-300 focus:border-amber-500 focus:ring-amber-500"></select>
+                            </div>
                         </div>
-                        <div>
-                            <label for="quote-check-out" class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Check-out</label>
-                            <input type="date" id="quote-check-out" class="w-full rounded-lg border-gray-300 focus:border-amber-500 focus:ring-amber-500 text-sm">
-                        </div>
-                        <div>
-                            <label for="quote-guests" class="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Guests</label>
-                            <select id="quote-guests" class="w-full rounded-lg border-gray-300 focus:border-amber-500 focus:ring-amber-500 text-sm"></select>
+                        <button type="button" id="quote-btn" class="mt-4 w-full rounded-lg bg-amber-500 px-4 py-3 font-semibold text-white shadow-md shadow-amber-500/30 transition hover:bg-amber-600">
+                            <i class="fas fa-calculator mr-2"></i>Check Price &amp; Availability
+                        </button>
+                        <div id="quote-result" class="mt-4 hidden rounded-xl border border-amber-100 bg-white p-4 text-sm shadow-sm"></div>
+                    </div>
+
+                    {{-- Book Now — online booking (create reservation → checkout) --}}
+                    <div class="mt-5" id="book-now-widget">
+                        <button type="button" id="book-now-btn"
+                            class="flex w-full items-center justify-center rounded-xl bg-slate-900 px-6 py-4 text-lg font-bold text-white shadow-lift transition hover:bg-slate-800">
+                            <i class="fas fa-calendar-check mr-3 text-amber-400"></i>Book Now
+                        </button>
+
+                        <div id="book-now-form-wrap" class="mt-4 hidden rounded-2xl border border-amber-200 bg-white p-5 shadow-lift sm:p-7">
+                            <h3 class="text-lg font-bold text-gray-900">Book <span class="text-amber-600">{{ $roomType->name }}</span></h3>
+                            <p class="mt-1 text-sm text-gray-600" id="book-now-summary">Select your dates above to see your booking summary.</p>
+                            <form id="book-now-form" class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                @include('partials._antibot')
+                                <div>
+                                    <label for="bn-name" class="mb-1 block text-sm font-semibold text-gray-700">Full name *</label>
+                                    <input type="text" id="bn-name" name="guest_name" required maxlength="255"
+                                           class="w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
+                                </div>
+                                <div>
+                                    <label for="bn-phone" class="mb-1 block text-sm font-semibold text-gray-700">Phone / WhatsApp *</label>
+                                    <input type="tel" id="bn-phone" name="guest_phone" required maxlength="32"
+                                           class="w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
+                                </div>
+                                <div>
+                                    <label for="bn-email" class="mb-1 block text-sm font-semibold text-gray-700">Email (optional)</label>
+                                    <input type="email" id="bn-email" name="guest_email" maxlength="255"
+                                           class="w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
+                                </div>
+                                <div>
+                                    <label for="bn-coupon" class="mb-1 block text-sm font-semibold text-gray-700">Promo code (optional)</label>
+                                    <input type="text" id="bn-coupon" name="coupon_code" maxlength="50"
+                                           class="w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500"
+                                           placeholder="e.g. WELCOME10">
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <label for="bn-requests" class="mb-1 block text-sm font-semibold text-gray-700">Special requests (optional)</label>
+                                    <textarea id="bn-requests" name="special_requests" rows="2" maxlength="2000"
+                                              class="w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500"></textarea>
+                                </div>
+                                <div class="flex flex-col items-start gap-3 sm:col-span-2 sm:flex-row sm:items-center">
+                                    <button type="submit" id="bn-submit"
+                                            class="inline-flex items-center gap-2 rounded-lg bg-green-500 px-8 py-3 font-bold text-white transition hover:bg-green-600">
+                                        <i class="fas fa-paper-plane"></i> Request Booking
+                                    </button>
+                                    <button type="button" id="bn-cancel" class="text-sm font-semibold text-gray-500 underline hover:text-gray-700">Cancel</button>
+                                    <span id="bn-error" class="hidden text-sm font-medium text-red-600"></span>
+                                </div>
+                            </form>
+                            <div id="bn-success" class="mt-4 hidden rounded-lg border border-green-200 bg-green-50 p-4">
+                                <p class="font-bold text-green-800"><i class="fas fa-check-circle mr-2"></i>Booking request received!</p>
+                                <p id="bn-success-details" class="mt-1 text-sm text-green-700"></p>
+                                <div class="mt-3">
+                                    <a id="bn-pay-btn" href="#" target="_blank" rel="noopener noreferrer"
+                                       class="inline-flex items-center gap-2 rounded-lg bg-amber-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-amber-700">
+                                        <i class="fas fa-credit-card"></i> Proceed to payment
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <button type="button" id="quote-btn" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-300 text-sm">
-                        <i class="fas fa-calculator mr-2"></i>Check Price &amp; Availability
-                    </button>
-                    <div id="quote-result" class="hidden mt-4 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm"></div>
+
+                    <a href="https://wa.me/{{ setting('whatsapp_number') }}?text=Hi,%20I'm%20interested%20in%20booking%20the%20{{ urlencode($roomType->name) }}." target="_blank" id="reserve-whatsapp-link" class="whatsapp-link mt-5 flex w-full items-center justify-center rounded-xl bg-green-500 px-6 py-4 text-lg font-bold text-white transition hover:bg-green-600">
+                        <i class="fab fa-whatsapp mr-3"></i> Reserve This Room Type
+                    </a>
                 </div>
-
-                {{-- Book Now — online booking (create reservation → checkout) --}}
-                <div class="mb-6" id="book-now-widget">
-                    <button type="button" id="book-now-btn"
-                        class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-6 rounded-lg transition duration-300 inline-flex items-center justify-center text-lg shadow-lg shadow-amber-500/30">
-                        <i class="fas fa-calendar-check mr-3"></i>Book Now
-                    </button>
-
-                    <div id="book-now-form-wrap" class="hidden mt-4 rounded-xl border border-amber-200 bg-white p-5 shadow-sm">
-                        <h3 class="font-bold text-gray-900 mb-1">Book <span class="text-amber-600">{{ $roomType->name }}</span></h3>
-                        <p class="text-sm text-gray-600" id="book-now-summary">Select your dates above to see your booking summary.</p>
-                        <form id="book-now-form" class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            @include('partials._antibot')
-                            <div>
-                                <label for="bn-name" class="block text-sm font-semibold text-gray-700 mb-1">Full name *</label>
-                                <input type="text" id="bn-name" name="guest_name" required maxlength="255"
-                                       class="w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
-                            </div>
-                            <div>
-                                <label for="bn-phone" class="block text-sm font-semibold text-gray-700 mb-1">Phone / WhatsApp *</label>
-                                <input type="tel" id="bn-phone" name="guest_phone" required maxlength="32"
-                                       class="w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
-                            </div>
-                            <div>
-                                <label for="bn-email" class="block text-sm font-semibold text-gray-700 mb-1">Email (optional)</label>
-                                <input type="email" id="bn-email" name="guest_email" maxlength="255"
-                                       class="w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500">
-                            </div>
-                            <div>
-                                <label for="bn-coupon" class="block text-sm font-semibold text-gray-700 mb-1">Promo code (optional)</label>
-                                <input type="text" id="bn-coupon" name="coupon_code" maxlength="50"
-                                       class="w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500"
-                                       placeholder="e.g. WELCOME10">
-                            </div>
-                            <div class="sm:col-span-2">
-                                <label for="bn-requests" class="block text-sm font-semibold text-gray-700 mb-1">Special requests (optional)</label>
-                                <textarea id="bn-requests" name="special_requests" rows="2" maxlength="2000"
-                                          class="w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500"></textarea>
-                            </div>
-                            <div class="sm:col-span-2 flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                                <button type="submit" id="bn-submit"
-                                        class="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white font-bold py-3 px-8 rounded-lg transition duration-300">
-                                    <i class="fas fa-paper-plane"></i> Request Booking
-                                </button>
-                                <button type="button" id="bn-cancel" class="text-sm font-semibold text-gray-500 hover:text-gray-700 underline">Cancel</button>
-                                <span id="bn-error" class="hidden text-sm font-medium text-red-600"></span>
-                            </div>
-                        </form>
-                        <div id="bn-success" class="hidden mt-4 rounded-lg bg-green-50 border border-green-200 p-4">
-                            <p class="font-bold text-green-800"><i class="fas fa-check-circle mr-2"></i>Booking request received!</p>
-                            <p id="bn-success-details" class="mt-1 text-sm text-green-700"></p>
-                            <div class="mt-3">
-                                <a id="bn-pay-btn" href="#" target="_blank" rel="noopener noreferrer"
-                                   class="inline-flex items-center gap-2 bg-amber-600 hover:bg-amber-700 text-white text-sm font-bold py-2.5 px-5 rounded-lg transition">
-                                    <i class="fas fa-credit-card"></i> Proceed to payment
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <a href="https://wa.me/{{ setting('whatsapp_number') }}?text=Hi,%20I'm%20interested%20in%20booking%20the%20{{ urlencode($roomType->name) }}." target="_blank" id="reserve-whatsapp-link" class="whatsapp-link w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-lg transition duration-300 inline-flex items-center justify-center text-lg">
-                    <i class="fab fa-whatsapp mr-3"></i> Reserve This Room Type
-                </a>
             </div>
         </div>
     </div>
-</div>
+
+    {{-- Other rooms --}}
+    @php
+        $otherRooms = \App\Models\RoomType::active()->where('id', '!=', $roomType->id)->orderBy('sort_order')->orderBy('name')->take(3)->get();
+    @endphp
+    @if($otherRooms->count() > 0)
+        <div class="border-t border-gray-100 bg-gray-50">
+            <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+                <h2 class="text-2xl font-extrabold text-gray-900 sm:text-3xl">Explore Other Rooms</h2>
+                <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    @foreach($otherRooms as $other)
+                        <a href="{{ route('rooms.show', $other) }}" class="reveal group relative overflow-hidden rounded-2xl bg-white shadow-sm transition-all duration-300 hover:shadow-lift">
+                            <div class="aspect-[4/3] overflow-hidden">
+                                @if($other->image)
+                                    <img src="{{ thumbnail_url($other->image, 'card') }}" alt="{{ $other->name }}" loading="lazy" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                @else
+                                    <img src="https://placehold.co/800x533/333333/FFFFFF?text={{ urlencode($other->name) }}" alt="{{ $other->name }}" loading="lazy" class="h-full w-full object-cover">
+                                @endif
+                            </div>
+                            <div class="p-5">
+                                <h3 class="font-bold text-gray-900 group-hover:text-amber-600">{{ $other->name }}</h3>
+                                <p class="mt-1 text-sm text-gray-500">From ₦{{ number_format($other->price, 0) }} / night</p>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    @endif
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -254,12 +303,12 @@
                     const newImage = document.createElement('img');
                     newImage.src = src;
                     newImage.alt = '{{ $roomType->name }}';
-                    newImage.className = 'w-full h-full object-cover';
+                    newImage.className = 'h-full w-full object-cover';
                     mainMediaDisplay.appendChild(newImage);
                 } else if (type === 'video') {
                     const newVideo = document.createElement('video');
                     newVideo.src = src;
-                    newVideo.className = 'w-full h-full object-cover';
+                    newVideo.className = 'h-full w-full object-cover';
                     newVideo.controls = true;
                     newVideo.autoplay = true;
                     newVideo.muted = true;
@@ -316,12 +365,12 @@
 
             const availabilityBadge = (status) => {
                 if (status === 'available') {
-                    return '<span class="inline-flex items-center gap-1 text-green-700 bg-green-100 rounded-full px-2.5 py-0.5 text-xs font-semibold"><i class="fas fa-check-circle"></i> Available</span>';
+                    return '<span class="inline-flex items-center gap-1 rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-semibold text-green-700"><i class="fas fa-check-circle"></i> Available</span>';
                 }
                 if (status === 'unavailable') {
-                    return '<span class="inline-flex items-center gap-1 text-red-700 bg-red-100 rounded-full px-2.5 py-0.5 text-xs font-semibold"><i class="fas fa-times-circle"></i> Not available for these dates</span>';
+                    return '<span class="inline-flex items-center gap-1 rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-semibold text-red-700"><i class="fas fa-times-circle"></i> Not available for these dates</span>';
                 }
-                return '<span class="inline-flex items-center gap-1 text-gray-600 bg-gray-200 rounded-full px-2.5 py-0.5 text-xs font-semibold"><i class="fab fa-whatsapp"></i> Confirm via WhatsApp</span>';
+                return '<span class="inline-flex items-center gap-1 rounded-full bg-gray-200 px-2.5 py-0.5 text-xs font-semibold text-gray-600"><i class="fab fa-whatsapp"></i> Confirm via WhatsApp</span>';
             };
 
             const quoteSkeleton = () => {
@@ -332,7 +381,7 @@
                         '<div class="h-3 w-full rounded bg-gray-100"></div>' +
                         '<div class="h-3 w-full rounded bg-gray-100"></div>' +
                         '<div class="h-3 w-2/3 rounded bg-gray-100"></div>' +
-                        '<div class="h-5 w-full rounded bg-gray-200 mt-3"></div>' +
+                        '<div class="mt-3 h-5 w-full rounded bg-gray-200"></div>' +
                     '</div>';
             };
 
@@ -362,26 +411,26 @@
                 ).join('');
 
                 if (q.extra_guest_fee > 0) {
-                    rows += '<div class="flex justify-between py-0.5 border-t border-gray-200 mt-1 pt-1"><span class="text-gray-500">Extra guest fee (' + q.guests + ' guests)</span><span>' + naira(q.extra_guest_fee) + '</span></div>';
+                    rows += '<div class="mt-1 flex justify-between border-t border-gray-200 py-0.5 pt-1"><span class="text-gray-500">Extra guest fee (' + q.guests + ' guests)</span><span>' + naira(q.extra_guest_fee) + '</span></div>';
                 }
 
                 let warnings = '';
                 q.errors.forEach(msg => {
-                    warnings += '<p class="text-xs text-red-600 mt-2"><i class="fas fa-exclamation-circle mr-1"></i>' + msg + '</p>';
+                    warnings += '<p class="mt-2 text-xs text-red-600"><i class="fas fa-exclamation-circle mr-1"></i>' + msg + '</p>';
                 });
                 if (q.availability !== 'available' && q.errors.length === 0 && q.availability !== 'contact_us') {
-                    warnings += '<p class="text-xs text-red-600 mt-2"><i class="fas fa-info-circle mr-1"></i>All units are booked or blocked for these dates — try different dates or contact us.</p>';
+                    warnings += '<p class="mt-2 text-xs text-red-600"><i class="fas fa-info-circle mr-1"></i>All units are booked or blocked for these dates — try different dates or contact us.</p>';
                 }
 
                 quoteResult.classList.remove('hidden');
                 quoteResult.innerHTML =
-                    '<div class="flex items-center justify-between mb-2">' +
+                    '<div class="mb-2 flex items-center justify-between">' +
                         '<span class="font-semibold text-gray-900">' + q.nights + ' night' + (q.nights > 1 ? 's' : '') + ' &middot; ' + q.guests + ' guest' + (q.guests > 1 ? 's' : '') + '</span>' +
                         availabilityBadge(q.availability) +
                     '</div>' +
                     rows +
-                    '<div class="flex justify-between border-t border-gray-300 mt-2 pt-2 font-bold text-base text-gray-900"><span>Total</span><span>' + naira(q.total) + '</span></div>' +
-                    '<p class="text-xs text-gray-400 mt-1">Estimated total incl. applicable rates. Final confirmation via WhatsApp.</p>' +
+                    '<div class="mt-2 flex justify-between border-t border-gray-300 pt-2 text-base font-bold text-gray-900"><span>Total</span><span>' + naira(q.total) + '</span></div>' +
+                    '<p class="mt-1 text-xs text-gray-400">Estimated total incl. applicable rates. Final confirmation via WhatsApp.</p>' +
                     warnings;
 
                 updateReserveLink(q);
@@ -406,7 +455,6 @@
 
                 if (quoteCache.has(cacheKey)) {
                     renderQuote(quoteCache.get(cacheKey));
-                    // Keep the cached view honest with a background refresh
                     fetchQuote(params).then(q => {
                         quoteCache.set(cacheKey, q);
                         renderQuote(q);
@@ -445,7 +493,6 @@
                 runQuote({ silent: false });
             });
 
-            // ── Live quotes: debounced auto-run as the criteria change ──
             [checkInEl, checkOutEl, guestsEl].forEach(el => el.addEventListener('change', function () {
                 clearTimeout(quoteDebounce);
                 if (checkInEl.value && checkOutEl.value && checkOutEl.value > checkInEl.value) {

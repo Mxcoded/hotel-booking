@@ -1,26 +1,27 @@
 @include('layouts._feedback_modal')
 <!-- WhatsApp Lead Capture Modal -->
 <div id="whatsapp-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-lg p-8 shadow-2xl max-w-sm w-full relative">
+    <div class="bg-white rounded-2xl p-8 shadow-2xl max-w-sm w-full relative">
         <button id="close-modal-btn"
-            class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl">&times;</button>
-        <h3 class="text-2xl font-bold text-center mb-2">Chat on WhatsApp</h3>
+            class="absolute top-4 right-4 h-9 w-9 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-800 flex items-center justify-center transition text-2xl">&times;</button>
+        <span class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-3xl text-green-600"><i class="fab fa-whatsapp"></i></span>
+        <h3 class="text-2xl font-extrabold text-gray-900 text-center mb-2 mt-3">Chat on WhatsApp</h3>
         <p class="text-center text-gray-600 mb-6">Just enter your details below and we'll redirect you instantly.
         </p>
         <form id="whatsapp-lead-form" onsubmit="return false;">
             @include('partials._antibot')
             <div class="mb-4">
-                <label for="lead-name" class="block text-sm font-medium text-gray-700">Name</label>
+                <label for="lead-name" class="block text-sm font-semibold text-gray-700">Name</label>
                 <input type="text" id="lead-name" name="name" required
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                    class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
             </div>
             <div class="mb-6">
-                <label for="lead-phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                <label for="lead-phone" class="block text-sm font-semibold text-gray-700">Phone Number</label>
                 <input type="tel" id="lead-phone" name="phone" required
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                    class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
             </div>
             <button type="submit"
-                class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center text-lg">
+                class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3.5 px-4 rounded-xl flex items-center justify-center text-lg transition">
                 <i class="fab fa-whatsapp mr-2"></i> Chat Now
             </button>
         </form>
@@ -62,18 +63,18 @@
         const modal = document.getElementById('whatsapp-modal');
         const closeModalBtn = document.getElementById('close-modal-btn');
         const leadForm = document.getElementById('whatsapp-lead-form');
-        const whatsappLinks = document.querySelectorAll('.whatsapp-link');
         let targetUrl = '';
-        whatsappLinks.forEach(link => {
-            link.addEventListener('click', function(event) {
-                event.preventDefault();
-                targetUrl = this.href;
-                if (localStorage.getItem('whatsappLead')) {
-                    window.open(targetUrl, '_blank');
-                } else {
-                    modal.classList.remove('hidden');
-                }
-            });
+        // Delegated listener: covers both static and JS-injected .whatsapp-link elements.
+        document.addEventListener('click', function(event) {
+            const link = event.target.closest('.whatsapp-link');
+            if (!link) return;
+            event.preventDefault();
+            targetUrl = link.href;
+            if (localStorage.getItem('whatsappLead')) {
+                window.open(targetUrl, '_blank');
+            } else {
+                modal.classList.remove('hidden');
+            }
         });
         if (closeModalBtn) {
             closeModalBtn.addEventListener('click', () => modal.classList.add('hidden'));
@@ -209,33 +210,42 @@
                                 let priceUsd = '';
                                 if (usd_rate > 0) {
                                     priceUsd =
-                                        `<p class="text-sm">Approx. $${(room.price / usd_rate).toFixed(2)}</p>`;
+                                        `<p class="text-xs text-gray-500">Approx. $${(room.price / usd_rate).toFixed(2)}</p>`;
                                 }
                                 const weekendHint = room.weekend_price
                                     ? `<p class="text-xs text-amber-600 mt-1"><i class="fas fa-calendar-day mr-1"></i>₦${Number(room.weekend_price).toLocaleString()} on Fri &amp; Sat</p>`
                                     : '';
                                 const imageHtml = room.image_url
-                                    ? `<img src="${room.image_url}" alt="${room.name}" class="w-full h-64 object-cover">`
-                                    : `<img src="https://placehold.co/800x533/333333/FFFFFF?text=${encodeURIComponent(room.name)}" alt="${room.name}" class="w-full h-64 object-cover">`;
+                                    ? `<img src="${room.image_url}" alt="${room.name}" class="h-56 w-full object-cover transition-transform duration-700 group-hover:scale-110 sm:h-full">`
+                                    : `<img src="https://placehold.co/800x533/333333/FFFFFF?text=${encodeURIComponent(room.name)}" alt="${room.name}" class="h-56 w-full object-cover sm:h-full">`;
 
                                 return `
-                                    <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden relative">
-                                        <button onclick="toggleFavorite(${room.id})" class="favorite-btn absolute top-4 right-4 bg-white/80 rounded-full p-2 z-10" data-room-id="${room.id}">
-                                            <i class="fas fa-heart text-red-500 text-xl"></i>
+                                    <div class="group relative flex flex-col overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:shadow-lift sm:flex-row">
+                                        <button onclick="toggleFavorite(${room.id})" class="favorite-btn absolute right-4 top-4 z-10 rounded-full bg-white/90 p-2.5 shadow-md transition-transform duration-200 hover:scale-110" data-room-id="${room.id}">
+                                            <i class="fas fa-heart text-xl text-red-500"></i>
                                         </button>
-                                        <a href="/rooms/${room.id}">
+                                        <a href="/rooms/${room.id}" class="block overflow-hidden sm:w-2/5">
                                             ${imageHtml}
                                         </a>
-                                        <div class="p-6">
-                                            <h3 class="text-2xl font-bold mb-2">${room.name}</h3>
-                                            <div class="text-gray-600 mb-4">
-                                                <p class="font-bold text-xl text-gray-900">From ${priceNaira} / night</p>
-                                                ${weekendHint}
-                                                ${priceUsd}
+                                        <div class="flex flex-1 flex-col justify-between gap-5 p-6 sm:p-7">
+                                            <div>
+                                                <h3 class="text-xl font-extrabold text-gray-900 transition-colors group-hover:text-amber-600">
+                                                    <a href="/rooms/${room.id}">${room.name}</a>
+                                                </h3>
+                                                <div class="mt-3">
+                                                    <p class="text-2xl font-bold text-amber-600">From ${priceNaira}<span class="text-sm font-medium text-gray-500"> / night</span></p>
+                                                    ${weekendHint}
+                                                    ${priceUsd}
+                                                </div>
                                             </div>
-                                            <a href="https://wa.me/{{ setting('whatsapp_number', '+2348099999620') }}?text=Hi,%20I'm%20interested%20in%20the%20${encodeURIComponent(room.name)}." target="_blank" class="whatsapp-link bg-gray-800 hover:bg-black text-white font-semibold py-2 px-4 rounded-lg w-full flex items-center justify-center">
-                                                <i class="fab fa-whatsapp mr-2"></i> Reserve via WhatsApp
-                                            </a>
+                                            <div class="flex flex-col gap-2.5 sm:flex-row">
+                                                <a href="/rooms/${room.id}" class="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-5 py-3 font-bold text-white shadow-md shadow-amber-500/30 transition hover:bg-amber-600">
+                                                    View Details
+                                                </a>
+                                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', setting('whatsapp_number', '+2348099999620')) }}?text=Hi,%20I'm%20interested%20in%20the%20${encodeURIComponent(room.name)}." target="_blank" class="whatsapp-link flex-1 inline-flex items-center justify-center gap-2 rounded-xl border border-green-200 bg-green-50 px-5 py-3 font-semibold text-green-700 transition hover:bg-green-600 hover:text-white">
+                                                    <i class="fab fa-whatsapp"></i> WhatsApp
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 `;
