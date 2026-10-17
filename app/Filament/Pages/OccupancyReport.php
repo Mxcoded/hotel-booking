@@ -55,13 +55,20 @@ class OccupancyReport extends Page implements HasForms
 
     public function getMonth(): string
     {
-        return $this->data['month'] ?? now()->format('Y-m');
+        $value = $this->data['month'] ?? now()->format('Y-m');
+
+        // The DatePicker may submit a full date (e.g. 2026-08-28) rather than a
+        // clean Y-m, so normalise it before parsing.
+        if (preg_match('/^\d{4}-\d{2}/', (string) $value, $m)) {
+            return $m[0];
+        }
+
+        return now()->format('Y-m');
     }
 
     public function getReport(): array
     {
-        $month = $this->getMonth();
-        $start = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
+        $start = Carbon::createFromFormat('Y-m', $this->getMonth())->startOfMonth();
         $end = $start->copy()->endOfMonth();
 
         $activeUnits = RoomUnit::active()->count();
