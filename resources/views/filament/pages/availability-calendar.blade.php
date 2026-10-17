@@ -1,4 +1,4 @@
-<x-filament::page>
+<x-filament-panels::page>
     <div class="space-y-4" wire:poll.30s="refreshCalendar">
         {{-- Header: navigation + live status --}}
         <div class="flex flex-wrap items-center justify-between gap-3">
@@ -182,4 +182,4 @@
             <span class="text-gray-400">Confirmed bookings appear here automatically · refreshes every 30s</span>
         </p>
     </div>
-</x-filament::page>
+</x-filament-panels::page>

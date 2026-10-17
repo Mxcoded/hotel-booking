@@ -1,4 +1,4 @@
-<x-filament::page>
+<x-filament-panels::page>
     <div class="space-y-6">
         <form wire:submit="submit">
             {{ $this->form }}
@@ -11,4 +11,4 @@
             </div>
         </form>
     </div>
-</x-filament::page>
+</x-filament-panels::page>

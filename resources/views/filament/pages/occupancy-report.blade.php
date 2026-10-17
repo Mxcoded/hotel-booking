@@ -1,4 +1,4 @@
-<x-filament::page>
+<x-filament-panels::page>
     <div class="space-y-6">
         {{-- Month selector --}}
         <div class="max-w-xs">
@@ -61,4 +61,4 @@
             </div>
         </div>
     </div>
-</x-filament::page>
+</x-filament-panels::page>

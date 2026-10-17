@@ -1,4 +1,4 @@
-<x-filament::page>
+<x-filament-panels::page>
     <div class="space-y-6">
         {{-- Import Form --}}
         <form wire:submit="submit">
@@ -148,4 +148,4 @@
             </x-filament::section>
         @endif
     </div>
-</x-filament::page>
+</x-filament-panels::page>
