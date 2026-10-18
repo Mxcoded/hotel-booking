@@ -19,6 +19,7 @@ class PermissionGroups
             'Photo Gallery' => ['gallery'],
             'Reservations' => ['reservation', 'reservations', 'confirm_reservation', 'cancel_reservation'],
             'Room Types' => ['room_type', 'room_types', 'import_room_type'],
+            'Room Categories' => ['room_category'],
             'Room Units' => ['room_unit'],
             'Room Media' => ['room_media'],
             'Local Guide (Attractions)' => ['attraction'],

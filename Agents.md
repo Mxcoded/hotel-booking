@@ -110,6 +110,9 @@ All admin routes require authentication (`auth` middleware) and share the `admin
 | Model | Key Fields / Notes |
 |---|---|
 | `Room` | name, description, price, guests, image (path), features (JSON array of `{name, icon}`) |
+| `RoomType` | Room-type catalog: name, slug, `room_type` (category slug), bed_type, price tiers, capacity, booking rules, features (JSON) |
+| `RoomCategory` | Manageable category list backing `room_type`: name, slug, color, sort_order, is_active. Managed via the `RoomCategoryResource` (Hotel Management → Room Categories) |
+| `RoomUnit` | Physical units of a room type (unit_number, status); belongs to `RoomType` |
 | `RoomMedia` | file_path, type (`image`/`video`), belongs to `Room` |
 | `Gallery` | Hotel-wide photo gallery entries |
 | `Setting` | Key-value store with `type` column; cached via `setting()` helper |

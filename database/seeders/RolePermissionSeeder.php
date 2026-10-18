@@ -68,6 +68,7 @@ class RolePermissionSeeder extends Seeder
             'gallery',
             'reservation',
             'room_type',
+            'room_category',
             'room_unit',
             'room_media',
             'attraction',
@@ -82,7 +83,7 @@ class RolePermissionSeeder extends Seeder
 
         // Generate standard CRUD permissions for all models
         $allPermissions = [];
-        foreach (['contact', 'feedback', 'gallery', 'reservation', 'room_type', 'room_unit', 'room_media', 'attraction', 'setting', 'whatsapp_lead', 'coupon', 'visitor', 'user', 'role', 'permission', 'availability_calendar', 'food_menu', 'audit_log'] as $model) {
+        foreach (['contact', 'feedback', 'gallery', 'reservation', 'room_type', 'room_category', 'room_unit', 'room_media', 'attraction', 'setting', 'whatsapp_lead', 'coupon', 'visitor', 'user', 'role', 'permission', 'availability_calendar', 'food_menu', 'audit_log'] as $model) {
             $allPermissions = array_merge($allPermissions, $this->modelPermissions($model));
         }
 
@@ -125,6 +126,7 @@ class RolePermissionSeeder extends Seeder
                 'gallery.*',
                 'reservation.*',
                 'room_type.*',
+                'room_category.*',
                 'room_unit.*',
                 'room_media.*',
                 'attraction.*',

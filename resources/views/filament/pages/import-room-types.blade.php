@@ -30,7 +30,7 @@
                 </div>
                 <div class="flex items-start gap-2">
                     <code class="bg-gray-200 dark:bg-gray-700 px-1.5 py-0.5 rounded text-xs font-mono">room_type *</code>
-                    <span class="text-gray-600 dark:text-gray-400">standard|deluxe|suite|executive|presidential</span>
+                    <span class="text-gray-600 dark:text-gray-400">{{ implode(' | ', array_keys(\App\Models\RoomCategory::options())) }}</span>
                 </div>
                 <div class="flex items-start gap-2">
                     <code class="bg-gray-200 dark:bg-gray-700 px-1.5 py-0.5 rounded text-xs font-mono">bed_type</code>

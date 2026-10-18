@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\RoomCategory;
 use App\Models\RoomType;
 use Illuminate\Support\Str;
 use OpenSpout\Reader\Common\Creator\ReaderFactory;
@@ -35,10 +36,6 @@ class RoomTypeImportService
         'is_featured',
         'sort_order',
         'features',
-    ];
-
-    protected static array $roomTypes = [
-        'standard', 'deluxe', 'suite', 'executive', 'presidential',
     ];
 
     protected static array $bedTypes = [
@@ -228,7 +225,7 @@ class RoomTypeImportService
     protected function normalizeRoomType(?string $value): ?string
     {
         $value = strtolower(trim((string) $value));
-        return in_array($value, self::$roomTypes) ? $value : null;
+        return in_array($value, RoomCategory::slugs(), true) ? $value : null;
     }
 
     protected function normalizeBedType(?string $value): ?string
