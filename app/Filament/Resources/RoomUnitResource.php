@@ -164,7 +164,7 @@ class RoomUnitResource extends Resource
                     ->action(fn (RoomUnit $record) => $record->markDirty()),
                 \Filament\Actions\Action::make('mark_inspected')
                     ->label('Inspected')
-                    ->icon('heroicon-m-clipboard-check')
+                    ->icon('heroicon-m-clipboard-document-check')
                     ->color('info')
                     ->requiresConfirmation()
                     ->visible(fn (RoomUnit $record) => $record->housekeeping_status !== \App\Models\HousekeepingLog::STATUS_INSPECTED)
