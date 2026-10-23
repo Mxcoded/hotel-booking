@@ -130,9 +130,13 @@ class SettingResource extends Resource
                                 'video' => ['video/*'],
                                 default => null,
                             })
-                            ->afterStateHydrated(function (Forms\Components\FileUpload $component, $state, $record): void {
+                            ->imagePreviewHeight('250')
+                            ->loadingIndicatorPosition('left')
+                            ->removeUploadedFileButtonPosition('right')
+                            ->panelLayout('integrated')
+                            ->afterStateHydrated(function (Forms\Components\FileUpload $component, $record): void {
                                 if ($record && in_array($record->type, ['image', 'video', 'file']) && filled($record->value)) {
-                                    $component->state(is_array($record->value) ? $record->value : [$record->value]);
+                                    $component->state([$record->value]);
                                 }
                             })
                             ->dehydrated(false),
