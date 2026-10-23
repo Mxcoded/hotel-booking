@@ -33,9 +33,7 @@ class EditSetting extends EditRecord
             return;
         }
 
-        $fileState = $this->form
-            ->getComponent(fn ($component) => method_exists($component, 'getName') && $component->getName() === 'file_upload')
-            ?->getState();
+        $fileState = $this->form->getState()['file_upload'] ?? null;
 
         if (! filled($fileState)) {
             return;
@@ -43,8 +41,12 @@ class EditSetting extends EditRecord
 
         $path = is_array($fileState) ? reset($fileState) : $fileState;
 
-        if (is_string($path) && $path !== $record->value) {
-            if ($record->value && Storage::disk('public')->exists($record->value)) {
+        if (! is_string($path)) {
+            return;
+        }
+
+        if ($path !== $record->value) {
+            if ($record->value && is_string($record->value) && Storage::disk('public')->exists($record->value)) {
                 Storage::disk('public')->delete($record->value);
             }
 

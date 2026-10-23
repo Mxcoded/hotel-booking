@@ -22,9 +22,7 @@ class CreateSetting extends CreateRecord
             return;
         }
 
-        $fileState = $this->form
-            ->getComponent(fn ($component) => $component->getName() === 'file_upload')
-            ?->getState();
+        $fileState = $this->form->getState()['file_upload'] ?? null;
 
         if (! filled($fileState)) {
             return;

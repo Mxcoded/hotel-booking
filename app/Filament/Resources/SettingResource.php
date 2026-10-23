@@ -124,11 +124,15 @@ class SettingResource extends Resource
                             ->directory('settings')
                             ->maxSize(fn (Get $get): int => $get('type') === 'image' ? 5120 : 10240)
                             ->visible(fn (Get $get) => in_array($get('type'), ['image', 'video', 'file']))
+                            ->image(fn (Get $get) => $get('type') === 'image')
+                            ->acceptedFileTypes(fn (Get $get) => match ($get('type')) {
+                                'image' => ['image/*'],
+                                'video' => ['video/*'],
+                                default => null,
+                            })
                             ->afterStateHydrated(function (Forms\Components\FileUpload $component, $state, $record): void {
                                 if ($record && in_array($record->type, ['image', 'video', 'file']) && filled($record->value)) {
-                                    $component->state($record->value);
-                                } else {
-                                    $component->state(null);
+                                    $component->state(is_array($record->value) ? $record->value : [$record->value]);
                                 }
                             })
                             ->dehydrated(false),
