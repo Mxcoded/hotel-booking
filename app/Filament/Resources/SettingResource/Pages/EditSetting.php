@@ -33,13 +33,13 @@ class EditSetting extends EditRecord
             return;
         }
 
-        $fileState = $this->form->getState()['file_upload'] ?? null;
+        $fileState = $this->form->getComponent('file_upload')?->getRawState();
 
-        if (! filled($fileState)) {
-            return;
-        }
+        $files = collect(is_array($fileState) ? $fileState : [$fileState])
+            ->filter(fn ($file) => is_string($file) && filled($file))
+            ->values();
 
-        $path = is_array($fileState) ? reset($fileState) : $fileState;
+        $path = $files->last();
 
         if (! is_string($path)) {
             return;

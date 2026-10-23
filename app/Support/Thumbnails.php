@@ -114,7 +114,7 @@ class Thumbnails
         $target = self::targetPath($path, $preset);
 
         if (Storage::disk('public')->exists($target)) {
-            return Storage::disk('public')->url($target);
+            return self::publicUrl($target);
         }
 
         return self::originalUrl($path);
@@ -170,6 +170,17 @@ class Thumbnails
 
     protected static function originalUrl(string $path): string
     {
-        return Storage::disk('public')->url($path);
+        return self::publicUrl($path);
+    }
+
+    protected static function publicUrl(string $path): string
+    {
+        $url = Storage::disk('public')->url($path);
+
+        if (str_starts_with($url, 'http://') || str_starts_with($url, 'https://') || str_starts_with($url, '//')) {
+            return $url;
+        }
+
+        return url($url);
     }
 }

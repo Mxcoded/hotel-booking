@@ -17,6 +17,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Storage;
 use UnitEnum;
 
 class SettingResource extends Resource
@@ -119,7 +120,7 @@ class SettingResource extends Resource
                             ->rows(4)
                             ->visible(fn (Get $get) => in_array($get('type'), ['text', 'number'])),
                         Forms\Components\FileUpload::make('file_upload')
-                            ->label('File')
+                            ->label('Replace File')
                             ->disk('public')
                             ->directory('settings')
                             ->maxSize(fn (Get $get): int => $get('type') === 'image' ? 5120 : 10240)
@@ -130,12 +131,13 @@ class SettingResource extends Resource
                                 'video' => ['video/*'],
                                 default => null,
                             })
-                            ->imagePreviewHeight('250')
-                            ->loadingIndicatorPosition('left')
-                            ->removeUploadedFileButtonPosition('right')
+                            ->imagePreviewHeight('200')
                             ->panelLayout('integrated')
-                            ->afterStateHydrated(function (Forms\Components\FileUpload $component, $record): void {
-                                if ($record && in_array($record->type, ['image', 'video', 'file']) && filled($record->value)) {
+                            ->loadingIndicatorPosition('right')
+                            ->removeUploadedFileButtonPosition('right')
+                            ->afterStateHydrated(function (Forms\Components\FileUpload $component, ?Setting $record): void {
+                                if ($record && in_array($record->type, ['image', 'video', 'file']) && filled($record->value)
+                                    && Storage::disk('public')->exists($record->value)) {
                                     $component->state([$record->value]);
                                 }
                             })

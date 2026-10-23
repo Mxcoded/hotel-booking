@@ -91,7 +91,7 @@ class ThumbnailsTest extends TestCase
 
         $url = thumbnail_url($path, 'card');
 
-        $this->assertEquals(Storage::disk('public')->url($path), $url);
+        $this->assertEquals(url(Storage::disk('public')->url($path)), $url);
         Storage::disk('public')->assertMissing('gallery/thumbs/card/small.jpg');
     }
 
@@ -99,7 +99,7 @@ class ThumbnailsTest extends TestCase
     {
         $url = thumbnail_url('gallery/ghost.jpg', 'card');
 
-        $this->assertEquals(Storage::disk('public')->url('gallery/ghost.jpg'), $url);
+        $this->assertEquals(url(Storage::disk('public')->url('gallery/ghost.jpg')), $url);
     }
 
     public function test_empty_path_returns_empty_string(): void
@@ -114,7 +114,7 @@ class ThumbnailsTest extends TestCase
 
         $url = thumbnail_url('gallery/broken.jpg', 'thumb');
 
-        $this->assertEquals(Storage::disk('public')->url('gallery/broken.jpg'), $url);
+        $this->assertEquals(url(Storage::disk('public')->url('gallery/broken.jpg')), $url);
     }
 
     public function test_command_generates_thumbs_for_all_image_sources(): void
